@@ -14,6 +14,8 @@ Endpoints:
   DELETE /api/items/{item_id}                     — Delete any item.
 """
 
+import json
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -64,7 +66,7 @@ def create_shared_item(
         series_id=series_id,
         name=name,
         description=body.get("description"),
-        effect=body.get("effect"),
+        effect=json.dumps(body.get("effect")) if body.get("effect") else None,
     )
     session.add(item)
     session.commit()
@@ -73,7 +75,7 @@ def create_shared_item(
         "id": item.id,
         "name": item.name,
         "description": item.description,
-        "effect": item.effect,
+        "effect": json.loads(item.effect) if item.effect else None,
         "shared": True,
     }
 
@@ -121,7 +123,7 @@ def create_book_item(
         book_id=book_id,
         name=name,
         description=body.get("description"),
-        effect=body.get("effect"),
+        effect=json.dumps(body.get("effect")) if body.get("effect") else None,
     )
     session.add(item)
     session.commit()
@@ -130,7 +132,7 @@ def create_book_item(
         "id": item.id,
         "name": item.name,
         "description": item.description,
-        "effect": item.effect,
+        "effect": json.loads(item.effect) if item.effect else None,
         "shared": False,
     }
 
@@ -146,9 +148,12 @@ def update_item(
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
 
-    for field in ("name", "description", "effect"):
+    for field in ("name", "description"):
         if field in body:
             setattr(item, field, body[field])
+
+    if "effect" in body:
+        item.effect = json.dumps(body["effect"]) if isinstance(body["effect"], dict) else body["effect"]
 
     session.commit()
     session.refresh(item)

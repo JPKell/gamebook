@@ -221,8 +221,14 @@ async function loadBook(bookId) {
     appState.undoStack = [];
     appState.undoIndex = -1;
     appState.highlightActId = null;
-    // Re-render sidebar with the current series so the tree stays populated
+    // Re-render sidebar with the current series so the tree stays populated.
+    // If we have a series in memory, ensure its books array includes this book
+    // (newly created books won't be in the stale series snapshot).
     if (appState.series) {
+        const existing = appState.series.books || [];
+        if (!existing.find(b => b.id === data.id)) {
+            existing.push({ id: data.id, title: data.title, number: data.number });
+        }
         renderSidebar([appState.series]);
     } else {
         loadSeriesList();
@@ -241,17 +247,16 @@ async function createBook(seriesId, title, number) {
     return data;
 }
 
-// Debounced save for node positions
+// Debounced save for node positions (one timeout per node)
 const _saveTimeouts = new Map();
 
 async function saveNodePosition(nodeId, x, y) {
-    const key = `${nodeId}:${Math.round(x)}:${Math.round(y)}`;
-    clearTimeout(_saveTimeouts.get(key));
-    _saveTimeouts.set(key, setTimeout(() => {
+    clearTimeout(_saveTimeouts.get(nodeId));
+    _saveTimeouts.set(nodeId, setTimeout(() => {
         API.put(`/books/${appState.bookId}/nodes/${nodeId}`, { x, y }).catch(err => {
             setStatus(`Failed to save position: ${err.message}`);
         });
-        _saveTimeouts.delete(key);
+        _saveTimeouts.delete(nodeId);
     }, 300));
 }
 
@@ -514,7 +519,8 @@ function renderCanvas() {
     if (!appState.bookId) {
         canvas.style.display = "none";
         overlay.style.display = "flex";
-        overlay.querySelector(".canvas-placeholder").textContent = "Select a book to begin editing.";
+        const placeholder = overlay.querySelector(".canvas-placeholder");
+        if (placeholder) placeholder.textContent = "Select a book to begin editing.";
         return;
     }
 
@@ -882,9 +888,8 @@ async function handleClick(e) {
             const text = await file.text();
             try {
                 const data = JSON.parse(text);
-                // Expect { version, series, books } structure
                 if (data.series && data.books) {
-                    setStatus(`Loaded project: ${data.series.title}`);
+                    setStatus(`Importing ${data.books.length} book(s) from "${data.series.title}"…`);
                     // Re-create or import — for now, just show status
                     setStatus(`Imported ${data.books.length} book(s) from ${data.series.title}`);
                     await loadSeriesList();

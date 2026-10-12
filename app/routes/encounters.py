@@ -135,6 +135,8 @@ def create_book_encounter(
         "name": encounter.name,
         "shared": False,
         "bookId": book_id,
+        "stats": json.loads(encounter.stats) if encounter.stats else None,
+        "recurring": bool(encounter.recurring),
     }
 
 

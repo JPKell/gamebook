@@ -44,7 +44,7 @@ Covers scenarios the original 8 tests missed, including the two bugs that broke 
 | `test_update_node_description_and_type` | Node description/type update |
 | `test_update_node_assigns_act` | Reassigning node to different act |
 | `test_act_entry_exit_node_ids_persist` | Act entry/exit node IDs stored as JSON |
-
+ 
 ### Bugs found and fixed
 
 1. **`app/routes/acts.py:64`** — Act order auto-assignment crashed on first act.

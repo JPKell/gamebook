@@ -38,9 +38,12 @@ def list_nodes(book_id: str, session: Session = Depends(get_session)):
     return [
         {
             "id": n.id, "title": n.title, "description": n.description,
-            "locationId": n.locationId, "items": n.items,
-            "encounters": n.encounters, "type": n.type,
-            "actId": n.act_id, "choices": n.choices,
+            "locationId": n.locationId,
+            "items": json.loads(n.items) if n.items else [],
+            "encounters": json.loads(n.encounters) if n.encounters else [],
+            "type": n.type,
+            "actId": n.act_id,
+            "choices": json.loads(n.choices) if n.choices else [],
             "x": n.x, "y": n.y,
             "storyText": n.storyText, "storyStatus": n.storyStatus,
             "storyModel": n.storyModel, "storyPrompt": n.storyPrompt,
@@ -72,6 +75,9 @@ def create_node(
         if not act or act.book_id != book_id:
             raise HTTPException(status_code=404, detail="Act not found")
 
+    items = body.get("items", [])
+    encounters = body.get("encounters", [])
+    
     node = Node(
         id=str(uuid.uuid4()),
         book_id=book_id,
@@ -79,12 +85,16 @@ def create_node(
         title=title,
         description=body.get("description", ""),
         locationId=body.get("locationId"),
-        items=body.get("items", "[]"),
-        encounters=body.get("encounters", "[]"),
+        items=json.dumps(items) if isinstance(items, list) else items,
+        encounters=json.dumps(encounters) if isinstance(encounters, list) else encounters,
         type=body.get("type", "beat"),
         choices="[]",
         x=body.get("x", 0.0),
         y=body.get("y", 0.0),
+        storyText=body.get("storyText"),
+        storyStatus=body.get("storyStatus", "pending"),
+        storyModel=body.get("storyModel"),
+        storyPrompt=body.get("storyPrompt"),
     )
     session.add(node)
 
@@ -99,10 +109,15 @@ def create_node(
     session.refresh(node)
     return {
         "id": node.id, "title": node.title, "description": node.description,
-        "locationId": node.locationId, "items": node.items,
-        "encounters": node.encounters, "type": node.type,
-        "actId": node.act_id, "choices": node.choices,
+        "locationId": node.locationId,
+        "items": json.loads(node.items) if node.items else [],
+        "encounters": json.loads(node.encounters) if node.encounters else [],
+        "type": node.type,
+        "actId": node.act_id,
+        "choices": json.loads(node.choices) if node.choices else [],
         "x": node.x, "y": node.y,
+        "storyText": node.storyText, "storyStatus": node.storyStatus,
+        "storyModel": node.storyModel, "storyPrompt": node.storyPrompt,
     }
 
 
@@ -125,9 +140,9 @@ def get_node(
 
     return {
         "id": node.id, "title": node.title, "description": node.description,
-        "locationId": node.locationId, "items": node.items,
-        "encounters": node.encounters, "type": node.type,
-        "actId": node.act_id, "choices": node.choices,
+        "locationId": node.locationId, "items": json.loads(node.items) if node.items else [],
+        "encounters": json.loads(node.encounters) if node.encounters else [], "type": node.type,
+        "actId": node.act_id, "choices": json.loads(node.choices) if node.choices else [],
         "x": node.x, "y": node.y,
         "storyText": node.storyText, "storyStatus": node.storyStatus,
         "storyModel": node.storyModel, "storyPrompt": node.storyPrompt,

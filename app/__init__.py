@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
-from app.routes import series, books, book_detail, acts, nodes, locations, items, encounters
+from app.routes import series, books, book_detail, acts, nodes, locations, items, encounters, inference
 
 
 @asynccontextmanager
@@ -80,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(
         encounters.router, prefix="/api", tags=["encounters"]
     )
+    app.include_router(inference.router, prefix="/api", tags=["inference"])
 
     # Serve static frontend files.
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
