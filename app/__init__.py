@@ -24,13 +24,16 @@ async def lifespan(app: FastAPI):
     """
     Startup and shutdown events for the application.
 
-    On startup: verify the database engine is connected and all tables
-    exist (or are created via SQLAlchemy metadata). On shutdown: dispose
+    On startup: ensure all database tables exist by calling
+    Base.metadata.create_all on the engine. On shutdown: dispose
     the engine pool.
     """
-    # TODO: Add engine connection check on startup.
+    # Ensure database tables exist (idempotent — safe to call repeatedly).
+    from app.database import engine, Base
+
+    Base.metadata.create_all(engine)
     yield
-    # Engine disposal handled by SQLAlchemy session management.
+    engine.dispose()
 
 
 def create_app() -> FastAPI:
@@ -80,5 +83,15 @@ def create_app() -> FastAPI:
 
     # Serve static frontend files.
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+    # Serve the SPA shell at the root path.
+    from fastapi.responses import HTMLResponse
+    from pathlib import Path
+
+    @app.get("/", response_class=HTMLResponse)
+    def serve_index():
+        """Serve the frontend SPA shell."""
+        index_path = Path(__file__).resolve().parent / "static" / "index.html"
+        return index_path.read_text()
 
     return app

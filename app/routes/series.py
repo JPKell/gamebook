@@ -85,21 +85,6 @@ def get_series(series_id: str, session: Session = Depends(get_session)):
     if not series:
         raise HTTPException(status_code=404, detail="Series not found")
 
-    books = [
-        {"id": b.id, "title": b.title, "number": b.number}
-        for b in session.query(
-            Series.books.property.mapper.class_
-        )
-        .join(Series.books)
-        .filter(Series.id == series_id)
-        .all()
-    ]
-    # Simpler: just query directly
-    from app.models.book import Book
-    from app.models.location import Location
-    from app.models.item import Item
-    from app.models.encounter import Encounter
-
     books = session.query(Book).filter(Book.series_id == series_id).all()
 
     shared_locations = (

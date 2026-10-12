@@ -10,15 +10,15 @@
     <div id="app">
         <header id="toolbar">
             <div id="toolbar-left">
-                <button id="btn-new-series">New Series</button>
-                <button id="btn-save" disabled>Save</button>
-                <button id="btn-load">Load JSON</button>
-                <button id="btn-export">Export</button>
+                <button id="btn-new-series" data-action="new-series">New Series</button>
+                <button id="btn-save" data-action="save" disabled>Save</button>
+                <button id="btn-load" data-action="load">Load JSON</button>
+                <button id="btn-export" data-action="export">Export</button>
             </div>
             <div id="toolbar-right">
-                <button id="btn-preview">Preview</button>
-                <button id="btn-validate" disabled>Validate</button>
-                <button id="btn-undo" disabled>↶ Undo (Ctrl+Z)</button>
+                <button id="btn-preview" data-action="preview">Preview</button>
+                <button id="btn-validate" data-action="validate" disabled>Validate</button>
+                <button id="btn-undo" data-action="undo" disabled>↶ Undo (Ctrl+Z)</button>
             </div>
         </header>
 

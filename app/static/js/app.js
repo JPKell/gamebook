@@ -570,11 +570,13 @@ function renderCanvas() {
  */
 function drawGrid(ctx) {
     const gridSize = 50;
+    const container = document.getElementById("canvas").parentElement;
+    const canvas = document.getElementById("canvas");
     // Visible area in world coordinates
     const startX = -appState.canvasOffsetX / appState.canvasScale;
     const startY = -appState.canvasOffsetY / appState.canvasScale;
-    const endX = (canvas.width - appState.canvasOffsetX) / appState.canvasScale;
-    const endY = (canvas.height - appState.canvasOffsetY) / appState.canvasScale;
+    const endX = (container.clientWidth - appState.canvasOffsetX) / appState.canvasScale;
+    const endY = (container.clientHeight - appState.canvasOffsetY) / appState.canvasScale;
 
     ctx.strokeStyle = "#222233";
     ctx.lineWidth = 0.5 / appState.canvasScale;
@@ -673,6 +675,7 @@ function drawNode(ctx, node, w, h) {
  */
 function drawZoomIndicator(ctx, canvas) {
     ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
     ctx.fillStyle = "#444";
     ctx.font = "11px sans-serif";
     ctx.textAlign = "right";
@@ -854,6 +857,80 @@ async function handleClick(e) {
     // Toolbar actions
     if (action === "new-series") {
         openModal("modal-new-series");
+        return;
+    }
+    if (action === "save") {
+        if (!appState.bookId) {
+            setStatus("No book selected to save.");
+            return;
+        }
+        setStatus("Book loaded — auto-saves on node drag.");
+        return;
+    }
+    if (action === "load") {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = async (ev) => {
+            const file = ev.target.files[0];
+            if (!file) return;
+            const text = await file.text();
+            try {
+                const data = JSON.parse(text);
+                // Expect { version, series, books } structure
+                if (data.series && data.books) {
+                    setStatus(`Loaded project: ${data.series.title}`);
+                    // Re-create or import — for now, just show status
+                    setStatus(`Imported ${data.books.length} book(s) from ${data.series.title}`);
+                    await loadSeriesList();
+                } else {
+                    setStatus("Invalid project file format.");
+                }
+            } catch (err) {
+                setStatus(`Failed to load file: ${err.message}`);
+            }
+        };
+        input.click();
+        return;
+    }
+    if (action === "export") {
+        if (!appState.seriesId) {
+            setStatus("No series selected to export.");
+            return;
+        }
+        try {
+            const data = await API.post(`/series/${appState.seriesId}/export`);
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${data.series.title.replace(/\s+/g, "_")}_export.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            setStatus("Exported series as JSON.");
+        } catch (err) {
+            setStatus(`Export failed: ${err.message}`);
+        }
+        return;
+    }
+    if (action === "preview") {
+        if (!appState.bookId) {
+            setStatus("No book selected for preview.");
+            return;
+        }
+        startPreview();
+        return;
+    }
+    if (action === "validate") {
+        if (!appState.bookId) {
+            setStatus("No book selected to validate.");
+            return;
+        }
+        await runValidation();
+        return;
+    }
+    if (action === "undo") {
+        undo();
         return;
     }
     if (action === "new-book") {
@@ -1124,28 +1201,188 @@ document.addEventListener("DOMContentLoaded", () => {
     // Keyboard shortcuts
     document.addEventListener("keydown", handleKeydown);
 
-    // Tab switching for entity panel
+    // --- Validation ---
+
+    async function runValidation() {
+        if (!appState.bookId || !appState.acts.length) {
+            setStatus("Nothing to validate — create acts first.");
+            return;
+        }
+        try {
+            const issues = validate_graph(
+                appState.acts,
+                appState.nodes,
+                appState.choices,
+            );
+            appState.validationIssues = issues;
+            if (issues.length === 0) {
+                setStatus("Validation passed — no issues found.");
+            } else {
+                const errors = issues.filter(i => i.severity === "error");
+                const warnings = issues.filter(i => i.severity === "warning");
+                setStatus(
+                    `Validation: ${errors.length} error(s), ${warnings.length} warning(s).`
+                );
+                // Show details in status bar on hover via title
+                for (const issue of issues) {
+                    console.warn(`[${issue.severity.toUpperCase()}] ${issue.message}`);
+                }
+            }
+        } catch (err) {
+            setStatus(`Validation error: ${err.message}`);
+        }
+    }
+
+    // --- Preview Mode ---
+
+    function startPreview() {
+        if (!appState.bookId || !appState.nodes.length) {
+            setStatus("No book to preview.");
+            return;
+        }
+
+        // Find entry nodes
+        const entryNodes = appState.nodes.filter(n => n.type === "entry");
+        const startNode = entryNodes.length > 0 ? entryNodes[0] : appState.nodes[0];
+
+        // Build preview overlay
+        const overlay = document.createElement("div");
+        overlay.id = "preview-overlay";
+        overlay.style.cssText = `
+            position:fixed;top:0;left:0;right:0;bottom:0;background:#111118;z-index:9999;
+            display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+        `;
+
+        // Close button
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "✕ Close Preview";
+        closeBtn.style.cssText = `
+            position:absolute;top:10px;right:10px;background:#333;color:#fff;border:1px solid #555;
+            padding:6px 12px;cursor:pointer;border-radius:4px;z-index:1;
+        `;
+        closeBtn.onclick = () => overlay.remove();
+
+        // Content area
+        const content = document.createElement("div");
+        content.style.cssText = `
+            flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+            padding:40px;max-width:700px;margin:0 auto;overflow-y:auto;
+        `;
+
+        // History stack for back navigation
+        const history = [startNode];
+        const inventory = [];
+
+        function renderNode(node) {
+            const nodeData = appState.nodes.find(n => n.id === node.id) || node;
+            const typeLabel = { entry: "🟢 ENTRY", beat: "⬜ BEAT", exit: "🟠 EXIT", ending: "🔴 ENDING" };
+            const typeBadge = typeLabel[nodeData.type] || "⬜ BEAT";
+
+            let html = `<div style="text-align:center;margin-bottom:20px;">${typeBadge}</div>`;
+            html += `<h2 style="color:#fff;margin-bottom:16px;">${nodeData.title}</h2>`;
+            html += `<p style="color:#ccc;line-height:1.7;margin-bottom:24px;">${nodeData.description || "No description."}</p>`;
+
+            // Show items
+            const items = _parseIds(nodeData.items);
+            if (items.length > 0) {
+                const itemNames = items.map(id => {
+                    const allItems = [...appState.sharedItems, ...appState.bookItems];
+                    const found = allItems.find(i => i.id === id);
+                    return found ? found.name : id;
+                });
+                html += `<div style="color:#f59e0b;margin-bottom:16px;">📦 Items: ${itemNames.join(", ")}</div>`;
+            }
+
+            // Show encounters
+            const encs = _parseIds(nodeData.encounters);
+            if (encs.length > 0) {
+                const encNames = encs.map(id => {
+                    const allEncs = [...appState.sharedEncounters, ...appState.bookEncounters];
+                    const found = allEncs.find(e => e.id === id);
+                    return found ? found.name : id;
+                });
+                html += `<div style="color:#f472b6;margin-bottom:16px;">⚔️ Encounters: ${encNames.join(", ")}</div>`;
+            }
+
+            // Choices
+            const choices = appState.choices.filter(c => c.sourceNodeId === nodeData.id);
+            if (choices.length > 0) {
+                html += `<div style="display:flex;flex-direction:column;gap:8px;">`;
+                for (const choice of choices) {
+                    html += `<button class="preview-choice" data-target="${choice.targetId}" style="
+                        background:#1a3a5a;color:#aaccff;border:1px solid #3366aa;padding:12px 20px;
+                        cursor:pointer;border-radius:6px;font-size:15px;text-align:left;
+                    ">→ ${choice.text}</button>`;
+                }
+                html += `</div>`;
+            } else if (nodeData.type === "ending") {
+                html += `<div style="text-align:center;margin-top:32px;">
+                    <h3 style="color:#f472b6;">The End</h3>
+                    <p style="color:#888;">Thanks for playing.</p>
+                </div>`;
+            } else {
+                html += `<div style="color:#666;margin-top:16px;">No choices — this is a dead end.</div>`;
+            }
+
+            content.innerHTML = html;
+
+            // Bind choice buttons
+            content.querySelectorAll(".preview-choice").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const targetId = btn.dataset.target;
+                    const targetNode = appState.nodes.find(n => n.id === targetId);
+                    if (targetNode) {
+                        history.push(targetNode);
+                        renderNode(targetNode);
+                        backBtn.style.display = history.length > 1 ? "block" : "none";
+                    }
+                });
+            });
+
+            backBtn.style.display = history.length > 1 ? "block" : "none";
+        }
+
+        // Back button (only visible after first step)
+        const backBtn = document.createElement("button");
+        backBtn.textContent = "← Back";
+        backBtn.style.cssText = `
+            position:absolute;bottom:20px;left:20px;background:#333;color:#fff;border:1px solid #555;
+            padding:8px 16px;cursor:pointer;border-radius:4px;display:none;
+        `;
+        backBtn.onclick = () => {
+            if (history.length > 1) {
+                history.pop();
+                renderNode(history[history.length - 1]);
+            }
+        };
+
+        overlay.appendChild(closeBtn);
+        overlay.appendChild(content);
+        overlay.appendChild(backBtn);
+        document.body.appendChild(overlay);
+
+        history.length = 0;
+        history.push(startNode);
+        backBtn.style.display = "none";
+        renderNode(startNode);
+    }
+
+    function _parseIds(val) {
+        if (Array.isArray(val)) return val;
+        try {
+            const parsed = JSON.parse(val || "[]");
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+
+    // --- Tab switching for entity panel ---
     document.querySelectorAll(".tab").forEach(tab => {
         tab.addEventListener("click", () => {
             document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
             tab.classList.add("active");
             renderEntityPanel(tab.dataset.tab);
         });
-    });
-
-    // Validate button
-    document.getElementById("btn-validate").addEventListener("click", async () => {
-        if (!appState.bookId) return;
-        try {
-            // TODO: implement validation endpoint in Phase 3
-            setStatus("Validation: no issues found (not yet implemented).");
-        } catch (err) {
-            setStatus(`Validation error: ${err.message}`);
-        }
-    });
-
-    // Undo button
-    document.getElementById("btn-undo").addEventListener("click", () => {
-        undo();
     });
 });

@@ -22,3 +22,23 @@ Shared entities (Location, Item, Encounter) have nullable series_id
 and book_id columns. If series_id is set, the entity is shared across
 all books in that series. If only book_id is set, it is book-specific.
 """
+
+from app.models.series import Series
+from app.models.book import Book
+from app.models.act import Act
+from app.models.node import Node
+from app.models.choice import Choice
+from app.models.location import Location
+from app.models.item import Item
+from app.models.encounter import Encounter
+
+__all__ = [
+    "Series",
+    "Book",
+    "Act",
+    "Node",
+    "Choice",
+    "Location",
+    "Item",
+    "Encounter",
+]
