@@ -162,6 +162,10 @@ body {
     cursor: grab;
 }
 
+#canvas.space-hint {
+    cursor: grabbing !important;
+}
+
 #canvas:active {
     cursor: grabbing;
 }
@@ -245,11 +249,15 @@ body {
     background: #16162a;
     border-top: 1px solid #2a2a44;
     font-size: 12px;
-    color: #666;
+    color: #888;
     flex-shrink: 0;
 }
 
-/* ── Modals ── */
+#status-bar:active {
+    color: #aaa;
+}
+
+/* ── Canvas zoom indicator ── */
 
 .modal {
     position: fixed;
