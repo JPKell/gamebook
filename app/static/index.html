@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamebook Authoring Tool</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <header id="toolbar">
+            <div id="toolbar-left">
+                <button id="btn-new-series">New Series</button>
+                <button id="btn-save" disabled>Save</button>
+                <button id="btn-load">Load JSON</button>
+                <button id="btn-export">Export</button>
+            </div>
+            <div id="toolbar-right">
+                <button id="btn-preview">Preview</button>
+                <button id="btn-validate" disabled>Validate</button>
+            </div>
+        </header>
+
+        <div id="main">
+            <aside id="sidebar">
+                <div id="sidebar-tree">
+                    <p class="sidebar-placeholder">No series loaded.</p>
+                </div>
+            </aside>
+
+            <main id="canvas-container">
+                <canvas id="canvas"></canvas>
+                <div id="canvas-overlay">
+                    <p class="canvas-placeholder">Select a book to begin editing.</p>
+                </div>
+            </main>
+
+            <aside id="entity-panel">
+                <div id="entity-tabs">
+                    <button class="tab active" data-tab="shared">Shared</button>
+                    <button class="tab" data-tab="book">Book</button>
+                </div>
+                <div id="entity-list">
+                    <p class="sidebar-placeholder">No book selected.</p>
+                </div>
+            </aside>
+        </div>
+
+        <footer id="status-bar">
+            <span id="status-message">Ready.</span>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-connect" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-connect-title">Connect from: —</h3>
+            <label>Choice text:</label>
+            <input type="text" id="modal-connect-text" placeholder="e.g. Go deeper into the tunnel">
+            <label>Destination node:</label>
+            <select id="modal-connect-target"></select>
+            <div class="modal-actions">
+                <button id="modal-connect-submit">Connect Forward</button>
+                <button id="modal-connect-back">Connect Back</button>
+                <button class="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-edit" class="modal hidden">
+        <div class="modal-content modal-large">
+            <h3>Edit Node</h3>
+            <label>Title:</label>
+            <input type="text" id="modal-edit-title">
+            <label>Description:</label>
+            <textarea id="modal-edit-description" rows="6"></textarea>
+            <label>Location:</label>
+            <select id="modal-edit-location">
+                <option value="">— None —</option>
+            </select>
+            <label>Type:</label>
+            <select id="modal-edit-type">
+                <option value="beat">Beat</option>
+                <option value="entry">Entry</option>
+                <option value="exit">Exit</option>
+                <option value="ending">Ending</option>
+            </select>
+            <label>Act:</label>
+            <select id="modal-edit-act"></select>
+            <label>Items (comma-separated IDs):</label>
+            <input type="text" id="modal-edit-items" placeholder="item-1, item-2">
+            <label>Encounters (comma-separated IDs):</label>
+            <input type="text" id="modal-edit-encounters" placeholder="enc-1">
+            <div class="modal-actions">
+                <button id="modal-edit-submit">Save</button>
+                <button id="modal-edit-delete" style="color:red">Delete</button>
+                <button class="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-new-book" class="modal hidden">
+        <div class="modal-content">
+            <h3>New Book</h3>
+            <label>Title:</label>
+            <input type="text" id="modal-new-book-title">
+            <label>Number:</label>
+            <input type="number" id="modal-new-book-number" min="1" placeholder="1">
+            <div class="modal-actions">
+                <button id="modal-new-book-submit">Create</button>
+                <button class="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-new-series" class="modal hidden">
+        <div class="modal-content">
+            <h3>New Series</h3>
+            <label>Title:</label>
+            <input type="text" id="modal-new-series-title">
+            <label>Description:</label>
+            <textarea id="modal-new-series-description" rows="3"></textarea>
+            <label>Tone:</label>
+            <input type="text" id="modal-new-series-tone" placeholder="e.g. dark fantasy">
+            <label>World Guidelines:</label>
+            <textarea id="modal-new-series-guidelines" rows="4"></textarea>
+            <div class="modal-actions">
+                <button id="modal-new-series-submit">Create</button>
+                <button class="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-new-entity" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modal-new-entity-title">New Entity</h3>
+            <label>Name:</label>
+            <input type="text" id="modal-new-entity-name">
+            <label>Description:</label>
+            <textarea id="modal-new-entity-desc" rows="3"></textarea>
+            <label>Scope:</label>
+            <select id="modal-new-entity-scope">
+                <option value="book">This Book Only</option>
+                <option value="series">Shared (All Books)</option>
+            </select>
+            <div class="modal-actions">
+                <button id="modal-new-entity-submit">Create</button>
+                <button class="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
