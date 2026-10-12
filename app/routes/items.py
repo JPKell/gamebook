@@ -69,7 +69,13 @@ def create_shared_item(
     session.add(item)
     session.commit()
     session.refresh(item)
-    return {"id": item.id, "name": item.name, "shared": True}
+    return {
+        "id": item.id,
+        "name": item.name,
+        "description": item.description,
+        "effect": item.effect,
+        "shared": True,
+    }
 
 
 @router.get("/books/{book_id}/items", response_model=list[dict])
@@ -120,7 +126,13 @@ def create_book_item(
     session.add(item)
     session.commit()
     session.refresh(item)
-    return {"id": item.id, "name": item.name, "shared": False}
+    return {
+        "id": item.id,
+        "name": item.name,
+        "description": item.description,
+        "effect": item.effect,
+        "shared": False,
+    }
 
 
 @router.put("/items/{item_id}", response_model=dict)

@@ -61,7 +61,7 @@ def create_act(
         .order_by(Act.order.desc())
         .first()
     )
-    order = (max_order[0] or 0) + 1
+    order = ((max_order[0] or 0) + 1) if max_order else 1
 
     act = Act(
         id=str(uuid.uuid4()),

@@ -37,3 +37,6 @@ class Encounter(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     stats: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     recurring: Mapped[bool] = mapped_column(Integer, default=0)
+
+    def __repr__(self) -> str:
+        return f"<Encounter id={self.id} name={self.name!r} recurring={self.recurring}>"

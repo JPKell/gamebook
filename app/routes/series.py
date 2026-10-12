@@ -21,6 +21,10 @@ from sqlalchemy.orm import Session
 
 from app.database import get_session, Base, engine
 from app.models.series import Series
+from app.models.book import Book
+from app.models.location import Location
+from app.models.item import Item
+from app.models.encounter import Encounter
 
 router = APIRouter()
 

@@ -22,6 +22,8 @@ from app.database import get_session
 from app.models.encounter import Encounter
 from app.models.book import Book
 from app.models.series import Series
+import json
+import uuid
 
 router = APIRouter()
 
@@ -59,19 +61,25 @@ def create_shared_encounter(
     if not name:
         raise HTTPException(status_code=400, detail="name is required")
 
-    import uuid
     encounter = Encounter(
         id=str(uuid.uuid4()),
         series_id=series_id,
         name=name,
         description=body.get("description"),
-        stats=body.get("stats"),
+        stats=json.dumps(body.get("stats")) if body.get("stats") else None,
         recurring=bool(body.get("recurring", False)),
     )
     session.add(encounter)
     session.commit()
     session.refresh(encounter)
-    return {"id": encounter.id, "name": encounter.name, "shared": True}
+    return {
+        "id": encounter.id,
+        "name": encounter.name,
+        "shared": True,
+        "seriesId": series_id,
+        "stats": json.loads(encounter.stats) if encounter.stats else None,
+        "recurring": bool(encounter.recurring),
+    }
 
 
 @router.get("/books/{book_id}/encounters", response_model=list[dict])
@@ -111,19 +119,23 @@ def create_book_encounter(
     if not name:
         raise HTTPException(status_code=400, detail="name is required")
 
-    import uuid
     encounter = Encounter(
         id=str(uuid.uuid4()),
         book_id=book_id,
         name=name,
         description=body.get("description"),
-        stats=body.get("stats"),
+        stats=json.dumps(body.get("stats")) if body.get("stats") else None,
         recurring=bool(body.get("recurring", False)),
     )
     session.add(encounter)
     session.commit()
     session.refresh(encounter)
-    return {"id": encounter.id, "name": encounter.name, "shared": False}
+    return {
+        "id": encounter.id,
+        "name": encounter.name,
+        "shared": False,
+        "bookId": book_id,
+    }
 
 
 @router.put("/encounters/{encounter_id}", response_model=dict)

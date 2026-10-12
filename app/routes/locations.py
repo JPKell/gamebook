@@ -65,7 +65,12 @@ def create_shared_location(
     session.add(location)
     session.commit()
     session.refresh(location)
-    return {"id": location.id, "name": location.name, "shared": True}
+    return {
+        "id": location.id,
+        "name": location.name,
+        "description": location.description,
+        "shared": True,
+    }
 
 
 @router.get("/books/{book_id}/locations", response_model=list[dict])
@@ -112,7 +117,12 @@ def create_book_location(
     session.add(location)
     session.commit()
     session.refresh(location)
-    return {"id": location.id, "name": location.name, "shared": False}
+    return {
+        "id": location.id,
+        "name": location.name,
+        "description": location.description,
+        "shared": False,
+    }
 
 
 @router.put("/locations/{location_id}", response_model=dict)

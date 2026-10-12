@@ -221,7 +221,12 @@ async function loadBook(bookId) {
     appState.undoStack = [];
     appState.undoIndex = -1;
     appState.highlightActId = null;
-    renderSidebar();
+    // Re-render sidebar with the current series so the tree stays populated
+    if (appState.series) {
+        renderSidebar([appState.series]);
+    } else {
+        loadSeriesList();
+    }
     renderEntityPanel("shared");
     setStatus(`Loaded book: ${data.title} (${appState.nodes.length} nodes, ${appState.choices.length} choices)`);
     document.getElementById("btn-validate").disabled = false;
