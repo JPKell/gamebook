@@ -1,5 +1,7 @@
 # Gamebook Authoring Tool — Handoff Index
 
+> **v2 rebuild in progress.** See `docs/SPEC.md` and `docs/PLAN.md`. The phases below are the v1 prototype (archived spec/plan in `docs/archive/`).
+
 ## Workflow
 
 Each phase follows this cycle:
@@ -27,4 +29,4 @@ Phase 5 (Polish & Export) is an **ongoing quality bar**, not a one-off phase. Ev
 || 4 | Preview Mode (Reader Experience) | `handoffs/phase-04-preview.md` | ✅ Complete |
 || 5 | Comprehensive Test Suite & Bug Fixes | `handoffs/phase-05-testing.md` | ✅ Complete |
 || 6 | Inference Integration (Bridge) | `handoffs/phase-06-inference.md` | ✅ Complete |
-|| 7+ | See `plan.md` | | |
+|| 7+ | Superseded by v2 — see `docs/PLAN.md` | | |
