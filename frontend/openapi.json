@@ -141,6 +141,322 @@
         "title": "ActUpdate",
         "type": "object"
       },
+      "ActionInput": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "action",
+            "title": "Kind",
+            "type": "string"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "type": {
+            "enum": ["choose", "take", "buy", "sell", "use", "equip", "unequip", "attack", "flee"],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": ["kind", "type"],
+        "title": "ActionInput",
+        "type": "object"
+      },
+      "BatchDetail": {
+        "properties": {
+          "book_id": {
+            "title": "Book Id",
+            "type": "string"
+          },
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "job": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "max_steps": {
+            "title": "Max Steps",
+            "type": "integer"
+          },
+          "n_runs": {
+            "title": "N Runs",
+            "type": "integer"
+          },
+          "names": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Names",
+            "type": "object"
+          },
+          "player": {
+            "additionalProperties": true,
+            "title": "Player",
+            "type": "object"
+          },
+          "seed_base": {
+            "title": "Seed Base",
+            "type": "integer"
+          },
+          "stale": {
+            "default": false,
+            "title": "Stale",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "win_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Win Rate"
+          }
+        },
+        "required": [
+          "id",
+          "book_id",
+          "label",
+          "tier",
+          "player",
+          "n_runs",
+          "seed_base",
+          "max_steps",
+          "content_hash",
+          "status",
+          "duration_s",
+          "created_at",
+          "job_id",
+          "summary",
+          "job",
+          "names"
+        ],
+        "title": "BatchDetail",
+        "type": "object"
+      },
+      "BatchIn": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Label",
+            "type": "string"
+          },
+          "max_steps": {
+            "default": 500,
+            "maximum": 5000.0,
+            "minimum": 10.0,
+            "title": "Max Steps",
+            "type": "integer"
+          },
+          "player": {
+            "$ref": "#/components/schemas/BotPlayer"
+          },
+          "runs": {
+            "default": 1000,
+            "maximum": 20000.0,
+            "minimum": 1.0,
+            "title": "Runs",
+            "type": "integer"
+          },
+          "seed_base": {
+            "default": 1,
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Seed Base",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": ["tier"],
+        "title": "BatchIn",
+        "type": "object"
+      },
+      "BatchOut": {
+        "properties": {
+          "book_id": {
+            "title": "Book Id",
+            "type": "string"
+          },
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "duration_s": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration S"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "max_steps": {
+            "title": "Max Steps",
+            "type": "integer"
+          },
+          "n_runs": {
+            "title": "N Runs",
+            "type": "integer"
+          },
+          "player": {
+            "additionalProperties": true,
+            "title": "Player",
+            "type": "object"
+          },
+          "seed_base": {
+            "title": "Seed Base",
+            "type": "integer"
+          },
+          "stale": {
+            "default": false,
+            "title": "Stale",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "win_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Win Rate"
+          }
+        },
+        "required": [
+          "id",
+          "book_id",
+          "label",
+          "tier",
+          "player",
+          "n_runs",
+          "seed_base",
+          "max_steps",
+          "content_hash",
+          "status",
+          "duration_s",
+          "created_at",
+          "job_id"
+        ],
+        "title": "BatchOut",
+        "type": "object"
+      },
       "BookCreate": {
         "additionalProperties": false,
         "properties": {
@@ -384,6 +700,41 @@
           }
         },
         "title": "BookUpdate",
+        "type": "object"
+      },
+      "BotOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "name": {
+            "enum": ["random", "greedy", "cautious", "explorer", "completionist"],
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": ["name", "description"],
+        "title": "BotOut",
+        "type": "object"
+      },
+      "BotPlayer": {
+        "additionalProperties": false,
+        "properties": {
+          "bot": {
+            "default": "random",
+            "enum": ["random", "greedy", "cautious", "explorer", "completionist"],
+            "title": "Bot",
+            "type": "string"
+          },
+          "kind": {
+            "const": "bot",
+            "default": "bot",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "title": "BotPlayer",
         "type": "object"
       },
       "CharacterCreate": {
@@ -1547,6 +1898,32 @@
         "title": "Context",
         "type": "string"
       },
+      "CoverageIn": {
+        "additionalProperties": false,
+        "properties": {
+          "max_states": {
+            "default": 5000,
+            "maximum": 50000.0,
+            "minimum": 10.0,
+            "title": "Max States",
+            "type": "integer"
+          },
+          "samples": {
+            "default": 4,
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Samples",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": ["tier"],
+        "title": "CoverageIn",
+        "type": "object"
+      },
       "Distribution": {
         "properties": {
           "histogram": {
@@ -2275,6 +2652,26 @@
         },
         "required": ["flag", "set_count", "cleared_count", "tested_count"],
         "title": "FlagUsage",
+        "type": "object"
+      },
+      "ForceInput": {
+        "additionalProperties": false,
+        "description": "Debug: the next dice roll (not a combat round) comes out as ``total``.",
+        "properties": {
+          "kind": {
+            "const": "force",
+            "title": "Kind",
+            "type": "string"
+          },
+          "total": {
+            "maximum": 1000.0,
+            "minimum": -1000.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": ["kind", "total"],
+        "title": "ForceInput",
         "type": "object"
       },
       "GbxCheckIn": {
@@ -3210,6 +3607,119 @@
           }
         },
         "title": "ItemUpdate",
+        "type": "object"
+      },
+      "JobOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "progress": {
+            "title": "Progress",
+            "type": "integer"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "progress",
+          "total",
+          "label",
+          "error",
+          "result",
+          "created_at",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "JobOut",
+        "type": "object"
+      },
+      "JumpInput": {
+        "additionalProperties": false,
+        "description": "Debug: go straight to a node.",
+        "properties": {
+          "kind": {
+            "const": "jump",
+            "title": "Kind",
+            "type": "string"
+          },
+          "node_id": {
+            "title": "Node Id",
+            "type": "string"
+          }
+        },
+        "required": ["kind", "node_id"],
+        "title": "JumpInput",
         "type": "object"
       },
       "LabEnemyIn": {
@@ -4425,6 +4935,21 @@
         "title": "NodeUpdate",
         "type": "object"
       },
+      "Option": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": ["key", "label"],
+        "title": "Option",
+        "type": "object"
+      },
       "OutcomeIn": {
         "additionalProperties": false,
         "properties": {
@@ -4558,6 +5083,494 @@
         },
         "required": ["id", "item_id", "qty"],
         "title": "PlacementOut",
+        "type": "object"
+      },
+      "PlayAction": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": ["type", "target", "label", "enabled", "reason"],
+        "title": "PlayAction",
+        "type": "object"
+      },
+      "PlayCombat": {
+        "properties": {
+          "enemies": {
+            "items": {
+              "$ref": "#/components/schemas/PlayEnemy"
+            },
+            "title": "Enemies",
+            "type": "array"
+          },
+          "flee_allowed": {
+            "title": "Flee Allowed",
+            "type": "boolean"
+          },
+          "round": {
+            "title": "Round",
+            "type": "integer"
+          }
+        },
+        "required": ["round", "flee_allowed", "enemies"],
+        "title": "PlayCombat",
+        "type": "object"
+      },
+      "PlayEnemy": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "stats": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Stats",
+            "type": "object"
+          }
+        },
+        "required": ["key", "name", "level", "stats"],
+        "title": "PlayEnemy",
+        "type": "object"
+      },
+      "PlayEvent": {
+        "properties": {
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "turn": {
+            "title": "Turn",
+            "type": "integer"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": ["type", "text", "turn", "data"],
+        "title": "PlayEvent",
+        "type": "object"
+      },
+      "PlayIn": {
+        "additionalProperties": false,
+        "properties": {
+          "character_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Class"
+          },
+          "fixed_stats": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixed Stats"
+          },
+          "inputs": {
+            "items": {
+              "discriminator": {
+                "mapping": {
+                  "action": "#/components/schemas/ActionInput",
+                  "force": "#/components/schemas/ForceInput",
+                  "jump": "#/components/schemas/JumpInput",
+                  "set": "#/components/schemas/SetInput"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ActionInput"
+                },
+                {
+                  "$ref": "#/components/schemas/JumpInput"
+                },
+                {
+                  "$ref": "#/components/schemas/SetInput"
+                },
+                {
+                  "$ref": "#/components/schemas/ForceInput"
+                }
+              ]
+            },
+            "maxItems": 5000,
+            "title": "Inputs",
+            "type": "array"
+          },
+          "seed": {
+            "default": 1,
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Seed",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": ["tier"],
+        "title": "PlayIn",
+        "type": "object"
+      },
+      "PlayItem": {
+        "properties": {
+          "category": {
+            "title": "Category",
+            "type": "string"
+          },
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "equipped": {
+            "title": "Equipped",
+            "type": "boolean"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slot": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slot"
+          }
+        },
+        "required": ["key", "name", "category", "count", "slot", "equipped"],
+        "title": "PlayItem",
+        "type": "object"
+      },
+      "PlayNode": {
+        "properties": {
+          "act_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Title"
+          },
+          "beat_notes": {
+            "title": "Beat Notes",
+            "type": "string"
+          },
+          "ending_grade": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ending Grade"
+          },
+          "ending_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ending Kind"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "variant_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Label"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "title",
+          "beat_notes",
+          "act_title",
+          "variant_label",
+          "ending_kind",
+          "ending_grade"
+        ],
+        "title": "PlayNode",
+        "type": "object"
+      },
+      "PlayOut": {
+        "properties": {
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/PlayAction"
+            },
+            "title": "Actions",
+            "type": "array"
+          },
+          "applied": {
+            "title": "Applied",
+            "type": "integer"
+          },
+          "character_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character Class"
+          },
+          "classes": {
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            },
+            "title": "Classes",
+            "type": "array"
+          },
+          "combat": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlayCombat"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ended": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/PlayEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "flags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Flags",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlayItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "node": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlayNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/Option"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "stats": {
+            "items": {
+              "$ref": "#/components/schemas/PlayStat"
+            },
+            "title": "Stats",
+            "type": "array"
+          },
+          "steps": {
+            "title": "Steps",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tier",
+          "seed",
+          "applied",
+          "error",
+          "ended",
+          "node",
+          "stats",
+          "character_class",
+          "skills",
+          "items",
+          "flags",
+          "combat",
+          "actions",
+          "events",
+          "classes",
+          "steps"
+        ],
+        "title": "PlayOut",
+        "type": "object"
+      },
+      "PlayStat": {
+        "properties": {
+          "effective": {
+            "title": "Effective",
+            "type": "integer"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "max": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max"
+          },
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          }
+        },
+        "required": ["key", "label", "kind", "value", "effective", "max"],
+        "title": "PlayStat",
         "type": "object"
       },
       "ProblemCounts": {
@@ -4976,6 +5989,105 @@
         "title": "RuleSystemUpdate",
         "type": "object"
       },
+      "RunOut": {
+        "properties": {
+          "death_cause": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Death Cause"
+          },
+          "ending_node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ending Node Id"
+          },
+          "error_sample": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Sample"
+          },
+          "errors": {
+            "title": "Errors",
+            "type": "integer"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "last_node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Node Id"
+          },
+          "outcome": {
+            "title": "Outcome",
+            "type": "string"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "steps": {
+            "title": "Steps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "index",
+          "seed",
+          "outcome",
+          "ending_node_id",
+          "last_node_id",
+          "steps",
+          "death_cause",
+          "errors",
+          "error_sample"
+        ],
+        "title": "RunOut",
+        "type": "object"
+      },
+      "RunPage": {
+        "properties": {
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/RunOut"
+            },
+            "title": "Runs",
+            "type": "array"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": ["total", "runs"],
+        "title": "RunPage",
+        "type": "object"
+      },
       "SeriesCreate": {
         "additionalProperties": false,
         "properties": {
@@ -5192,6 +6304,43 @@
         },
         "required": ["flag"],
         "title": "SetFlag",
+        "type": "object"
+      },
+      "SetInput": {
+        "additionalProperties": false,
+        "description": "Debug: overwrite stats, item counts and codewords.",
+        "properties": {
+          "flags": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "title": "Flags",
+            "type": "object"
+          },
+          "items": {
+            "additionalProperties": {
+              "maximum": 10000.0,
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "title": "Items",
+            "type": "object"
+          },
+          "kind": {
+            "const": "set",
+            "title": "Kind",
+            "type": "string"
+          },
+          "stats": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Stats",
+            "type": "object"
+          }
+        },
+        "required": ["kind"],
+        "title": "SetInput",
         "type": "object"
       },
       "SetStat": {
@@ -6871,6 +8020,263 @@
         "tags": ["books"]
       }
     },
+    "/api/batches/{batch_id}": {
+      "delete": {
+        "operationId": "delete_batch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "title": "Batch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Batch",
+        "tags": ["playtest"]
+      },
+      "get": {
+        "operationId": "get_batch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "title": "Batch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Batch",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/batches/{batch_id}/runs": {
+      "get": {
+        "operationId": "list_runs",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "title": "Batch Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "outcome",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outcome"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Runs",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/batches/{batch_id}/runs/{index}/replay": {
+      "get": {
+        "description": "A stored run replayed on the bundle it was played on (optionally after ``upto`` steps).",
+        "operationId": "replay_run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "title": "Batch Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "title": "Index",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "upto",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Upto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Replay Run",
+        "tags": ["playtest"]
+      }
+    },
     "/api/books/{book_id}": {
       "delete": {
         "operationId": "delete_book",
@@ -7144,6 +8550,179 @@
         "tags": ["books"]
       }
     },
+    "/api/books/{book_id}/batches": {
+      "get": {
+        "operationId": "list_batches",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BatchOut"
+                  },
+                  "title": "Response List Batches",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Batches",
+        "tags": ["playtest"]
+      },
+      "post": {
+        "operationId": "create_batch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Batch",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/books/{book_id}/coverage": {
+      "post": {
+        "description": "Start a coverage walk; the result lands on the job.",
+        "operationId": "start_coverage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CoverageIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Start Coverage",
+        "tags": ["playtest"]
+      }
+    },
     "/api/books/{book_id}/duplicate": {
       "post": {
         "operationId": "duplicate_nodes",
@@ -7415,6 +8994,67 @@
         },
         "summary": "Create Node",
         "tags": ["nodes"]
+      }
+    },
+    "/api/books/{book_id}/play": {
+      "post": {
+        "description": "Replay the reader's inputs from scratch and describe the result.",
+        "operationId": "play_book",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Play Book",
+        "tags": ["playtest"]
       }
     },
     "/api/books/{book_id}/problems": {
@@ -8637,6 +10277,150 @@
         "tags": ["entities"]
       }
     },
+    "/api/jobs/{job_id}": {
+      "get": {
+        "operationId": "get_job",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Job",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/jobs/{job_id}/cancel": {
+      "post": {
+        "operationId": "cancel_job",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Cancel Job",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/jobs/{job_id}/events": {
+      "get": {
+        "description": "Server-sent events: the job (as ``JobOut`` JSON) whenever it changes, until it ends.",
+        "operationId": "job_events",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Job Events",
+        "tags": ["playtest"]
+      }
+    },
     "/api/lore/{entity_id}": {
       "delete": {
         "operationId": "delete_lore_entry",
@@ -9375,6 +11159,39 @@
         },
         "summary": "Reorder Variants",
         "tags": ["nodes"]
+      }
+    },
+    "/api/playtest/bots": {
+      "get": {
+        "operationId": "list_bots",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BotOut"
+                  },
+                  "title": "Response List Bots",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Bots",
+        "tags": ["playtest"]
       }
     },
     "/api/rule-systems/{rule_system_id}": {

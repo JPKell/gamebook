@@ -100,7 +100,7 @@ export const SECTIONS: Section[] = [
     icon: FlaskConical,
     phase: 5,
     summary: 'Play the book yourself, or run bots and LLM players at scale.',
-    upcoming: ['Win/death rates per tier and act', 'Coverage and heat-map overlays'],
+    upcoming: [],
   },
   {
     id: 'export',

@@ -14,6 +14,7 @@ import { EmptyState } from '@/components/ui/empty'
 import { useUiStore } from '@/stores/ui'
 
 import { BookDialog } from './BookDialog'
+import { HeatProvider } from './HeatBar'
 import { CanvasToolbar } from './CanvasToolbar'
 import { autoLayout } from './canvas/autoLayout'
 import { NODE_WIDTH } from './canvas/flow'
@@ -248,9 +249,11 @@ function StoryWorkspace({ graph }: { graph: BookGraph }) {
             onOpenBook={() => setBookOpen(true)}
             busy={undo.isPending || redo.isPending || layingOut}
           />
-          <div className="min-h-0 flex-1">
-            <StoryCanvas graph={graph} problems={problemMap} />
-          </div>
+          <HeatProvider bookId={bookId}>
+            <div className="min-h-0 flex-1">
+              <StoryCanvas graph={graph} problems={problemMap} />
+            </div>
+          </HeatProvider>
         </div>
         <aside
           aria-label="Inspector"

@@ -12,13 +12,15 @@ import {
   LibraryPage,
   MechanicsIndex,
   MechanicsPage,
+  PlaytestIndex,
+  PlaytestPage,
   StoryIndex,
   StoryPage,
 } from './lazyPages'
 import { Page } from './Page'
 import { SECTIONS } from './sections'
 
-const BUILT = new Set(['library', 'story', 'mechanics', 'enemies', 'items'])
+const BUILT = new Set(['library', 'story', 'mechanics', 'enemies', 'items', 'playtest'])
 
 export const routes: RouteObject[] = [
   {
@@ -95,6 +97,22 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <ItemsPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'playtest',
+        element: (
+          <Page>
+            <PlaytestIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'playtest/:bookId',
+        element: (
+          <Page>
+            <PlaytestPage />
           </Page>
         ),
       },

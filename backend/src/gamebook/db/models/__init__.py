@@ -16,6 +16,7 @@ from gamebook.db.models.node import (
     ShopItem,
     TextVariant,
 )
+from gamebook.db.models.playtest import Job, PlaytestBatch, PlaytestRun
 from gamebook.db.models.refs import RefIndex
 from gamebook.db.models.series import RuleSystem, Series
 
@@ -31,10 +32,13 @@ __all__ = [
     "Enemy",
     "HistoryEntry",
     "Item",
+    "Job",
     "LoreEntry",
     "Node",
     "NodeCharacter",
     "NodeItem",
+    "PlaytestBatch",
+    "PlaytestRun",
     "RandomTable",
     "RefIndex",
     "RuleSystem",

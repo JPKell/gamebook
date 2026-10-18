@@ -12,6 +12,7 @@ and action list always produce the same events (see ``trace.py``).
 
 from __future__ import annotations
 
+import copy
 import math
 from collections.abc import Sequence
 from fractions import Fraction
@@ -62,6 +63,8 @@ class Game:
         self.state = GameState(tier=tier)
         self.log: list[Event] = []
         self._pending_errors: list[Event] = []
+        #: Debug: totals the next dice rolls (choices, tests, tables, stats) will produce.
+        self.forced_rolls: list[int] = []
         try:
             self.combat_rules = CombatRules.from_tier(self.tier)
         except gbx.GbxSyntaxError as exc:
@@ -79,6 +82,17 @@ class Game:
         self._enemies = {e.key: e for e in self._enemies_by_id.values()}
         self._tables = {t.id: t for t in book.tables if book.available(t)}
         self._env = GameEnv(self.tiers, tier, self.stat, self._ref)
+
+    def clone(self, seed: int | None = None) -> Game:
+        """An independent copy sharing the (immutable) book; optionally reseeded dice."""
+        g = copy.copy(self)
+        g.state = copy.deepcopy(self.state)
+        g.rng = gbx.SeededRng(seed) if seed is not None else copy.deepcopy(self.rng)
+        g.log = []
+        g._pending_errors = []
+        g.forced_rolls = list(self.forced_rolls)
+        g._env = GameEnv(self.tiers, self.state.tier, g.stat, g._ref)
+        return g
 
     # ── queries ──────────────────────────────────────────────────────────
 
@@ -155,6 +169,15 @@ class Game:
             return False
 
     def _roll(self, src: str, purpose: str) -> int:
+        if self.forced_rolls:
+            total = self.forced_rolls.pop(0)
+            self.log.append(
+                Event(
+                    "roll",
+                    {"purpose": purpose, "expr": src, "faces": [], "total": total, "forced": True},
+                )
+            )
+            return total
         before = len(self.rng.history)
         total = self._int(src, purpose)
         faces = [f for _, _, fs in self.rng.history[before:] for f in fs]
@@ -684,6 +707,64 @@ class Game:
         self._apply(cost, "flee", respect_once=False)
         self._finish_combat("flee")
         self._check_defeat()
+
+    # ── debug (the player's debug drawer; recorded like actions) ─────────
+
+    def debug_jump(self, node_id: str) -> list[Event]:
+        """Leave any fight and enter ``node_id`` as if a choice led there."""
+        node = self._nodes.get(node_id)
+        if node is None:
+            raise GameError(f"Unknown node {node_id!r}")
+        mark = len(self.log)
+        self.state.combat = None
+        self.state.ended = None
+        self.state.ending_node_id = None
+        self.log.append(Event("debug", {"op": "jump", "node": node_id}))
+        self._enter(node)
+        return self.log[mark:]
+
+    def debug_set(
+        self,
+        *,
+        stats: dict[str, int] | None = None,
+        items: dict[str, int] | None = None,
+        flags: dict[str, bool] | None = None,
+    ) -> list[Event]:
+        """Overwrite stats (clamped to their min/max), item counts and flags."""
+        unknown = [k for k in stats or {} if k not in self.tier.stats]
+        unknown += [k for k in items or {} if k not in self._items]
+        if unknown:
+            raise GameError(f"Unknown stat or item: {', '.join(sorted(unknown))}")
+        mark = len(self.log)
+        for key, value in (stats or {}).items():
+            self._set_stat(key, value)
+        for key, count in (items or {}).items():
+            if count <= 0:
+                self._take(key, self.state.items.get(key, 0))
+            else:
+                cap = self._items[key].max_stack
+                self.state.items[key] = min(count, cap) if cap is not None else count
+        for flag, on in (flags or {}).items():
+            if on:
+                self.state.flags.add(flag)
+            else:
+                self.state.flags.discard(flag)
+        self.log.append(
+            Event(
+                "debug",
+                {"op": "set", "stats": stats or {}, "items": items or {}, "flags": flags or {}},
+            )
+        )
+        if self.state.combat is None and not self.state.ended:
+            self._check_defeat()
+        return self.log[mark:]
+
+    def force_roll(self, total: int) -> list[Event]:
+        """Make the next dice roll (not combat rounds) come out as ``total``."""
+        self.forced_rolls.append(total)
+        event = Event("debug", {"op": "force", "total": total})
+        self.log.append(event)
+        return [event]
 
     # ── items ────────────────────────────────────────────────────────────
 

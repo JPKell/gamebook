@@ -46,6 +46,11 @@ class Settings(BaseSettings):
     log_level: LogLevel = "INFO"
     log_json: bool = Field(default=False, description="Emit JSON log lines instead of text.")
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
+    sim_processes: int = Field(
+        default=0,
+        ge=0,
+        description="Worker processes for bot batches; 0 = one per CPU core, 1 = in-process.",
+    )
     frontend_dist: Path | None = Field(
         default=None, description="Built frontend to serve at '/'. Unset in development."
     )

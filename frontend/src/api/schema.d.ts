@@ -22,6 +22,61 @@ export interface paths {
     patch: operations['update_act']
     trace?: never
   }
+  '/api/batches/{batch_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Batch */
+    get: operations['get_batch']
+    put?: never
+    post?: never
+    /** Delete Batch */
+    delete: operations['delete_batch']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/batches/{batch_id}/runs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Runs */
+    get: operations['list_runs']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/batches/{batch_id}/runs/{index}/replay': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Replay Run
+     * @description A stored run replayed on the bundle it was played on (optionally after ``upto`` steps).
+     */
+    get: operations['replay_run']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}': {
     parameters: {
       query?: never
@@ -69,6 +124,44 @@ export interface paths {
     /** Reorder Acts */
     put: operations['reorder_acts']
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/batches': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Batches */
+    get: operations['list_batches']
+    put?: never
+    /** Create Batch */
+    post: operations['create_batch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/coverage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Start Coverage
+     * @description Start a coverage walk; the result lands on the job.
+     */
+    post: operations['start_coverage']
     delete?: never
     options?: never
     head?: never
@@ -154,6 +247,26 @@ export interface paths {
     put?: never
     /** Create Node */
     post: operations['create_node']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/play': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Play Book
+     * @description Replay the reader's inputs from scratch and describe the result.
+     */
+    post: operations['play_book']
     delete?: never
     options?: never
     head?: never
@@ -436,6 +549,60 @@ export interface paths {
     patch: operations['update_item']
     trace?: never
   }
+  '/api/jobs/{job_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Job */
+    get: operations['get_job']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/jobs/{job_id}/cancel': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Cancel Job */
+    post: operations['cancel_job']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/jobs/{job_id}/events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Job Events
+     * @description Server-sent events: the job (as ``JobOut`` JSON) whenever it changes, until it ends.
+     */
+    get: operations['job_events']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/lore/{entity_id}': {
     parameters: {
       query?: never
@@ -586,6 +753,23 @@ export interface paths {
     get?: never
     /** Reorder Variants */
     put: operations['reorder_variants']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/playtest/bots': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Bots */
+    get: operations['list_bots']
+    put?: never
     post?: never
     delete?: never
     options?: never
@@ -1066,6 +1250,140 @@ export interface components {
       /** Title */
       title?: string | null
     }
+    /** ActionInput */
+    ActionInput: {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      kind: 'action'
+      /** Target */
+      target?: string | null
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
+    }
+    /** BatchDetail */
+    BatchDetail: {
+      /** Book Id */
+      book_id: string
+      /** Content Hash */
+      content_hash: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Duration S */
+      duration_s: number | null
+      /** Id */
+      id: string
+      job: components['schemas']['JobOut'] | null
+      /** Job Id */
+      job_id: string | null
+      /** Label */
+      label: string
+      /** Max Steps */
+      max_steps: number
+      /** N Runs */
+      n_runs: number
+      /** Names */
+      names: {
+        [key: string]: {
+          [key: string]: string
+        }
+      }
+      /** Player */
+      player: {
+        [key: string]: unknown
+      }
+      /** Seed Base */
+      seed_base: number
+      /**
+       * Stale
+       * @default false
+       */
+      stale?: boolean
+      /** Status */
+      status: string
+      /** Summary */
+      summary: {
+        [key: string]: unknown
+      } | null
+      /** Tier */
+      tier: string
+      /** Win Rate */
+      win_rate?: number | null
+    }
+    /** BatchIn */
+    BatchIn: {
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /**
+       * Max Steps
+       * @default 500
+       */
+      max_steps?: number
+      player?: components['schemas']['BotPlayer']
+      /**
+       * Runs
+       * @default 1000
+       */
+      runs?: number
+      /**
+       * Seed Base
+       * @default 1
+       */
+      seed_base?: number
+      /** Tier */
+      tier: string
+    }
+    /** BatchOut */
+    BatchOut: {
+      /** Book Id */
+      book_id: string
+      /** Content Hash */
+      content_hash: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Duration S */
+      duration_s: number | null
+      /** Id */
+      id: string
+      /** Job Id */
+      job_id: string | null
+      /** Label */
+      label: string
+      /** Max Steps */
+      max_steps: number
+      /** N Runs */
+      n_runs: number
+      /** Player */
+      player: {
+        [key: string]: unknown
+      }
+      /** Seed Base */
+      seed_base: number
+      /**
+       * Stale
+       * @default false
+       */
+      stale?: boolean
+      /** Status */
+      status: string
+      /** Tier */
+      tier: string
+      /** Win Rate */
+      win_rate?: number | null
+    }
     /** BookCreate */
     BookCreate: {
       /** Key */
@@ -1143,6 +1461,31 @@ export interface components {
       synopsis?: string | null
       /** Title */
       title?: string | null
+    }
+    /** BotOut */
+    BotOut: {
+      /** Description */
+      description: string
+      /**
+       * Name
+       * @enum {string}
+       */
+      name: 'random' | 'greedy' | 'cautious' | 'explorer' | 'completionist'
+    }
+    /** BotPlayer */
+    BotPlayer: {
+      /**
+       * Bot
+       * @default random
+       * @enum {string}
+       */
+      bot?: 'random' | 'greedy' | 'cautious' | 'explorer' | 'completionist'
+      /**
+       * Kind
+       * @default bot
+       * @constant
+       */
+      kind?: 'bot'
     }
     /** CharacterCreate */
     CharacterCreate: {
@@ -1481,6 +1824,21 @@ export interface components {
       | 'stat_initial'
       | 'combat_attack'
       | 'combat_damage'
+    /** CoverageIn */
+    CoverageIn: {
+      /**
+       * Max States
+       * @default 5000
+       */
+      max_states?: number
+      /**
+       * Samples
+       * @default 4
+       */
+      samples?: number
+      /** Tier */
+      tier: string
+    }
     /** Distribution */
     Distribution: {
       /** Histogram */
@@ -1738,6 +2096,19 @@ export interface components {
       set_count: number
       /** Tested Count */
       tested_count: number
+    }
+    /**
+     * ForceInput
+     * @description Debug: the next dice roll (not a combat round) comes out as ``total``.
+     */
+    ForceInput: {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      kind: 'force'
+      /** Total */
+      total: number
     }
     /** GbxCheckIn */
     GbxCheckIn: {
@@ -2006,6 +2377,49 @@ export interface components {
       uses?: number | null
       /** Value */
       value?: number | null
+    }
+    /** JobOut */
+    JobOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Error */
+      error: string | null
+      /** Finished At */
+      finished_at: string | null
+      /** Id */
+      id: string
+      /** Kind */
+      kind: string
+      /** Label */
+      label: string
+      /** Progress */
+      progress: number
+      /** Result */
+      result: {
+        [key: string]: unknown
+      } | null
+      /** Started At */
+      started_at: string | null
+      /** Status */
+      status: string
+      /** Total */
+      total: number
+    }
+    /**
+     * JumpInput
+     * @description Debug: go straight to a node.
+     */
+    JumpInput: {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      kind: 'jump'
+      /** Node Id */
+      node_id: string
     }
     /**
      * LabEnemyIn
@@ -2406,6 +2820,13 @@ export interface components {
       /** Y */
       y?: number | null
     }
+    /** Option */
+    Option: {
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+    }
     /** OutcomeIn */
     OutcomeIn: {
       /**
@@ -2453,6 +2874,159 @@ export interface components {
       item_id: string
       /** Qty */
       qty: number
+    }
+    /** PlayAction */
+    PlayAction: {
+      /** Enabled */
+      enabled: boolean
+      /** Label */
+      label: string
+      /** Reason */
+      reason: string | null
+      /** Target */
+      target: string | null
+      /** Type */
+      type: string
+    }
+    /** PlayCombat */
+    PlayCombat: {
+      /** Enemies */
+      enemies: components['schemas']['PlayEnemy'][]
+      /** Flee Allowed */
+      flee_allowed: boolean
+      /** Round */
+      round: number
+    }
+    /** PlayEnemy */
+    PlayEnemy: {
+      /** Key */
+      key: string
+      /** Level */
+      level: number
+      /** Name */
+      name: string
+      /** Stats */
+      stats: {
+        [key: string]: number
+      }
+    }
+    /** PlayEvent */
+    PlayEvent: {
+      /** Data */
+      data: {
+        [key: string]: unknown
+      }
+      /** Text */
+      text: string | null
+      /** Turn */
+      turn: number
+      /** Type */
+      type: string
+    }
+    /** PlayIn */
+    PlayIn: {
+      /** Character Class */
+      character_class?: string | null
+      /** Fixed Stats */
+      fixed_stats?: {
+        [key: string]: number
+      } | null
+      /** Inputs */
+      inputs?: (
+        | components['schemas']['ActionInput']
+        | components['schemas']['JumpInput']
+        | components['schemas']['SetInput']
+        | components['schemas']['ForceInput']
+      )[]
+      /**
+       * Seed
+       * @default 1
+       */
+      seed?: number
+      /** Tier */
+      tier: string
+    }
+    /** PlayItem */
+    PlayItem: {
+      /** Category */
+      category: string
+      /** Count */
+      count: number
+      /** Equipped */
+      equipped: boolean
+      /** Key */
+      key: string
+      /** Name */
+      name: string
+      /** Slot */
+      slot: string | null
+    }
+    /** PlayNode */
+    PlayNode: {
+      /** Act Title */
+      act_title: string | null
+      /** Beat Notes */
+      beat_notes: string
+      /** Ending Grade */
+      ending_grade: string | null
+      /** Ending Kind */
+      ending_kind: string | null
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Title */
+      title: string
+      /** Variant Label */
+      variant_label: string | null
+    }
+    /** PlayOut */
+    PlayOut: {
+      /** Actions */
+      actions: components['schemas']['PlayAction'][]
+      /** Applied */
+      applied: number
+      /** Character Class */
+      character_class: string | null
+      /** Classes */
+      classes: components['schemas']['Option'][]
+      combat: components['schemas']['PlayCombat'] | null
+      /** Ended */
+      ended: string | null
+      /** Error */
+      error: string | null
+      /** Events */
+      events: components['schemas']['PlayEvent'][]
+      /** Flags */
+      flags: string[]
+      /** Items */
+      items: components['schemas']['PlayItem'][]
+      node: components['schemas']['PlayNode'] | null
+      /** Seed */
+      seed: number
+      /** Skills */
+      skills: components['schemas']['Option'][]
+      /** Stats */
+      stats: components['schemas']['PlayStat'][]
+      /** Steps */
+      steps: number
+      /** Tier */
+      tier: string
+    }
+    /** PlayStat */
+    PlayStat: {
+      /** Effective */
+      effective: number
+      /** Key */
+      key: string
+      /** Kind */
+      kind: string
+      /** Label */
+      label: string
+      /** Max */
+      max: number | null
+      /** Value */
+      value: number
     }
     /** ProblemCounts */
     ProblemCounts: {
@@ -2586,6 +3160,34 @@ export interface components {
       /** Name */
       name?: string | null
     }
+    /** RunOut */
+    RunOut: {
+      /** Death Cause */
+      death_cause: string | null
+      /** Ending Node Id */
+      ending_node_id: string | null
+      /** Error Sample */
+      error_sample: string | null
+      /** Errors */
+      errors: number
+      /** Index */
+      index: number
+      /** Last Node Id */
+      last_node_id: string | null
+      /** Outcome */
+      outcome: string
+      /** Seed */
+      seed: number
+      /** Steps */
+      steps: number
+    }
+    /** RunPage */
+    RunPage: {
+      /** Runs */
+      runs: components['schemas']['RunOut'][]
+      /** Total */
+      total: number
+    }
     /** SeriesCreate */
     SeriesCreate: {
       /**
@@ -2664,6 +3266,29 @@ export interface components {
       op: 'set_flag'
       /** Print Text */
       print_text?: string | null
+    }
+    /**
+     * SetInput
+     * @description Debug: overwrite stats, item counts and codewords.
+     */
+    SetInput: {
+      /** Flags */
+      flags?: {
+        [key: string]: boolean
+      }
+      /** Items */
+      items?: {
+        [key: string]: number
+      }
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      kind: 'set'
+      /** Stats */
+      stats?: {
+        [key: string]: number
+      }
     }
     /** SetStat */
     SetStat: {
@@ -3378,6 +4003,171 @@ export interface operations {
       }
     }
   }
+  get_batch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BatchDetail']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_batch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_runs: {
+    parameters: {
+      query?: {
+        outcome?: string | null
+        offset?: number
+        limit?: number
+      }
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RunPage']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  replay_run: {
+    parameters: {
+      query?: {
+        upto?: number | null
+      }
+      header?: never
+      path: {
+        batch_id: string
+        index: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_book: {
     parameters: {
       query?: never
@@ -3588,6 +4378,134 @@ export interface operations {
       }
     }
   }
+  list_batches: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BatchOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_batch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BatchIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  start_coverage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CoverageIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   duplicate_nodes: {
     parameters: {
       query?: never
@@ -3776,6 +4694,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  play_book: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlayIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlayOut']
         }
       }
       /** @description Validation Error */
@@ -4761,6 +5723,124 @@ export interface operations {
       }
     }
   }
+  get_job: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        job_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  cancel_job: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        job_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  job_events: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        job_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_lore_entry: {
     parameters: {
       query?: never
@@ -5302,6 +6382,35 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_bots: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BotOut'][]
         }
       }
       /** @description Internal Server Error */

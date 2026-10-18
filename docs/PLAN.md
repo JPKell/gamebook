@@ -96,7 +96,7 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 **Demo:** enemy page shows L1–10 stats for each tier and every node using it; item page
 shows correct total quantity across nodes, tables and shops.
 
-## Phase 5 — In-app player & bot simulation
+## Phase 5 — In-app player & bot simulation ✅ (2026-10-18, see `docs/handoffs/v2-phase-05-playtest.md`)
 
 - Player view: tier select, character creation, prose/beat-notes fallback, rendered
   mechanics blocks, adventure sheet, dice log, back/restart. **Debug drawer**: jump to node,

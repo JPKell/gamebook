@@ -28,3 +28,9 @@ export const ItemsIndex = lazy(() =>
 export const ItemsPage = lazy(() =>
   import('@/features/entities/pages').then((m) => ({ default: m.ItemsPage })),
 )
+export const PlaytestIndex = lazy(() =>
+  import('@/features/playtest/PlaytestPage').then((m) => ({ default: m.PlaytestIndex })),
+)
+export const PlaytestPage = lazy(() =>
+  import('@/features/playtest/PlaytestPage').then((m) => ({ default: m.PlaytestPage })),
+)

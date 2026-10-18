@@ -20,6 +20,7 @@ from gamebook.api.routers import (
     history,
     mechanics,
     nodes,
+    playtest,
     series,
     tools,
 )
@@ -27,6 +28,8 @@ from gamebook.config import Settings, get_settings
 from gamebook.db import migrate
 from gamebook.db.session import Database
 from gamebook.logging_setup import configure_logging
+from gamebook.services import playtest as playtest_svc
+from gamebook.services import simpool
 
 log = logging.getLogger(__name__)
 
@@ -49,10 +52,16 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         if settings.auto_migrate and database is None:
             migrate.upgrade(settings.database_url)
         app.state.db = database or Database(settings.database_url)
+        app.state.jobs = playtest_svc.Runner(app.state.db)
+        if recovered := app.state.jobs.recover():
+            playtest_svc.recover(app.state.db)
+            log.warning("Marked %d interrupted job(s) as failed", recovered)
         log.info("Gamebook Studio started", extra={"version": __version__})
         try:
             yield
         finally:
+            app.state.jobs.shutdown()
+            simpool.shutdown()
             if database is None:
                 app.state.db.dispose()
 
@@ -70,7 +79,7 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         allow_headers=["*"],
     )
     install_error_handlers(app)
-    for module in (health, series, books, nodes, entities, history, mechanics, tools):
+    for module in (health, series, books, nodes, entities, history, mechanics, playtest, tools):
         app.include_router(module.router, prefix=API_PREFIX)
 
     if settings.frontend_dist is not None:

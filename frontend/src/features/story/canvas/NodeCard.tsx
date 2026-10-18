@@ -19,6 +19,8 @@ import { memo, type ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
+import { useHeat } from '../heat'
+
 import type { StoryFlowNode } from './flow'
 
 const ENDING: Record<string, { icon: typeof Trophy; label: string; className: string }> = {
@@ -36,6 +38,40 @@ function Badge({ icon, label, count }: { icon: ReactNode; label: string; count?:
       )}
       <span className="sr-only">{label}</span>
     </span>
+  )
+}
+
+/** Playtest overlay: share of runs that visited this node, and deaths here. */
+function HeatStrip({ id }: { id: string }) {
+  const heat = useHeat()
+  if (!heat) return null
+  const visits = heat.visits[id] ?? 0
+  const deaths = heat.deaths[id] ?? 0
+  const share = heat.runs ? visits / heat.runs : 0
+  return (
+    <div
+      className="flex items-center gap-2 border-t border-border px-2.5 py-1 text-[11px] tabular-nums"
+      title={`${visits} of ${heat.runs} runs visited · ${deaths} died here`}
+    >
+      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+        <span
+          className="block h-full rounded-full"
+          style={{ width: `${share * 100}%`, background: 'var(--series-1)' }}
+        />
+      </span>
+      {visits === 0 ? (
+        <span className="font-medium text-warning">never visited</span>
+      ) : (
+        <span className="text-muted">{Math.round(share * 100)}%</span>
+      )}
+      {deaths > 0 && (
+        <span className="flex items-center gap-0.5 text-danger">
+          <Skull className="size-3" aria-hidden />
+          {deaths}
+          <span className="sr-only">deaths</span>
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -124,6 +160,7 @@ function NodeCardImpl({ data, selected }: NodeProps<StoryFlowNode>) {
           <Badge icon={<Layers />} label="Text variants" count={node.variants.length} />
         )}
       </div>
+      <HeatStrip id={node.id} />
       <Handle
         type="source"
         position={Position.Right}

@@ -299,15 +299,34 @@ satisfiable), and the author (shown in the node inspector).
 
 ### 2.10 Playtests
 
-- `PlaytestBatch {book, rule_system_version, tier, player_config, n_runs, seed_base,
-  content_hash, status, cost}` — `player_config` is a bot (`random | greedy | cautious |
-  explorer | completionist`) or LLM (`provider, model, persona, temperature`).
-- `PlaytestRun {seed, outcome: ending node/kind | max_steps | error, steps, final_state,
-  death_cause}`.
-- `PlaytestStep {node, variant shown, action, rolls[], state_delta, llm_reasoning?,
-  llm_confusion?: {flag, note}}`.
-- **Coverage walker**: exhaustive (bounded) enumeration of choice paths, ignoring dice
-  outcomes as nondeterministic branches → reachable nodes/endings, unreachable content.
+- `PlaytestBatch {book, tier, player, n_runs, seed_base, max_steps, content_hash,
+  bundle, status, summary, duration}`:
+  - `player` is a bot (`random | greedy | cautious | explorer | completionist`). LLM
+    players (`provider, model, persona, temperature`) arrive in Phase 8.
+  - `bundle` is the exact game bundle played, so runs replay after edits; `content_hash`
+    is its SHA-256 (ADR 0008).
+- `PlaytestRun {index, seed, outcome: ending kind | max_steps | error, ending node, last
+  node, steps, picks[], death_cause, errors}`:
+  - `picks` are indices into the available actions at each step, so a run replays
+    exactly.
+  - `death_cause` is `combat:<enemy>`, `node` (an authored death) or `stat`.
+- **Per-step data is reconstructed by replay, not stored.** LLM runs (Phase 8) will
+  add stored reasoning and confusion notes per step.
+- **Batch summary:** outcomes, win rate, endings, step percentiles, visits and deaths
+  per node, act funnel, per-enemy fights/losses/deaths, per-item win-rate lift, coverage
+  (nodes, endings, choices), and error samples.
+- **Coverage walker:** a bounded BFS over game states.
+  - Every choice, pickup, purchase and equip is tried from every distinct situation.
+  - Steps that drew dice are re-run with several seeds, and fights are resolved as one
+    move.
+  - States are deduplicated on what conditions see (node, items, equipment, codewords,
+    skills, class, fired once-only effects, visit counts of nodes that conditions
+    mention, capped at 4, and the open fight), plus money up to the highest shop price.
+  - The result is the set of reachable nodes and endings. It may miss content gated on
+    exact stat values.
+- **In-app player:** stateless (ADR 0008). The client posts `{tier, seed, class, inputs}`
+  and the server replays them. Debug inputs (jump, set state, force the next roll) are
+  recorded like moves.
 
 ### 2.10a Engine (Phase 3)
 
