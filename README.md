@@ -16,14 +16,21 @@ lore, LLM-assisted prose, bot and LLM playtesting, and print/EPUB/digital output
 
 ```bash
 make install     # uv sync + npm ci
-make dev         # API on :8000 (auto-reload) + UI on http://localhost:5173
+make dev         # API on :8789 (auto-reload) + UI on http://localhost:5173
 ```
 
 The database is created and migrated automatically in `backend/data/gamebook.db`
 on first start. Copy `backend/config.example.yaml` to `backend/config.yaml` to change
 settings, or use `GAMEBOOK_*` environment variables.
 
-`make serve` builds the UI and serves everything from the API on http://localhost:8000.
+`make serve` builds the UI and serves everything from the API on http://localhost:8788.
+
+### Running as a service
+
+`deploy/gamebook.service` is a systemd user unit serving the built app on
+**:8788** (all interfaces). `make install-service` installs it; `make deploy`
+rebuilds the UI and restarts it. It runs whatever is checked out, and shares
+`backend/data/` with `make dev` (which uses :8789 so both can run).
 
 ## Development
 
@@ -51,6 +58,16 @@ frontend/src/
   api/       generated OpenAPI client
 ```
 
-`gamebook --help` lists backend CLI commands (`serve`, `db upgrade`, `db revision`, `openapi`).
+`gamebook --help` lists backend CLI commands:
+
+| Command | |
+|---|---|
+| `gamebook serve [--reload] [--port N]` | Run the API (default :8788) |
+| `gamebook export <series-key> <dir>` | Write a series as a git-friendly YAML/Markdown tree |
+| `gamebook import <dir> [--replace]` | Load a series from such a tree |
+| `gamebook db upgrade/downgrade/revision` | Migrations (applied automatically on start) |
+| `gamebook openapi -o file` | Dump the OpenAPI schema |
+
+The API is browsable at http://localhost:8788/docs.
 
 The v1 prototype is preserved at the `v1-prototype` git tag.

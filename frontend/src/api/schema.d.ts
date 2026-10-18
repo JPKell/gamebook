@@ -4,6 +4,362 @@
  */
 
 export interface paths {
+  '/api/acts/{act_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Act */
+    delete: operations['delete_act']
+    options?: never
+    head?: never
+    /** Update Act */
+    patch: operations['update_act']
+    trace?: never
+  }
+  '/api/books/{book_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Book */
+    get: operations['get_book']
+    put?: never
+    post?: never
+    /** Delete Book */
+    delete: operations['delete_book']
+    options?: never
+    head?: never
+    /** Update Book */
+    patch: operations['update_book']
+    trace?: never
+  }
+  '/api/books/{book_id}/acts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Act */
+    post: operations['create_act']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/acts/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Reorder Acts */
+    put: operations['reorder_acts']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/duplicate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Duplicate Nodes */
+    post: operations['duplicate_nodes']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/graph': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Book Graph */
+    get: operations['get_book_graph']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get History */
+    get: operations['get_history']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/layout': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Save Layout */
+    put: operations['save_layout']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/nodes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Node */
+    post: operations['create_node']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/problems': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Book Problems */
+    get: operations['get_book_problems']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/redo': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Redo */
+    post: operations['redo']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/undo': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Undo */
+    post: operations['undo']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/characters/{entity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Character */
+    get: operations['get_character']
+    put?: never
+    post?: never
+    /** Delete Character */
+    delete: operations['delete_character']
+    options?: never
+    head?: never
+    /** Update Character */
+    patch: operations['update_character']
+    trace?: never
+  }
+  '/api/checkpoints': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Checkpoints */
+    get: operations['list_checkpoints']
+    put?: never
+    /** Create Checkpoint */
+    post: operations['create_checkpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/checkpoints/{checkpoint_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Checkpoint */
+    delete: operations['delete_checkpoint']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/checkpoints/{checkpoint_id}/restore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Restore Checkpoint
+     * @description Restore the whole database. Returns the safety checkpoint taken first.
+     */
+    post: operations['restore_checkpoint']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/choices/{choice_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Choice */
+    delete: operations['delete_choice']
+    options?: never
+    head?: never
+    /** Update Choice */
+    patch: operations['update_choice']
+    trace?: never
+  }
+  '/api/encounters/{encounter_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Update Encounter */
+    put: operations['update_encounter']
+    post?: never
+    /** Delete Encounter */
+    delete: operations['delete_encounter']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/enemies/{entity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Enemy */
+    get: operations['get_enemy']
+    put?: never
+    post?: never
+    /** Delete Enemy */
+    delete: operations['delete_enemy']
+    options?: never
+    head?: never
+    /** Update Enemy */
+    patch: operations['update_enemy']
+    trace?: never
+  }
+  '/api/gbx/check': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Check Gbx
+     * @description Check an expression in context; returns diagnostics, English and odds.
+     */
+    post: operations['check_gbx']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/health': {
     parameters: {
       query?: never
@@ -21,16 +377,1259 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/import': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Import Series
+     * @description Import a series from an export zip (request body is the zip file).
+     */
+    post: operations['import_series']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/items/{entity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Item */
+    get: operations['get_item']
+    put?: never
+    post?: never
+    /** Delete Item */
+    delete: operations['delete_item']
+    options?: never
+    head?: never
+    /** Update Item */
+    patch: operations['update_item']
+    trace?: never
+  }
+  '/api/lore/{entity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Lore Entry */
+    get: operations['get_lore_entry']
+    put?: never
+    post?: never
+    /** Delete Lore Entry */
+    delete: operations['delete_lore_entry']
+    options?: never
+    head?: never
+    /** Update Lore Entry */
+    patch: operations['update_lore_entry']
+    trace?: never
+  }
+  '/api/nodes/{node_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Node */
+    get: operations['get_node']
+    put?: never
+    post?: never
+    /** Delete Node */
+    delete: operations['delete_node']
+    options?: never
+    head?: never
+    /** Update Node */
+    patch: operations['update_node']
+    trace?: never
+  }
+  '/api/nodes/{node_id}/choices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Choice */
+    post: operations['create_choice']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/choices/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Reorder Choices */
+    put: operations['reorder_choices']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/encounters': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Encounter */
+    post: operations['create_encounter']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Node Items */
+    put: operations['set_node_items']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/shop': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Set Node Shop */
+    put: operations['set_node_shop']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/variants': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Variant */
+    post: operations['create_variant']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/variants/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Reorder Variants */
+    put: operations['reorder_variants']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/rule-systems/{rule_system_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Rule System */
+    get: operations['get_rule_system']
+    put?: never
+    post?: never
+    /** Delete Rule System */
+    delete: operations['delete_rule_system']
+    options?: never
+    head?: never
+    /** Update Rule System */
+    patch: operations['update_rule_system']
+    trace?: never
+  }
+  '/api/series': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Series */
+    get: operations['list_series']
+    put?: never
+    /** Create Series */
+    post: operations['create_series']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Series */
+    get: operations['get_series']
+    put?: never
+    post?: never
+    /** Delete Series */
+    delete: operations['delete_series']
+    options?: never
+    head?: never
+    /** Update Series */
+    patch: operations['update_series']
+    trace?: never
+  }
+  '/api/series/{series_id}/books': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Books */
+    get: operations['list_books']
+    put?: never
+    /** Create Book */
+    post: operations['create_book']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/characters': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Characters */
+    get: operations['list_characters']
+    put?: never
+    /** Create Character */
+    post: operations['create_character']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/enemies': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Enemies */
+    get: operations['list_enemies']
+    put?: never
+    /** Create Enemy */
+    post: operations['create_enemy']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/export.zip': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Export Series
+     * @description Download the series as a git-friendly tree of YAML/Markdown files.
+     */
+    get: operations['export_series']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/flags': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Flags */
+    get: operations['list_flags']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/flags/rename': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Rename Flag */
+    post: operations['rename_flag']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/items': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Items */
+    get: operations['list_items']
+    put?: never
+    /** Create Item */
+    post: operations['create_item']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/lore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Lore */
+    get: operations['list_lore']
+    put?: never
+    /** Create Lore Entry */
+    post: operations['create_lore_entry']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/reindex': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Reindex Series
+     * @description Rebuild the reference index from scratch (maintenance).
+     */
+    post: operations['reindex_series']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/rule-systems': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Rule Systems */
+    get: operations['list_rule_systems']
+    put?: never
+    /** Create Rule System */
+    post: operations['create_rule_system']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/tables': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Tables */
+    get: operations['list_tables']
+    put?: never
+    /** Create Table */
+    post: operations['create_table']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/where-used': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Where Used */
+    get: operations['where_used']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/tables/{entity_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Table */
+    get: operations['get_table']
+    put?: never
+    post?: never
+    /** Delete Table */
+    delete: operations['delete_table']
+    options?: never
+    head?: never
+    /** Update Table */
+    patch: operations['update_table']
+    trace?: never
+  }
+  '/api/variants/{variant_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Variant */
+    delete: operations['delete_variant']
+    options?: never
+    head?: never
+    /** Update Variant */
+    patch: operations['update_variant']
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** ActCreate */
+    ActCreate: {
+      /** Color */
+      color?: string | null
+      /** Key */
+      key?: string | null
+      /**
+       * Summary
+       * @default
+       */
+      summary?: string
+      /** Title */
+      title: string
+    }
+    /** ActOut */
+    ActOut: {
+      /** Book Id */
+      book_id: string
+      /** Color */
+      color: string | null
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Position */
+      position: number
+      /** Summary */
+      summary: string
+      /** Title */
+      title: string
+    }
+    /** ActUpdate */
+    ActUpdate: {
+      /** Color */
+      color?: string | null
+      /** Key */
+      key?: string | null
+      /** Summary */
+      summary?: string | null
+      /** Title */
+      title?: string | null
+    }
+    /** BookCreate */
+    BookCreate: {
+      /** Key */
+      key?: string | null
+      /** Number */
+      number?: number | null
+      /**
+       * Synopsis
+       * @default
+       */
+      synopsis?: string
+      /** Title */
+      title: string
+    }
+    /**
+     * BookGraph
+     * @description Everything the story canvas needs in one response.
+     */
+    BookGraph: {
+      /** Acts */
+      acts: components['schemas']['ActOut'][]
+      book: components['schemas']['BookOut']
+      /** Nodes */
+      nodes: components['schemas']['NodeOut'][]
+    }
+    /** BookOut */
+    BookOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Number */
+      number: number | null
+      /** Series Id */
+      series_id: string
+      /** Start Node Id */
+      start_node_id: string | null
+      style_overrides: components['schemas']['StyleOverrides']
+      /** Synopsis */
+      synopsis: string
+      /** Title */
+      title: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** BookSummary */
+    BookSummary: {
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Number */
+      number: number | null
+      /** Title */
+      title: string
+    }
+    /** BookUpdate */
+    BookUpdate: {
+      /** Key */
+      key?: string | null
+      /** Number */
+      number?: number | null
+      /** Start Node Id */
+      start_node_id?: string | null
+      style_overrides?: components['schemas']['StyleOverrides'] | null
+      /** Synopsis */
+      synopsis?: string | null
+      /** Title */
+      title?: string | null
+    }
+    /** CharacterCreate */
+    CharacterCreate: {
+      /** Appearance */
+      appearance?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Key */
+      key?: string | null
+      /** Motivations */
+      motivations?: string | null
+      /** Name */
+      name: string
+      /** Notes */
+      notes?: string | null
+      /** Relationships */
+      relationships?: components['schemas']['Relationship'][] | null
+      /** Role */
+      role?: string | null
+      /** Secrets */
+      secrets?: string | null
+      /** Voice */
+      voice?: string | null
+    }
+    /** CharacterOut */
+    CharacterOut: {
+      /** Appearance */
+      appearance: string
+      /** Book Id */
+      book_id: string | null
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Motivations */
+      motivations: string
+      /** Name */
+      name: string
+      /** Notes */
+      notes: string
+      /** Relationships */
+      relationships: components['schemas']['Relationship'][]
+      /** Role */
+      role: string
+      /** Secrets */
+      secrets: string
+      /** Series Id */
+      series_id: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+      /** Voice */
+      voice: string
+    }
+    /** CharacterUpdate */
+    CharacterUpdate: {
+      /** Appearance */
+      appearance?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Key */
+      key?: string | null
+      /** Motivations */
+      motivations?: string | null
+      /** Name */
+      name?: string | null
+      /** Notes */
+      notes?: string | null
+      /** Relationships */
+      relationships?: components['schemas']['Relationship'][] | null
+      /** Role */
+      role?: string | null
+      /** Secrets */
+      secrets?: string | null
+      /** Voice */
+      voice?: string | null
+    }
+    /** CheckpointIn */
+    CheckpointIn: {
+      /** Name */
+      name: string
+    }
+    /** CheckpointOut */
+    CheckpointOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Id */
+      id: string
+      /** Name */
+      name: string
+      /** Size */
+      size: number
+    }
+    /** ChoiceCreate */
+    ChoiceCreate: {
+      /** Condition */
+      condition?: string | null
+      /** Dice */
+      dice?: string | null
+      /** Effects */
+      effects?: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /** Encounter Id */
+      encounter_id?: string | null
+      /**
+       * Flee Allowed
+       * @default false
+       */
+      flee_allowed?: boolean
+      /**
+       * Kind
+       * @default goto
+       * @enum {string}
+       */
+      kind?: 'goto' | 'roll' | 'test' | 'combat'
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Outcomes */
+      outcomes?: components['schemas']['OutcomeIn'][] | null
+      /** Print Text */
+      print_text?: string | null
+      /** Target Node Id */
+      target_node_id?: string | null
+      /** Test */
+      test?: string | null
+      /**
+       * Unmet Display
+       * @default hide
+       * @enum {string}
+       */
+      unmet_display?: 'hide' | 'show_disabled'
+    }
+    /** ChoiceOut */
+    ChoiceOut: {
+      /** Condition */
+      condition: string | null
+      /** Dice */
+      dice: string | null
+      /** Effects */
+      effects: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /** Encounter Id */
+      encounter_id: string | null
+      /** Flee Allowed */
+      flee_allowed: boolean
+      /** Id */
+      id: string
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'goto' | 'roll' | 'test' | 'combat'
+      /** Label */
+      label: string
+      /** Min Tier */
+      min_tier: string | null
+      /** Node Id */
+      node_id: string
+      /** Outcomes */
+      outcomes: components['schemas']['OutcomeOut'][]
+      /** Position */
+      position: number
+      /** Print Text */
+      print_text: string | null
+      /** Test */
+      test: string | null
+      /**
+       * Unmet Display
+       * @enum {string}
+       */
+      unmet_display: 'hide' | 'show_disabled'
+    }
+    /** ChoiceUpdate */
+    ChoiceUpdate: {
+      /** Condition */
+      condition?: string | null
+      /** Dice */
+      dice?: string | null
+      /** Effects */
+      effects?:
+        | (
+            | components['schemas']['ModifyStat']
+            | components['schemas']['SetStat']
+            | components['schemas']['GiveItem']
+            | components['schemas']['TakeItem']
+            | components['schemas']['EquipItem']
+            | components['schemas']['SetFlag']
+            | components['schemas']['ClearFlag']
+            | components['schemas']['LearnSkill']
+          )[]
+        | null
+      /** Encounter Id */
+      encounter_id?: string | null
+      /** Flee Allowed */
+      flee_allowed?: boolean | null
+      /** Kind */
+      kind?: ('goto' | 'roll' | 'test' | 'combat') | null
+      /** Label */
+      label?: string | null
+      /** Min Tier */
+      min_tier?: string | null
+      /** Outcomes */
+      outcomes?: components['schemas']['OutcomeIn'][] | null
+      /** Print Text */
+      print_text?: string | null
+      /** Target Node Id */
+      target_node_id?: string | null
+      /** Test */
+      test?: string | null
+      /** Unmet Display */
+      unmet_display?: ('hide' | 'show_disabled') | null
+    }
+    /** ClassDef */
+    ClassDef: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Skills */
+      skills?: string[]
+    }
+    /** ClearFlag */
+    ClearFlag: {
+      /** Flag */
+      flag: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'clear_flag'
+      /** Print Text */
+      print_text?: string | null
+    }
+    /**
+     * CombatDef
+     * @description Combat is a fixed procedure with expression hooks (SPEC §2.4).
+     *
+     *     Each round both sides roll attack strength; the higher one deals ``damage``
+     *     to the other's ``damage_stat``, passed through ``damage_hooks`` in order.
+     *     Fields left None inherit from the parent tier; hooks accumulate.
+     */
+    CombatDef: {
+      /** Damage */
+      damage?: string | null
+      /** Damage Hooks */
+      damage_hooks?: string[]
+      /** Damage Stat */
+      damage_stat?: string | null
+      /** Enemy Attack */
+      enemy_attack?: string | null
+      /** Flee Allowed */
+      flee_allowed?: boolean | null
+      /** Flee Cost */
+      flee_cost?:
+        | (
+            | components['schemas']['ModifyStat']
+            | components['schemas']['SetStat']
+            | components['schemas']['GiveItem']
+            | components['schemas']['TakeItem']
+            | components['schemas']['EquipItem']
+            | components['schemas']['SetFlag']
+            | components['schemas']['ClearFlag']
+            | components['schemas']['LearnSkill']
+          )[]
+        | null
+      /** Multi Enemy */
+      multi_enemy?: ('sequential' | 'simultaneous') | null
+      /** Player Attack */
+      player_attack?: string | null
+    }
+    /**
+     * Context
+     * @description Standard authoring contexts. ``scope_for`` builds a Scope for each.
+     * @enum {string}
+     */
+    Context:
+      | 'condition'
+      | 'amount'
+      | 'roll'
+      | 'test_roll'
+      | 'test_success'
+      | 'enemy_formula'
+      | 'stat_initial'
+      | 'combat_attack'
+      | 'combat_damage'
+    /** DuplicateRequest */
+    DuplicateRequest: {
+      /** Node Ids */
+      node_ids: string[]
+      /**
+       * Offset X
+       * @default 40
+       */
+      offset_x?: number
+      /**
+       * Offset Y
+       * @default 40
+       */
+      offset_y?: number
+    }
+    /** DuplicateResult */
+    DuplicateResult: {
+      /** Mapping */
+      mapping: {
+        [key: string]: string
+      }
+    }
+    /** EncounterEnemyIn */
+    EncounterEnemyIn: {
+      /**
+       * Count
+       * @default 1
+       */
+      count?: number
+      /** Enemy Id */
+      enemy_id: string
+      /**
+       * Level
+       * @default 1
+       */
+      level?: number
+    }
+    /** EncounterEnemyOut */
+    EncounterEnemyOut: {
+      /** Count */
+      count: number
+      /** Enemy Id */
+      enemy_id: string
+      /** Id */
+      id: string
+      /** Level */
+      level: number
+    }
+    /** EncounterIn */
+    EncounterIn: {
+      /** Enemies */
+      enemies?: components['schemas']['EncounterEnemyIn'][]
+      /**
+       * Fight
+       * @default sequential
+       * @enum {string}
+       */
+      fight?: 'sequential' | 'simultaneous'
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /**
+       * Mode
+       * @default fixed
+       * @enum {string}
+       */
+      mode?: 'fixed' | 'table'
+      /** Table Id */
+      table_id?: string | null
+    }
+    /** EncounterOut */
+    EncounterOut: {
+      /** Enemies */
+      enemies: components['schemas']['EncounterEnemyOut'][]
+      /**
+       * Fight
+       * @enum {string}
+       */
+      fight: 'sequential' | 'simultaneous'
+      /** Id */
+      id: string
+      /** Label */
+      label: string
+      /**
+       * Mode
+       * @enum {string}
+       */
+      mode: 'fixed' | 'table'
+      /** Position */
+      position: number
+      /** Table Id */
+      table_id: string | null
+    }
+    /** EnemyAbility */
+    EnemyAbility: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Name */
+      name: string
+    }
+    /** EnemyCreate */
+    EnemyCreate: {
+      /** Abilities */
+      abilities?: components['schemas']['EnemyAbility'][] | null
+      /** Book Id */
+      book_id?: string | null
+      /** Default Level */
+      default_level?: number | null
+      /** Description */
+      description?: string | null
+      /** Key */
+      key?: string | null
+      /** Loot */
+      loot?: components['schemas']['LootEntry'][] | null
+      /** Lore Entry Id */
+      lore_entry_id?: string | null
+      /** Name */
+      name: string
+      /** Stat Formulas */
+      stat_formulas?: {
+        [key: string]: string
+      } | null
+      /** Tags */
+      tags?: string[] | null
+    }
+    /** EnemyOut */
+    EnemyOut: {
+      /** Abilities */
+      abilities: components['schemas']['EnemyAbility'][]
+      /** Book Id */
+      book_id: string | null
+      /** Default Level */
+      default_level: number
+      /** Description */
+      description: string
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Loot */
+      loot: components['schemas']['LootEntry'][]
+      /** Lore Entry Id */
+      lore_entry_id: string | null
+      /** Name */
+      name: string
+      /** Series Id */
+      series_id: string
+      /** Stat Formulas */
+      stat_formulas: {
+        [key: string]: string
+      }
+      /** Tags */
+      tags: string[]
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** EnemyUpdate */
+    EnemyUpdate: {
+      /** Abilities */
+      abilities?: components['schemas']['EnemyAbility'][] | null
+      /** Book Id */
+      book_id?: string | null
+      /** Default Level */
+      default_level?: number | null
+      /** Description */
+      description?: string | null
+      /** Key */
+      key?: string | null
+      /** Loot */
+      loot?: components['schemas']['LootEntry'][] | null
+      /** Lore Entry Id */
+      lore_entry_id?: string | null
+      /** Name */
+      name?: string | null
+      /** Stat Formulas */
+      stat_formulas?: {
+        [key: string]: string
+      } | null
+      /** Tags */
+      tags?: string[] | null
+    }
+    /** EquipItem */
+    EquipItem: {
+      /** Item */
+      item: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'equip'
+      /** Print Text */
+      print_text?: string | null
+    }
     /** ErrorResponse */
     ErrorResponse: {
       /** Code */
       code: string
       /** Detail */
       detail: string
+      /** Details */
+      details?: {
+        [key: string]: unknown
+      } | null
+    }
+    /** FlagRename */
+    FlagRename: {
+      /** New */
+      new: string
+      /** Old */
+      old: string
+    }
+    /** FlagUsage */
+    FlagUsage: {
+      /** Cleared Count */
+      cleared_count: number
+      /** Flag */
+      flag: string
+      /** Set Count */
+      set_count: number
+      /** Tested Count */
+      tested_count: number
+    }
+    /** GbxCheckIn */
+    GbxCheckIn: {
+      /** Book Id */
+      book_id?: string | null
+      context: components['schemas']['Context']
+      /** Series Id */
+      series_id?: string | null
+      /** Source */
+      source: string
+      /** Tier */
+      tier?: string | null
+    }
+    /** GbxCheckOut */
+    GbxCheckOut: {
+      /** Diagnostics */
+      diagnostics: components['schemas']['GbxDiagnosticOut'][]
+      /** Distribution */
+      distribution?: {
+        [key: string]: number
+      } | null
+      /** English */
+      english?: string | null
+      /** Normalized */
+      normalized?: string | null
+      /** Ok */
+      ok: boolean
+      /** Range */
+      range?: [number, number] | null
+    }
+    /** GbxDiagnosticOut */
+    GbxDiagnosticOut: {
+      /** Code */
+      code: string
+      /** End */
+      end: number
+      /** Message */
+      message: string
+      /**
+       * Severity
+       * @enum {string}
+       */
+      severity: 'error' | 'warning' | 'info'
+      /** Start */
+      start: number
+    }
+    /** GiveItem */
+    GiveItem: {
+      /** Item */
+      item: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'give'
+      /** Print Text */
+      print_text?: string | null
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components['schemas']['ValidationError'][]
     }
     /** HealthResponse */
     HealthResponse: {
@@ -47,6 +1646,1114 @@ export interface components {
       /** Version */
       version: string
     }
+    /** HistoryOut */
+    HistoryOut: {
+      /** Can Redo */
+      can_redo: boolean
+      /** Can Undo */
+      can_undo: boolean
+      /** Depth */
+      depth: number
+      /** Redo Label */
+      redo_label: string | null
+      /** Undo Label */
+      undo_label: string | null
+    }
+    /** HistoryStep */
+    HistoryStep: {
+      /** Applied */
+      applied: string
+      /** Can Redo */
+      can_redo: boolean
+      /** Can Undo */
+      can_undo: boolean
+      /** Depth */
+      depth: number
+      /** Redo Label */
+      redo_label: string | null
+      /** Undo Label */
+      undo_label: string | null
+    }
+    /** ItemCreate */
+    ItemCreate: {
+      /** Book Id */
+      book_id?: string | null
+      /** Category */
+      category?: ('equipment' | 'consumable' | 'key' | 'treasure') | null
+      /** Description */
+      description?: string | null
+      /** Key */
+      key?: string | null
+      /** Max Stack */
+      max_stack?: number | null
+      /** Modifiers */
+      modifiers?: components['schemas']['ItemModifier'][] | null
+      /** Name */
+      name: string
+      /** Slot */
+      slot?: string | null
+      /** Stackable */
+      stackable?: boolean | null
+      /** Use Effects */
+      use_effects?:
+        | (
+            | components['schemas']['ModifyStat']
+            | components['schemas']['SetStat']
+            | components['schemas']['GiveItem']
+            | components['schemas']['TakeItem']
+            | components['schemas']['EquipItem']
+            | components['schemas']['SetFlag']
+            | components['schemas']['ClearFlag']
+            | components['schemas']['LearnSkill']
+          )[]
+        | null
+      /** Uses */
+      uses?: number | null
+      /** Value */
+      value?: number | null
+    }
+    /** ItemModifier */
+    ItemModifier: {
+      /** Amount */
+      amount: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Stat */
+      stat: string
+    }
+    /** ItemOut */
+    ItemOut: {
+      /** Book Id */
+      book_id: string | null
+      /**
+       * Category
+       * @enum {string}
+       */
+      category: 'equipment' | 'consumable' | 'key' | 'treasure'
+      /** Description */
+      description: string
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Max Stack */
+      max_stack: number | null
+      /** Modifiers */
+      modifiers: components['schemas']['ItemModifier'][]
+      /** Name */
+      name: string
+      /** Series Id */
+      series_id: string
+      /** Slot */
+      slot: string | null
+      /** Stackable */
+      stackable: boolean
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+      /** Use Effects */
+      use_effects: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /** Uses */
+      uses: number | null
+      /** Value */
+      value: number
+    }
+    /** ItemUpdate */
+    ItemUpdate: {
+      /** Book Id */
+      book_id?: string | null
+      /** Category */
+      category?: ('equipment' | 'consumable' | 'key' | 'treasure') | null
+      /** Description */
+      description?: string | null
+      /** Key */
+      key?: string | null
+      /** Max Stack */
+      max_stack?: number | null
+      /** Modifiers */
+      modifiers?: components['schemas']['ItemModifier'][] | null
+      /** Name */
+      name?: string | null
+      /** Slot */
+      slot?: string | null
+      /** Stackable */
+      stackable?: boolean | null
+      /** Use Effects */
+      use_effects?:
+        | (
+            | components['schemas']['ModifyStat']
+            | components['schemas']['SetStat']
+            | components['schemas']['GiveItem']
+            | components['schemas']['TakeItem']
+            | components['schemas']['EquipItem']
+            | components['schemas']['SetFlag']
+            | components['schemas']['ClearFlag']
+            | components['schemas']['LearnSkill']
+          )[]
+        | null
+      /** Uses */
+      uses?: number | null
+      /** Value */
+      value?: number | null
+    }
+    /** LayoutUpdate */
+    LayoutUpdate: {
+      /** Positions */
+      positions: components['schemas']['NodePosition'][]
+    }
+    /** LearnSkill */
+    LearnSkill: {
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'learn'
+      /** Print Text */
+      print_text?: string | null
+      /** Skill */
+      skill: string
+    }
+    /**
+     * LinkFrom
+     * @description Create a goto choice on ``node_id`` pointing at the new node.
+     */
+    LinkFrom: {
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /** Node Id */
+      node_id: string
+    }
+    /** LootEntry */
+    LootEntry: {
+      /** Item */
+      item: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** LoreCreate */
+    LoreCreate: {
+      /** Body */
+      body?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Fields */
+      fields?: {
+        [key: string]: string
+      } | null
+      /** Key */
+      key?: string | null
+      /** Name */
+      name: string
+      /** Type */
+      type?: ('location' | 'faction' | 'history' | 'glossary' | 'other') | null
+    }
+    /** LoreOut */
+    LoreOut: {
+      /** Body */
+      body: string
+      /** Book Id */
+      book_id: string | null
+      /** Fields */
+      fields: {
+        [key: string]: string
+      }
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Name */
+      name: string
+      /** Series Id */
+      series_id: string
+      /**
+       * Type
+       * @enum {string}
+       */
+      type: 'location' | 'faction' | 'history' | 'glossary' | 'other'
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** LoreUpdate */
+    LoreUpdate: {
+      /** Body */
+      body?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Fields */
+      fields?: {
+        [key: string]: string
+      } | null
+      /** Key */
+      key?: string | null
+      /** Name */
+      name?: string | null
+      /** Type */
+      type?: ('location' | 'faction' | 'history' | 'glossary' | 'other') | null
+    }
+    /** ModifyStat */
+    ModifyStat: {
+      /**
+       * Amount
+       * @description gbx number, e.g. '-2' or '1d6'
+       */
+      amount: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'modify'
+      /** Print Text */
+      print_text?: string | null
+      /** Stat */
+      stat: string
+    }
+    /** NodeCreate */
+    NodeCreate: {
+      /** Act Id */
+      act_id: string
+      /**
+       * Beat Notes
+       * @default
+       */
+      beat_notes?: string
+      /** Key */
+      key?: string | null
+      link_from?: components['schemas']['LinkFrom'] | null
+      /**
+       * Title
+       * @default Untitled
+       */
+      title?: string
+      /**
+       * X
+       * @default 0
+       */
+      x?: number
+      /**
+       * Y
+       * @default 0
+       */
+      y?: number
+    }
+    /** NodeOut */
+    NodeOut: {
+      /** Act Id */
+      act_id: string
+      /** Beat Notes */
+      beat_notes: string
+      /** Book Id */
+      book_id: string
+      /** Canonical Predecessor Id */
+      canonical_predecessor_id: string | null
+      /** Character Ids */
+      character_ids: string[]
+      /** Choices */
+      choices: components['schemas']['ChoiceOut'][]
+      /** Collapsed */
+      collapsed: boolean
+      /** Encounters */
+      encounters: components['schemas']['EncounterOut'][]
+      /** Ending Grade */
+      ending_grade: ('good' | 'neutral' | 'bad' | 'secret') | null
+      /** Ending Kind */
+      ending_kind: ('victory' | 'death' | 'dead_end') | null
+      /** Ending Label */
+      ending_label: string
+      /** Id */
+      id: string
+      /** Is Act Entry */
+      is_act_entry: boolean
+      /** Is Act Exit */
+      is_act_exit: boolean
+      /** Is Shop */
+      is_shop: boolean
+      /** Items */
+      items: components['schemas']['PlacementOut'][]
+      /** Key */
+      key: string
+      /** Location Id */
+      location_id: string | null
+      /** On Enter */
+      on_enter: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /** Section Pin */
+      section_pin: number | null
+      /** Shop Items */
+      shop_items: components['schemas']['ShopItemOut'][]
+      /** Shop Sell Rate */
+      shop_sell_rate: number | null
+      /** Style Override */
+      style_override: {
+        [key: string]: unknown
+      }
+      /** Summary */
+      summary: string
+      /** Title */
+      title: string
+      /** Variants */
+      variants: components['schemas']['VariantOut'][]
+      /** X */
+      x: number
+      /** Y */
+      y: number
+    }
+    /** NodePosition */
+    NodePosition: {
+      /** Id */
+      id: string
+      /** X */
+      x: number
+      /** Y */
+      y: number
+    }
+    /** NodeUpdate */
+    NodeUpdate: {
+      /** Act Id */
+      act_id?: string | null
+      /** Beat Notes */
+      beat_notes?: string | null
+      /** Canonical Predecessor Id */
+      canonical_predecessor_id?: string | null
+      /** Character Ids */
+      character_ids?: string[] | null
+      /** Collapsed */
+      collapsed?: boolean | null
+      /** Ending Grade */
+      ending_grade?: ('good' | 'neutral' | 'bad' | 'secret') | null
+      /** Ending Kind */
+      ending_kind?: ('victory' | 'death' | 'dead_end') | null
+      /** Ending Label */
+      ending_label?: string | null
+      /** Is Act Entry */
+      is_act_entry?: boolean | null
+      /** Is Act Exit */
+      is_act_exit?: boolean | null
+      /** Key */
+      key?: string | null
+      /** Location Id */
+      location_id?: string | null
+      /** On Enter */
+      on_enter?:
+        | (
+            | components['schemas']['ModifyStat']
+            | components['schemas']['SetStat']
+            | components['schemas']['GiveItem']
+            | components['schemas']['TakeItem']
+            | components['schemas']['EquipItem']
+            | components['schemas']['SetFlag']
+            | components['schemas']['ClearFlag']
+            | components['schemas']['LearnSkill']
+          )[]
+        | null
+      /** Section Pin */
+      section_pin?: number | null
+      /** Style Override */
+      style_override?: {
+        [key: string]: unknown
+      } | null
+      /** Summary */
+      summary?: string | null
+      /** Title */
+      title?: string | null
+      /** X */
+      x?: number | null
+      /** Y */
+      y?: number | null
+    }
+    /** OutcomeIn */
+    OutcomeIn: {
+      /**
+       * Key
+       * @default default
+       */
+      key?: string
+      /** Range Hi */
+      range_hi?: number | null
+      /** Range Lo */
+      range_lo?: number | null
+      /** Target Node Id */
+      target_node_id?: string | null
+    }
+    /** OutcomeOut */
+    OutcomeOut: {
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Position */
+      position: number
+      /** Range Hi */
+      range_hi: number | null
+      /** Range Lo */
+      range_lo: number | null
+      /** Target Node Id */
+      target_node_id: string | null
+    }
+    /** PlacementIn */
+    PlacementIn: {
+      /** Item Id */
+      item_id: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** PlacementOut */
+    PlacementOut: {
+      /** Id */
+      id: string
+      /** Item Id */
+      item_id: string
+      /** Qty */
+      qty: number
+    }
+    /** ProblemCounts */
+    ProblemCounts: {
+      /** Errors */
+      errors: number
+      /** Info */
+      info: number
+      /** Warnings */
+      warnings: number
+    }
+    /** ProblemOut */
+    ProblemOut: {
+      /** Act Id */
+      act_id: string | null
+      /** Choice Id */
+      choice_id: string | null
+      /** Code */
+      code: string
+      /** Entity Id */
+      entity_id: string | null
+      /** Entity Type */
+      entity_type: string | null
+      /** Field */
+      field: string | null
+      /** Message */
+      message: string
+      /** Node Id */
+      node_id: string | null
+      /**
+       * Severity
+       * @enum {string}
+       */
+      severity: 'error' | 'warning' | 'info'
+    }
+    /** ProblemsOut */
+    ProblemsOut: {
+      counts: components['schemas']['ProblemCounts']
+      /** Problems */
+      problems: components['schemas']['ProblemOut'][]
+    }
+    /** RefOut */
+    RefOut: {
+      /** Book Id */
+      book_id: string | null
+      /** Field */
+      field: string
+      /** Node Id */
+      node_id: string | null
+      /** Node Title */
+      node_title?: string | null
+      /** Qty */
+      qty: number | null
+      /** Role */
+      role: string
+      /** Source Id */
+      source_id: string
+      /** Source Type */
+      source_type: string
+    }
+    /** Relationship */
+    Relationship: {
+      /** Character */
+      character: string
+      /** Kind */
+      kind: string
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
+    }
+    /** RenameResult */
+    RenameResult: {
+      /** Changed */
+      changed: number
+    }
+    /** Reorder */
+    Reorder: {
+      /** Ids */
+      ids: string[]
+    }
+    /** RuleSystemCreate */
+    RuleSystemCreate: {
+      /** @description Omit to start from the default template */
+      definition?: components['schemas']['RuleSystemDef'] | null
+      /**
+       * Is Active
+       * @default false
+       */
+      is_active?: boolean
+      /** Key */
+      key?: string | null
+      /** Name */
+      name: string
+    }
+    /** RuleSystemDef */
+    RuleSystemDef: {
+      /** Tiers */
+      tiers: components['schemas']['TierDef'][]
+    }
+    /** RuleSystemOut */
+    RuleSystemOut: {
+      definition: components['schemas']['RuleSystemDef']
+      /** Id */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Key */
+      key: string
+      /** Name */
+      name: string
+      /** Series Id */
+      series_id: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** RuleSystemUpdate */
+    RuleSystemUpdate: {
+      definition?: components['schemas']['RuleSystemDef'] | null
+      /** Is Active */
+      is_active?: boolean | null
+      /** Key */
+      key?: string | null
+      /** Name */
+      name?: string | null
+    }
+    /** SeriesCreate */
+    SeriesCreate: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Key */
+      key?: string | null
+      style?: components['schemas']['StyleGuide']
+      /** Title */
+      title: string
+    }
+    /** SeriesOut */
+    SeriesOut: {
+      /** Books */
+      books: components['schemas']['BookSummary'][]
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Description */
+      description: string
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      style: components['schemas']['StyleGuide']
+      /** Title */
+      title: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** SeriesSummary */
+    SeriesSummary: {
+      /** Description */
+      description: string
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Title */
+      title: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** SeriesUpdate */
+    SeriesUpdate: {
+      /** Description */
+      description?: string | null
+      /** Key */
+      key?: string | null
+      style?: components['schemas']['StyleGuide'] | null
+      /** Title */
+      title?: string | null
+    }
+    /** SetFlag */
+    SetFlag: {
+      /** Flag */
+      flag: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'set_flag'
+      /** Print Text */
+      print_text?: string | null
+    }
+    /** SetStat */
+    SetStat: {
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'set'
+      /** Print Text */
+      print_text?: string | null
+      /** Stat */
+      stat: string
+      /**
+       * Value
+       * @description gbx number
+       */
+      value: string
+    }
+    /** ShopIn */
+    ShopIn: {
+      /**
+       * Is Shop
+       * @default true
+       */
+      is_shop?: boolean
+      /** Items */
+      items?: components['schemas']['ShopItemIn'][]
+      /**
+       * Sell Rate
+       * @description % of value paid when selling
+       */
+      sell_rate?: number | null
+    }
+    /** ShopItemIn */
+    ShopItemIn: {
+      /** Item Id */
+      item_id: string
+      /**
+       * Price
+       * @default 0
+       */
+      price?: number
+      /** Stock */
+      stock?: number | null
+    }
+    /** ShopItemOut */
+    ShopItemOut: {
+      /** Id */
+      id: string
+      /** Item Id */
+      item_id: string
+      /** Price */
+      price: number
+      /** Stock */
+      stock: number | null
+    }
+    /** SkillDef */
+    SkillDef: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+    }
+    /** StatDef */
+    StatDef: {
+      /** Applies To */
+      applies_to?: ('player' | 'enemy')[]
+      /** Defeat At */
+      defeat_at?: number | null
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /**
+       * Initial
+       * @default 0
+       */
+      initial?: string
+      /** Key */
+      key: string
+      /**
+       * Kind
+       * @default stat
+       * @enum {string}
+       */
+      kind?: 'stat' | 'resource'
+      /** Label */
+      label: string
+      /** Max */
+      max?: number | null
+      /**
+       * Max Is Initial
+       * @default false
+       */
+      max_is_initial?: boolean
+      /**
+       * Min
+       * @default 0
+       */
+      min?: number | null
+    }
+    /**
+     * StyleGuide
+     * @description How prose should read. The LLM writer always receives it (Phase 7).
+     */
+    StyleGuide: {
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
+      /**
+       * Pov
+       * @default second
+       * @enum {string}
+       */
+      pov?: 'second' | 'first' | 'third'
+      /**
+       * Tense
+       * @default present
+       * @enum {string}
+       */
+      tense?: 'present' | 'past'
+      /**
+       * Voice
+       * @default
+       */
+      voice?: string
+      /**
+       * Word Max
+       * @default 400
+       */
+      word_max?: number
+      /**
+       * Word Min
+       * @default 150
+       */
+      word_min?: number
+    }
+    /** StyleOverrides */
+    StyleOverrides: {
+      /** Notes */
+      notes?: string | null
+      /** Pov */
+      pov?: ('second' | 'first' | 'third') | null
+      /** Tense */
+      tense?: ('present' | 'past') | null
+      /** Voice */
+      voice?: string | null
+      /** Word Max */
+      word_max?: number | null
+      /** Word Min */
+      word_min?: number | null
+    }
+    /** TableCreate */
+    TableCreate: {
+      /** Book Id */
+      book_id?: string | null
+      /** Description */
+      description?: string | null
+      /** Dice */
+      dice?: string | null
+      /** Entries */
+      entries?: components['schemas']['TableEntryIn'][] | null
+      /** Key */
+      key?: string | null
+      /** Name */
+      name: string
+    }
+    /** TableEnemy */
+    TableEnemy: {
+      /**
+       * Count
+       * @default 1
+       */
+      count?: number
+      /** Enemy */
+      enemy: string
+      /**
+       * Level
+       * @default 1
+       */
+      level?: number
+    }
+    /** TableEntryIn */
+    TableEntryIn: {
+      /** Amount */
+      amount?: string | null
+      /** Enemies */
+      enemies?: components['schemas']['TableEnemy'][]
+      /** Hi */
+      hi: number
+      /** Item */
+      item?: string | null
+      /**
+       * Kind
+       * @default nothing
+       * @enum {string}
+       */
+      kind?: 'enemies' | 'item' | 'gold' | 'nothing'
+      /** Lo */
+      lo: number
+      /**
+       * Note
+       * @default
+       */
+      note?: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** TableOut */
+    TableOut: {
+      /** Book Id */
+      book_id: string | null
+      /** Description */
+      description: string
+      /** Dice */
+      dice: string
+      /** Entries */
+      entries: components['schemas']['TableEntryIn'][]
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Name */
+      name: string
+      /** Series Id */
+      series_id: string
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
+    /** TableUpdate */
+    TableUpdate: {
+      /** Book Id */
+      book_id?: string | null
+      /** Description */
+      description?: string | null
+      /** Dice */
+      dice?: string | null
+      /** Entries */
+      entries?: components['schemas']['TableEntryIn'][] | null
+      /** Key */
+      key?: string | null
+      /** Name */
+      name?: string | null
+    }
+    /** TakeItem */
+    TakeItem: {
+      /** Item */
+      item: string
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'take'
+      /** Print Text */
+      print_text?: string | null
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** TestDef */
+    TestDef: {
+      /** After */
+      after?: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /**
+       * Roll
+       * @default 2d6
+       */
+      roll?: string
+      /** Success */
+      success: string
+    }
+    /** TierDef */
+    TierDef: {
+      /** Classes */
+      classes?: components['schemas']['ClassDef'][]
+      combat?: components['schemas']['CombatDef']
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Parent */
+      parent?: string | null
+      /**
+       * Rules Text
+       * @default
+       */
+      rules_text?: string
+      /** Skills */
+      skills?: components['schemas']['SkillDef'][]
+      /** Slots */
+      slots?: string[]
+      /** Stats */
+      stats?: components['schemas']['StatDef'][]
+      /** Tests */
+      tests?: components['schemas']['TestDef'][]
+    }
+    /** ValidationError */
+    ValidationError: {
+      /** Context */
+      ctx?: Record<string, never>
+      /** Input */
+      input?: unknown
+      /** Location */
+      loc: (string | number)[]
+      /** Message */
+      msg: string
+      /** Error Type */
+      type: string
+    }
+    /** VariantIn */
+    VariantIn: {
+      /** Condition */
+      condition?: string | null
+      /**
+       * Label
+       * @default Default
+       */
+      label?: string
+      /**
+       * Priority
+       * @default 0
+       */
+      priority?: number
+    }
+    /** VariantOut */
+    VariantOut: {
+      /** Condition */
+      condition: string | null
+      /** Id */
+      id: string
+      /** Label */
+      label: string
+      /** Position */
+      position: number
+      /** Priority */
+      priority: number
+    }
+    /** VariantUpdate */
+    VariantUpdate: {
+      /** Condition */
+      condition?: string | null
+      /** Label */
+      label?: string | null
+      /** Priority */
+      priority?: number | null
+    }
+    /** WhereUsed */
+    WhereUsed: {
+      /** Refs */
+      refs: components['schemas']['RefOut'][]
+      /** Target Key */
+      target_key: string
+      /** Target Type */
+      target_type: string
+      /** Total Qty */
+      total_qty?: number | null
+    }
   }
   responses: never
   parameters: never
@@ -56,6 +2763,1233 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  delete_act: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_act: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ActUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_book: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_book: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_book: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BookUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_act: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ActCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_acts: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ActOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  duplicate_nodes: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DuplicateRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['DuplicateResult']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_book_graph: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookGraph']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_history: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoryOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  save_layout: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LayoutUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_node: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NodeCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_book_problems: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProblemsOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  redo: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoryStep']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  undo: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HistoryStep']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_character: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CharacterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_character: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_character: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CharacterUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CharacterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_checkpoints: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CheckpointOut'][]
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_checkpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CheckpointIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CheckpointOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_checkpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        checkpoint_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  restore_checkpoint: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        checkpoint_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CheckpointOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_choice: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        choice_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_choice: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        choice_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChoiceUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_encounter: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        encounter_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EncounterIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EncounterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_encounter: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        encounter_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_enemy: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EnemyOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_enemy: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_enemy: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EnemyUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EnemyOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  check_gbx: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GbxCheckIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GbxCheckOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_health: {
     parameters: {
       query?: never
@@ -72,6 +4006,2068 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HealthResponse']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  import_series: {
+    parameters: {
+      query?: {
+        replace?: boolean
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/zip': string
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SeriesOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_item: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_item: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_item: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ItemUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_lore_entry: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LoreOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_lore_entry: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_lore_entry: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LoreUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LoreOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_node: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_node: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_node: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['NodeUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_choice: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChoiceCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChoiceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_choices: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChoiceOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_encounter: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EncounterIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EncounterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  set_node_items: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlacementIn'][]
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  set_node_shop: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ShopIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_variant: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VariantIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VariantOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_variants: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VariantOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_rule_system: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_system_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RuleSystemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_rule_system: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_system_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_rule_system: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_system_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RuleSystemUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RuleSystemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SeriesSummary'][]
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SeriesCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SeriesOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SeriesOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SeriesUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SeriesOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_books: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookSummary'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_book: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BookCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_characters: {
+    parameters: {
+      query?: {
+        /** @description Only entities usable in this book */
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CharacterOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_character: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CharacterCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CharacterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_enemies: {
+    parameters: {
+      query?: {
+        /** @description Only entities usable in this book */
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EnemyOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_enemy: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EnemyCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EnemyOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  export_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/zip': unknown
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_flags: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FlagUsage'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  rename_flag: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FlagRename']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RenameResult']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_items: {
+    parameters: {
+      query?: {
+        /** @description Only entities usable in this book */
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_item: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ItemCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_lore: {
+    parameters: {
+      query?: {
+        /** @description Only entities usable in this book */
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LoreOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_lore_entry: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LoreCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LoreOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reindex_series: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_rule_systems: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RuleSystemOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_rule_system: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RuleSystemCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RuleSystemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_tables: {
+    parameters: {
+      query?: {
+        /** @description Only entities usable in this book */
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_table: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TableCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  where_used: {
+    parameters: {
+      query: {
+        target_type:
+          | 'item'
+          | 'enemy'
+          | 'table'
+          | 'character'
+          | 'lore'
+          | 'node'
+          | 'flag'
+          | 'skill'
+          | 'class'
+          | 'stat'
+          | 'tier'
+        key: string
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WhereUsed']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_table: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_table: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_table: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        entity_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TableUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TableOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_variant: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        variant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_variant: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        variant_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VariantUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VariantOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
       /** @description Internal Server Error */

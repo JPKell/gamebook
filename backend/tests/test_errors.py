@@ -85,3 +85,18 @@ def test_spa_serving(settings: Settings, dist: Path) -> None:
         assert c.post("/api/missing").status_code == 404
         assert c.post("/api/health").status_code == 405
         assert c.post("/story").status_code == 404
+
+
+def test_commit_happens_before_the_response(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A failed commit must surface as an error, not a success the client already saw."""
+    from sqlalchemy.orm import Session
+
+    def failing_commit(self: Session) -> None:
+        raise RuntimeError("disk full")
+
+    monkeypatch.setattr(Session, "commit", failing_commit)
+    with TestClient(client.app, raise_server_exceptions=False) as c:
+        res = c.post("/api/series", json={"title": "Never saved"})
+    assert res.status_code == 500

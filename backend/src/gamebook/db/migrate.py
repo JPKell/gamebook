@@ -22,3 +22,7 @@ def upgrade(database_url: str, revision: str = "head") -> None:
 
 def revision(database_url: str, message: str) -> None:
     command.revision(alembic_config(database_url), message=message, autogenerate=True)
+
+
+def downgrade(database_url: str, revision: str) -> None:
+    command.downgrade(alembic_config(database_url), revision)

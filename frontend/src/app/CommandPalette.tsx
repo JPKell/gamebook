@@ -1,17 +1,23 @@
 import { Command } from 'cmdk'
-import { Monitor, Moon, PanelBottom, Sun, Layers } from 'lucide-react'
+import { CircleDot, Layers, Monitor, Moon, PanelBottom, Sun } from 'lucide-react'
 import { type ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 
+import { useBookGraph } from '@/api/queries'
+import { useStoryStore } from '@/features/story/storyStore'
 import { isModShortcut } from '@/lib/utils'
 import { TIERS, useUiStore } from '@/stores/ui'
 
 import { SECTIONS } from './sections'
+import { useCurrentBookId } from './useCurrentBook'
 
 /** Ctrl/Cmd+K command palette. New features register commands here as they land. */
 export function CommandPalette() {
   const navigate = useNavigate()
   const { paletteOpen, setPaletteOpen, setTheme, setTier, toggleProblems } = useUiStore()
+  const bookId = useCurrentBookId()
+  const graph = useBookGraph(bookId)
+  const { openNode, reveal } = useStoryStore()
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -46,6 +52,24 @@ export function CommandPalette() {
       />
       <Command.List className="max-h-80 overflow-auto p-2">
         <Command.Empty className="px-3 py-6 text-center text-muted">No results.</Command.Empty>
+        {graph.data && (
+          <Group heading={`Nodes in ${graph.data.book.title}`}>
+            {graph.data.nodes.map((n) => (
+              <Item
+                key={n.id}
+                value={`node ${n.title} ${n.key}`}
+                onSelect={run(() => {
+                  openNode(n.id)
+                  reveal(n.id)
+                })}
+                icon={<CircleDot />}
+              >
+                {n.title}
+                <span className="ml-auto font-mono text-xs text-muted">{n.key}</span>
+              </Item>
+            ))}
+          </Group>
+        )}
         <Group heading="Go to">
           {SECTIONS.map((s) => (
             <Item key={s.id} onSelect={run(() => navigate(s.path))} icon={<s.icon />}>

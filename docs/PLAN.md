@@ -41,7 +41,7 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 
 **Demo:** app boots, empty shell navigates, CI green.
 
-## Phase 1 — Domain model, gbx, authoring API
+## Phase 1 — Domain model, gbx, authoring API ✅ (2026-10-18, see `docs/handoffs/v2-phase-01-domain.md`)
 
 - **gbx v1**: lexer, Pratt parser, AST (JSON), type checker with contexts, evaluator,
   dice (seeded), print renderer. Hypothesis tests (parse ↔ print round-trip, evaluator totality).
@@ -55,7 +55,7 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 
 **Demo:** build a small book via `/docs` OpenAPI, export to tree, wipe DB, import, identical.
 
-## Phase 2 — Story graph editor
+## Phase 2 — Story graph editor ✅ (2026-10-18, see `docs/handoffs/v2-phase-02-graph-editor.md`)
 
 - React Flow canvas: act group frames, node cards with badges, typed edge styles, minimap,
   ELK auto-layout per act, search & filters.
@@ -63,22 +63,24 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 - Inspector panel tabs: Beat, Choices (all resolution kinds, gbx editor with autocomplete &
   live print rendering), Effects, Text variants, Lore links (pickers).
 - Problems panel wired to validation; click-to-navigate; validation overlay.
-- Autosave on every edit (optimistic TanStack mutations); undo/redo via command stack with
-  inverse operations; named checkpoints (SQLite backup).
+- Autosave on every edit (optimistic TanStack mutations); undo/redo via **server-side book
+  snapshots** (see ADR 0005) instead of client inverse operations; named checkpoints (SQLite backup).
 - Series/book/act management screens; style guide editor.
 
 **Demo:** author a 3-act, ~30-node book with gated, roll and combat choices entirely in the UI.
 
 ## Phase 3 — Mechanics designer & engine
 
-- RuleSystem schema, tier inheritance/merge, validation of tier definitions.
+- ~~RuleSystem schema, tier inheritance/merge, validation of tier definitions~~ (pulled into
+  Phase 1, because expression checking needs per-tier stats; a starter template is seeded).
 - Engine: GameState, character creation, `available_actions`, `step`, effects, tests,
   combat procedure with hooks, shops, equipment/slots, consumables, `once` semantics,
   visits; full event log; seeded RNG.
 - Golden-trace format + first traces (for future TS parity).
 - Mechanics designer UI: tier tabs, inherited/overridden display, all sections.
 - **Combat lab** (10k-fight Monte Carlo, level sweeps, charts).
-- Ship a starter rule system template (FF-style basic → armour medium → classes/crits advanced).
+- Refine the starter rule system template (FF-style basic → armour medium → classes/crits
+  advanced) once the engine can play it.
 
 **Demo:** define three tiers, tune a fight in the lab, see difficulty curves shift.
 

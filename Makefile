@@ -5,7 +5,7 @@ SHELL := /bin/bash
 BACKEND := backend
 FRONTEND := frontend
 
-.PHONY: help install dev serve gen-api lint format typecheck test e2e check build clean
+.PHONY: help install dev serve deploy install-service gen-api lint format typecheck test e2e check build clean
 
 help: ## Show this help
 	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -14,14 +14,27 @@ install: ## Install backend + frontend dependencies
 	cd $(BACKEND) && uv sync
 	cd $(FRONTEND) && npm ci
 
-dev: ## Run API (reload, :8000) and Vite (:5173) together
+SERVICE := gamebook.service
+DEV_API_PORT := 8789
+
+dev: ## Run API (reload, :8789) and Vite (:5173) together; leaves :8788 to the service
 	@trap 'kill 0' EXIT; \
-	(cd $(BACKEND) && uv run gamebook serve --reload) & \
-	(cd $(FRONTEND) && npm run dev) & \
+	(cd $(BACKEND) && uv run gamebook serve --reload --port $(DEV_API_PORT)) & \
+	(cd $(FRONTEND) && GAMEBOOK_API=http://127.0.0.1:$(DEV_API_PORT) npm run dev) & \
 	wait
 
-serve: build ## Production-style: API serves the built UI on :8000
+serve: build ## Production-style in the foreground: API serves the built UI on :8788
 	cd $(BACKEND) && GAMEBOOK_FRONTEND_DIST=../$(FRONTEND)/dist uv run gamebook serve
+
+install-service: ## Install/refresh the systemd user unit (deploy/gamebook.service)
+	install -Dm644 deploy/$(SERVICE) $(HOME)/.config/systemd/user/$(SERVICE)
+	systemctl --user daemon-reload
+	systemctl --user enable $(SERVICE)
+
+deploy: build ## Rebuild the UI, sync deps and restart the service on :8788
+	cd $(BACKEND) && uv sync --frozen
+	systemctl --user restart $(SERVICE)
+	@sleep 2; curl -sf http://127.0.0.1:8788/api/health && echo
 
 gen-api: ## Regenerate the TypeScript API types from the backend OpenAPI schema
 	cd $(FRONTEND) && npm run gen:api

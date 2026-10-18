@@ -1,0 +1,17 @@
+# systemd user unit for Gamebook Studio. Install/update with `make install-service`.
+[Unit]
+Description=Gamebook Studio
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/repos/gamebook/backend
+Environment=GAMEBOOK_FRONTEND_DIST=%h/repos/gamebook/frontend/dist
+Environment=GAMEBOOK_LOG_LEVEL=WARNING
+ExecStart=%h/repos/gamebook/backend/.venv/bin/gamebook serve --host 0.0.0.0 --port 8788
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

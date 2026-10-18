@@ -34,3 +34,27 @@ describe('unwrap', () => {
     expect(err).toMatchObject({ status: 502, code: 'http_502' })
   })
 })
+
+describe('refresh after a write', () => {
+  it('refetches even when the first load is still in flight', async () => {
+    const { QueryClient, QueryObserver } = await import('@tanstack/react-query')
+    const { refresh } = await import('./queries')
+    const { waitFor } = await import('@testing-library/react')
+    const qc = new QueryClient()
+    let release!: (v: string[]) => void
+    let calls = 0
+    const queryFn = () => {
+      calls++
+      // The first request was sent before the write and answers late with old data.
+      return calls === 1 ? new Promise<string[]>((r) => (release = r)) : Promise.resolve(['new'])
+    }
+    const observer = new QueryObserver(qc, { queryKey: ['list'], queryFn })
+    const unsubscribe = observer.subscribe(() => {})
+    await waitFor(() => expect(calls).toBe(1))
+    await refresh(qc, [['list']])
+    release(['stale'])
+    await waitFor(() => expect(observer.getCurrentResult().data).toEqual(['new']))
+    expect(calls).toBe(2)
+    unsubscribe()
+  })
+})

@@ -8,11 +8,24 @@ import { SECTIONS } from './sections'
 afterEach(() => vi.restoreAllMocks())
 
 describe('AppShell', () => {
-  it('redirects / to the Story section', async () => {
+  it('redirects / to the Story section, which points to the Library when no book is open', async () => {
     mockHealth('ok')
     const { router } = renderApp('/')
-    expect(await screen.findByRole('heading', { name: 'Story' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Open a book to start writing' }),
+    ).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/story')
+    expect(screen.getByRole('link', { name: 'Go to the Library' })).toHaveAttribute(
+      'href',
+      '/library',
+    )
+  })
+
+  it('reopens the last book from /story', async () => {
+    mockHealth('ok')
+    useUiStore.setState({ lastBookId: 'b1' })
+    const { router } = renderApp('/story', { keepUi: true })
+    await waitFor(() => expect(router.state.location.pathname).toBe('/story/b1'))
   })
 
   it('renders a nav link for every section and navigates', async () => {

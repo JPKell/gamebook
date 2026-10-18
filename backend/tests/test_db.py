@@ -91,3 +91,13 @@ def test_models_match_migrations(tmp_path: Path) -> None:
     with Database(url).engine.connect() as conn:
         diff = compare_metadata(MigrationContext.configure(conn), Base.metadata)
     assert diff == []
+
+
+def test_migrations_downgrade_and_reapply(tmp_path: Path) -> None:
+    url = f"sqlite:///{tmp_path / 'd.db'}"
+    migrate.upgrade(url)
+    migrate.downgrade(url, "base")
+    tables = set(inspect(Database(url).engine).get_table_names())
+    assert tables <= {"alembic_version"}
+    migrate.upgrade(url)
+    assert "node" in inspect(Database(url).engine).get_table_names()

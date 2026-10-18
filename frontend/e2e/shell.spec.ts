@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test('app shell loads and talks to the backend', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveURL(/\/story$/)
-  await expect(page.getByRole('heading', { name: 'Story' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Open a book to start writing' })).toBeVisible()
   await expect(page.getByRole('status')).toHaveText(/Connected · v\d+\.\d+\.\d+/)
 })
 

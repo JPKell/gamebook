@@ -81,15 +81,19 @@ Series ─┬─ StyleGuide
                  │                └─ Choice[] ── Outcome[] → target Node
                  ├─ SectionNumbering (pins + seed + stable map)
                  └─ Playtest batches / runs / steps
-RefIndex (derived): (source, entity_type, entity_id, role) for every reference.
+RefIndex (derived): (source, target type, target key/id, role, field, qty) per reference.
 ```
 
-Primary keys are UUIDv7 (sortable). Every content entity also has a human **`key`** slug
-(e.g. `a1-bridge`, `goblin-scout`, `RAVEN`) used in expressions, exports and prompts; keys
-are unique per scope and renaming a key rewrites references (via RefIndex).
+Primary keys are UUIDv7 (sortable). Every content entity also has a human **`key`**
+(e.g. `a1_bridge`, `goblin_scout`, `RAVEN`) used in expressions, exports and prompts. Keys
+match `^[A-Za-z][A-Za-z0-9_]{0,63}$` (identifier-like so gbx needs no quoting; hyphens would
+read as minus), can't look like dice (`d6`) and avoid reserved words. Convention: stats,
+flags and skills UPPER_CASE; entities lower_snake_case. Keys are unique per scope (series,
+book for nodes/acts) and renaming one rewrites every reference (via RefIndex).
 
-**Scope:** Enemies, items, tables and lore can be series-scoped (shared) or book-scoped.
-Implemented as `scope_series_id` / `scope_book_id` with a CHECK that exactly one is set.
+**Scope:** Enemies, items, tables, characters and lore always carry `series_id`; `book_id`
+is NULL for shared entities or set for book-specific ones. Keys are unique per series across
+both scopes, so a key in an expression is never ambiguous.
 
 ### 2.2 Story structure
 
@@ -103,7 +107,7 @@ Implemented as `scope_series_id` / `scope_book_id` with a CHECK that exactly one
 |---|---|
 | `key`, `title` | Human handle + display title |
 | `act_id` | Required |
-| `role_flags` | `is_book_start`, `is_act_entry`, `is_act_exit` (not exclusive) |
+| `is_act_entry`, `is_act_exit` | Not exclusive. The book start is `book.start_node_id`. |
 | `ending` | null, or `{kind: victory\|death\|dead_end, grade?: good\|neutral\|bad\|secret, label}` |
 | `beat_notes` | Author's notes for this beat (LLM input) |
 | `summary` | One-line summary (auto-suggested from approved prose, editable) |
@@ -112,6 +116,8 @@ Implemented as `scope_series_id` / `scope_book_id` with a CHECK that exactly one
 | `canonical_predecessor_id` | Auto-chosen (shortest path from book start), author-overridable |
 | `style_override` | e.g. word range, mood |
 | `section_pin` | Optional fixed section number |
+| `items[]` | Items found here (optional pickup): `{item_id, qty}` rows |
+| `is_shop`, `shop_sell_rate`, `shop_items[]` | Shop: `{item_id, price, stock?}` rows |
 | `x, y`, `collapsed` | Canvas layout |
 
 **Text variants**: a node has ≥1 `TextVariant {condition?, label, priority}`. The default
@@ -126,19 +132,19 @@ to split sections (see §6.3).
 | `order`, `label` | What the reader sees |
 | `condition` | Expression; null = always available |
 | `unmet_display` | `hide` \| `show_disabled` (digital only; print always uses "If you…, turn to") |
-| `print_text_override` | Author override of the auto-rendered print phrasing |
+| `print_text` | Author override of the auto-rendered print phrasing |
 | `min_tier` | Choice exists only at/above a tier (optional) |
 | `effects` | `Effect[]` applied when taken (e.g. pay 5 gold) |
-| `resolution` | One of the kinds below |
-| `outcomes[]` | Rows: `{outcome_key, target_node_id}` — real FKs, so the graph is queryable |
+| `kind` | `goto` \| `roll` \| `test` \| `combat`, with `dice` / `test` / `encounter_id` + `flee_allowed` |
+| `outcomes[]` | Rows: `{key, target_node_id, range_lo?, range_hi?}` — real FKs, so the graph is queryable |
 
-Resolution kinds:
+Outcome keys per kind:
 
 ```yaml
-goto:    { }                                    # outcomes: [default]
-roll:    { dice: "2d6", branches: [ {range: [2,6], outcome: low}, {range: [7,12], outcome: high} ] }
-test:    { test: luck }                         # TestDef from the rule system; outcomes: [success, failure]
-combat:  { encounter_id, flee: {after_round: 2} }   # outcomes: [win, lose, flee]
+goto:    [default]
+roll:    free keys, each with a range; ranges must cover the dice range exactly (dice default 2d6)
+test:    [success, failure]                # test = a TestDef key from the rule system
+combat:  [win, lose] (+ flee if flee_allowed)   # encounter_id = one of this node's encounters
 ```
 
 **Act-link rules** (validated): a choice whose target is in a different act must originate
@@ -148,20 +154,27 @@ non-final act has ≥1 exit; every act after the first has ≥1 entry.
 ### 2.3 Expression language (`gbx`)
 
 One small, safe, parsed language (never Python `eval`) used for: dice, stat formulas,
-conditions, effect amounts, combat hooks. Stored as source text + cached AST (JSON).
+conditions, effect amounts, combat hooks. Stored as source text and parsed on demand (fast);
+the AST serialises to JSON for the game bundle.
 
 ```
 2d6 + player.SKILL                    # dice + refs
 8 + level * 2 + floor(level / 3)       # enemy stat formula
-has(potion) and gold >= 5              # condition
+has(potion) and GOLD >= 5              # condition (bare stats mean the player's)
 flag(RAVEN) or skill(TRACKING)
-visits(a1-bridge) >= 2 and tier >= medium
+visits(a1_bridge) >= 2 and tier >= medium
 max(1, damage - target.ARMOR)          # combat hook
+natural == 12 ? damage * 2 : damage    # ternary
 ```
 
-- Types: int, bool, dice-pool. Functions: `min max floor ceil clamp abs has count flag
-  skill class visits`. Contexts expose different names (`level` in enemy formulas,
-  `damage/attacker/target/natural` in combat hooks).
+- Types: number (exact fractions), bool, tier. Results that must be integers round down;
+  `floor ceil round` make rounding explicit (round = half up) and the checker warns about
+  unrounded division. Functions: `min max floor ceil round clamp abs` and reference
+  functions `has count equipped flag skill class visits`. Contexts expose different names
+  (`level` in enemy formulas, `roll` in tests, `damage/natural/attacker/target` in combat
+  hooks); dice are disallowed in conditions and enemy formulas.
+- Analysis: value ranges (interval arithmetic) and exact distributions for dice sums, used
+  for roll-coverage validation and odds display.
 - Every AST node has a **print renderer** ("If you possess a Rope and at least 5 Gold
   Crowns…"), and the editor shows that rendering live.
 - Static checks: unknown refs, type errors, tier-unavailable stats, non-printable constructs.
@@ -169,8 +182,9 @@ max(1, damage - target.ARMOR)          # combat hook
 
 **Effects** are structured, not free expressions:
 `modify(stat, expr) · set(stat, expr) · give(item, qty) · take(item, qty) · equip(item) ·
-set_flag(F) · clear_flag(F) · gold(expr) · learn(skill) · goto_if(cond, node)` — each with
-`once`, `min_tier`, and a print renderer.
+set_flag(F) · clear_flag(F) · learn(skill)` — each with `once` (default: true for gains),
+`min_tier`, `print_text` and a print renderer. Currency is a rule-system resource, so gold
+changes are `modify(GOLD, …)`.
 
 ### 2.4 Mechanics (RuleSystem)
 
@@ -295,11 +309,14 @@ satisfiable), and the author (shown in the node inspector).
 
 ### 2.12 Derived & support tables
 
-- **RefIndex** — rebuilt per entity on write; powers where-used, rename refactors, item totals.
+- **RefIndex** — rebuilt per source on write (a full rebuild must give identical rows; tested);
+  targets are matched by key so references to not-yet-created entities resolve once they
+  exist. Powers where-used, rename refactors, item totals and codeword usage.
 - **Job** — `kind, status, progress, payload, result, error, created/started/finished`;
   progress streamed via SSE.
 - **SectionNumbering** — per book: seed, pins, stable `node/variant → number` map.
 - **Checkpoint** — named SQLite snapshot (online backup API).
+- **HistoryEntry** — per-book undo/redo stacks of `export_book` snapshots.
 
 ---
 
@@ -389,7 +406,9 @@ list → expected event stream) generated by the Python engine and replayed in V
 - **Inspector side panel** (not modals) for the selection, tabs:
   *Beat · Choices · Encounters & Items · Effects · Text variants & Prose · Lore links ·
   State digest · Stats (from playtests)*.
-- Multi-select, copy/paste subgraphs, undo/redo (Ctrl-Z / Ctrl-Shift-Z).
+- Multi-select, copy/paste subgraphs, undo/redo (Ctrl-Z / Ctrl-Shift-Z). Undo history is
+  kept server-side per book (snapshots, 50 steps, survives reloads; rapid edits with the same
+  label within 10 s coalesce).
 
 ### 4.3 Entity managers
 

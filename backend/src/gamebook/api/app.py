@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 
 from gamebook import __version__
 from gamebook.api.errors import ErrorResponse, install_error_handlers
-from gamebook.api.routers import health
+from gamebook.api.routers import books, entities, health, history, nodes, series, tools
 from gamebook.config import Settings, get_settings
 from gamebook.db import migrate
 from gamebook.db.session import Database
@@ -61,7 +61,8 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         allow_headers=["*"],
     )
     install_error_handlers(app)
-    app.include_router(health.router, prefix=API_PREFIX)
+    for module in (health, series, books, nodes, entities, history, tools):
+        app.include_router(module.router, prefix=API_PREFIX)
 
     if settings.frontend_dist is not None:
         _mount_frontend(app, settings.frontend_dist)

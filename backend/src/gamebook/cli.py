@@ -26,6 +26,13 @@ def cmd_db_upgrade(args: argparse.Namespace) -> None:
     migrate.upgrade(get_settings().database_url, args.revision)
 
 
+def cmd_db_downgrade(args: argparse.Namespace) -> None:
+    from gamebook.config import get_settings
+    from gamebook.db import migrate
+
+    migrate.downgrade(get_settings().database_url, args.revision)
+
+
 def cmd_db_revision(args: argparse.Namespace) -> None:
     from gamebook.config import get_settings
     from gamebook.db import migrate
@@ -45,13 +52,38 @@ def cmd_openapi(args: argparse.Namespace) -> None:
         Path(args.output).write_text(schema)
 
 
+def cmd_export(args: argparse.Namespace) -> None:
+    from gamebook.config import get_settings
+    from gamebook.db.session import Database
+    from gamebook.services import transfer
+
+    db = Database(get_settings().database_url)
+    with db.session() as session:
+        count = transfer.export_to_dir(session, args.series, Path(args.directory))
+    print(f"Exported {count} files to {args.directory}")
+
+
+def cmd_import(args: argparse.Namespace) -> None:
+    from gamebook.config import get_settings
+    from gamebook.db import migrate
+    from gamebook.db.session import Database
+    from gamebook.services import transfer
+
+    url = get_settings().database_url
+    migrate.upgrade(url)
+    db = Database(url)
+    with db.session() as session:
+        series = transfer.import_from_dir(session, Path(args.directory), replace=args.replace)
+        print(f"Imported series {series.key!r} ({series.title})")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="gamebook", description="Gamebook Studio")
     sub = parser.add_subparsers(dest="command", required=True)
 
     serve = sub.add_parser("serve", help="Run the API server")
     serve.add_argument("--host", default="127.0.0.1")
-    serve.add_argument("--port", type=int, default=8000)
+    serve.add_argument("--port", type=int, default=8788)
     serve.add_argument("--reload", action="store_true")
     serve.set_defaults(func=cmd_serve)
 
@@ -64,6 +96,20 @@ def build_parser() -> argparse.ArgumentParser:
     rev = db.add_parser("revision", help="Autogenerate a migration")
     rev.add_argument("-m", "--message", required=True)
     rev.set_defaults(func=cmd_db_revision)
+
+    ex = sub.add_parser("export", help="Export a series as a git-friendly file tree")
+    ex.add_argument("series", help="Series key")
+    ex.add_argument("directory")
+    ex.set_defaults(func=cmd_export)
+
+    im = sub.add_parser("import", help="Import a series from an exported file tree")
+    im.add_argument("directory")
+    im.add_argument("--replace", action="store_true", help="Replace the series if it exists")
+    im.set_defaults(func=cmd_import)
+
+    dn = db.add_parser("downgrade", help="Revert migrations")
+    dn.add_argument("revision")
+    dn.set_defaults(func=cmd_db_downgrade)
 
     oa = sub.add_parser("openapi", help="Write the OpenAPI schema")
     oa.add_argument("-o", "--output", default="-")

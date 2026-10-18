@@ -1,14 +1,29 @@
 import { ChevronDown, ChevronUp, CircleAlert, CircleX, Info } from 'lucide-react'
 
-import { useHealth } from '@/api/queries'
+import { useHealth, useProblems } from '@/api/queries'
+import type { ProblemOut } from '@/api/types'
+import { useStoryStore } from '@/features/story/storyStore'
 import { Kbd } from '@/components/ui/kbd'
 import { cn, modKey } from '@/lib/utils'
 import { useUiStore } from '@/stores/ui'
 
-/** Bottom status bar with the collapsible Problems panel (validation lands in Phase 1). */
+import { useCurrentBookId } from './useCurrentBook'
+
+const SEVERITY_ICON = { error: CircleX, warning: CircleAlert, info: Info } as const
+const SEVERITY_CLASS = { error: 'text-danger', warning: 'text-warning', info: 'text-info' } as const
+
+/** Bottom status bar with the collapsible Problems panel for the open book. */
 export function StatusBar() {
   const { problemsOpen, toggleProblems } = useUiStore()
-  const counts = { errors: 0, warnings: 0, info: 0 }
+  const bookId = useCurrentBookId()
+  const problems = useProblems(bookId)
+  const counts = problems.data?.counts ?? { errors: 0, warnings: 0, info: 0 }
+  const { openNode, reveal } = useStoryStore()
+  const go = (p: ProblemOut) => {
+    if (!p.node_id) return
+    openNode(p.node_id, p.choice_id ? 'choices' : 'beat', p.choice_id ?? null)
+    reveal(p.node_id)
+  }
 
   return (
     <footer className="border-t border-border bg-surface">
@@ -16,9 +31,36 @@ export function StatusBar() {
         <section
           id="problems-panel"
           aria-label="Problems"
-          className="h-40 overflow-auto border-b border-border px-4 py-3 text-muted"
+          className="h-48 overflow-auto border-b border-border"
         >
-          No problems detected. Validation results will appear here.
+          {!bookId ? (
+            <p className="px-4 py-3 text-muted">Open a book to see its problems.</p>
+          ) : !problems.data?.problems.length ? (
+            <p className="px-4 py-3 text-muted">No problems found.</p>
+          ) : (
+            <ul>
+              {problems.data.problems.map((p, i) => {
+                const Icon = SEVERITY_ICON[p.severity]
+                return (
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => go(p)}
+                      disabled={!p.node_id}
+                      className="flex w-full items-start gap-2 px-4 py-1.5 text-left text-sm hover:bg-surface-2 disabled:cursor-default disabled:hover:bg-transparent"
+                    >
+                      <Icon
+                        className={cn('mt-0.5 size-4 shrink-0', SEVERITY_CLASS[p.severity])}
+                        aria-label={p.severity}
+                      />
+                      <span className="min-w-0 flex-1">{p.message}</span>
+                      <span className="shrink-0 font-mono text-xs text-muted">{p.code}</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
         </section>
       )}
       <div className="flex h-7 items-center gap-4 px-3 text-xs text-muted">

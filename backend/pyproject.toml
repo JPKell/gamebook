@@ -43,7 +43,13 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "RUF", "PT", "C4", "PIE", "RET"]
-ignore = ["B008"]  # FastAPI Depends() in defaults
+ignore = [
+    "B008",  # FastAPI Depends() in defaults
+    "E501",  # line length is the formatter's job; long strings are fine
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/gamebook/core/gbx/ast.py" = ["RUF009"]  # span fields share a field() factory
 
 [tool.mypy]
 python_version = "3.12"

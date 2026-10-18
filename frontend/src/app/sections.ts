@@ -4,6 +4,7 @@ import {
   FileOutput,
   FlaskConical,
   Gem,
+  Library,
   type LucideIcon,
   PenLine,
   Settings,
@@ -18,12 +19,22 @@ export interface Section {
   icon: LucideIcon
   /** Build phase (docs/PLAN.md) in which this section becomes functional. */
   phase: number
+  /** Built sections render their own page instead of the placeholder. */
   summary: string
   upcoming: string[]
 }
 
 /** Single source of truth for top-level navigation, routes and palette commands. */
 export const SECTIONS: Section[] = [
+  {
+    id: 'library',
+    label: 'Library',
+    path: '/library',
+    icon: Library,
+    phase: 2,
+    summary: 'Your series and books.',
+    upcoming: [],
+  },
   {
     id: 'story',
     label: 'Story',

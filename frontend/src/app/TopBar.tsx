@@ -1,9 +1,27 @@
-import { ChevronRight, Monitor, Moon, Search, Sun } from 'lucide-react'
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  History,
+  Library,
+  Monitor,
+  Moon,
+  Search,
+  Sun,
+} from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+
+import { useBook, useSeries } from '@/api/queries'
+import { Menu, MenuItem, MenuSeparator } from '@/components/ui/menu'
 
 import { Button } from '@/components/ui/button'
 import { Kbd } from '@/components/ui/kbd'
 import { cn, modKey } from '@/lib/utils'
 import { TIERS, type ThemePref, useUiStore } from '@/stores/ui'
+
+import { CheckpointsDialog } from './CheckpointsDialog'
+import { useCurrentBookId } from './useCurrentBook'
 
 const THEME_CYCLE: Record<ThemePref, { next: ThemePref; icon: typeof Sun; label: string }> = {
   system: { next: 'light', icon: Monitor, label: 'System theme' },
@@ -14,16 +32,11 @@ const THEME_CYCLE: Record<ThemePref, { next: ThemePref; icon: typeof Sun; label:
 export function TopBar() {
   const { theme, setTheme, tier, setTier, setPaletteOpen } = useUiStore()
   const themeInfo = THEME_CYCLE[theme]
+  const [checkpoints, setCheckpoints] = useState(false)
 
   return (
     <header className="flex h-12 items-center gap-3 border-b border-border bg-surface px-3">
-      <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1 text-muted">
-        <span className="font-semibold text-text">Gamebook Studio</span>
-        <ChevronRight className="size-4 shrink-0" aria-hidden />
-        <span title="Series and book switching arrives in Phase 2" className="truncate italic">
-          No series open
-        </span>
-      </nav>
+      <Breadcrumb />
 
       <button
         type="button"
@@ -60,6 +73,16 @@ export function TopBar() {
       <Button
         variant="ghost"
         size="icon"
+        onClick={() => setCheckpoints(true)}
+        aria-label="Checkpoints"
+        title="Checkpoints (whole-library snapshots)"
+      >
+        <History className="size-4" aria-hidden />
+      </Button>
+      <CheckpointsDialog open={checkpoints} onOpenChange={setCheckpoints} />
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => setTheme(themeInfo.next)}
         aria-label={`${themeInfo.label} (click to change)`}
         title={themeInfo.label}
@@ -67,5 +90,53 @@ export function TopBar() {
         <themeInfo.icon className="size-4" aria-hidden />
       </Button>
     </header>
+  )
+}
+
+function Breadcrumb() {
+  const bookId = useCurrentBookId()
+  const book = useBook(bookId)
+  const series = useSeries(book.data?.series_id)
+  const navigate = useNavigate()
+  return (
+    <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1 text-muted">
+      <span className="font-semibold whitespace-nowrap text-text">Gamebook Studio</span>
+      {series.data && book.data && (
+        <>
+          <ChevronRight className="size-4 shrink-0" aria-hidden />
+          <span className="truncate">{series.data.title}</span>
+          <ChevronRight className="size-4 shrink-0" aria-hidden />
+          <Menu
+            align="start"
+            trigger={
+              <button
+                type="button"
+                className="flex min-w-0 items-center gap-1 rounded px-1 font-medium text-text hover:bg-surface-2"
+                aria-label={`Book: ${book.data.title}. Switch book`}
+              >
+                <span className="truncate">{book.data.title}</span>
+                <ChevronDown className="size-3.5 shrink-0" aria-hidden />
+              </button>
+            }
+          >
+            {series.data.books.map((b) => (
+              <MenuItem
+                key={b.id}
+                icon={<BookOpen />}
+                disabled={b.id === bookId}
+                onSelect={() => navigate(`/story/${b.id}`)}
+              >
+                {b.number ? `${b.number}. ` : ''}
+                {b.title}
+              </MenuItem>
+            ))}
+            <MenuSeparator />
+            <MenuItem icon={<Library />} onSelect={() => navigate('/library')}>
+              Library
+            </MenuItem>
+          </Menu>
+        </>
+      )}
+    </nav>
   )
 }

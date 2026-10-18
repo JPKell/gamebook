@@ -1,7 +1,8 @@
 """Error envelope and exception handlers.
 
 Every error response is ``{"detail": str, "code": str}`` (plus ``errors`` for
-request validation failures) so the frontend can handle them uniformly.
+request validation failures and ``details`` for service errors) so the frontend
+can handle them uniformly.
 """
 
 import logging
@@ -13,6 +14,7 @@ from pydantic import BaseModel
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from gamebook.db.repository import NotFoundError
+from gamebook.services.errors import ServiceError
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ log = logging.getLogger(__name__)
 class ErrorResponse(BaseModel):
     detail: str
     code: str
+    details: dict[str, object] | None = None
 
 
 def _error(status: int, detail: str, code: str, **extra: object) -> JSONResponse:
@@ -30,6 +33,11 @@ def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(NotFoundError)
     async def not_found(_: Request, exc: NotFoundError) -> JSONResponse:
         return _error(404, str(exc), "not_found")
+
+    @app.exception_handler(ServiceError)
+    async def service_error(_: Request, exc: ServiceError) -> JSONResponse:
+        extra = {"details": exc.details} if exc.details else {}
+        return _error(exc.status, exc.message, exc.code, **extra)
 
     @app.exception_handler(StarletteHTTPException)
     async def http_error(_: Request, exc: StarletteHTTPException) -> JSONResponse:

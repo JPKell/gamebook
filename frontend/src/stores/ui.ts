@@ -17,11 +17,14 @@ interface UiState {
   tier: Tier
   problemsOpen: boolean
   paletteOpen: boolean
+  /** Last book opened in the Story view (restored on next visit). */
+  lastBookId: string | null
   setTheme: (theme: ThemePref) => void
   setTier: (tier: Tier) => void
   setProblemsOpen: (open: boolean) => void
   toggleProblems: () => void
   setPaletteOpen: (open: boolean) => void
+  setLastBookId: (id: string | null) => void
 }
 
 /** UI-only state. Server data lives in TanStack Query, never here. */
@@ -32,17 +35,24 @@ export const useUiStore = create<UiState>()(
       tier: 'basic',
       problemsOpen: false,
       paletteOpen: false,
+      lastBookId: null,
       setTheme: (theme) => set({ theme }),
       setTier: (tier) => set({ tier }),
       setProblemsOpen: (problemsOpen) => set({ problemsOpen }),
       toggleProblems: () => set((s) => ({ problemsOpen: !s.problemsOpen })),
       setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
+      setLastBookId: (lastBookId) => set({ lastBookId }),
     }),
     {
       name: 'gamebook-ui',
       version: 1,
       storage: createJSONStorage(() => safeLocalStorage),
-      partialize: ({ theme, tier, problemsOpen }) => ({ theme, tier, problemsOpen }),
+      partialize: ({ theme, tier, problemsOpen, lastBookId }) => ({
+        theme,
+        tier,
+        problemsOpen,
+        lastBookId,
+      }),
     },
   ),
 )
