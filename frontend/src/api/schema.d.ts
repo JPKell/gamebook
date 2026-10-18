@@ -321,6 +321,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/enemies/{enemy_id}/levels': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Enemy Levels
+     * @description An enemy's stats at each level, per tier of the active rule system.
+     */
+    get: operations['get_enemy_levels']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/enemies/{entity_id}': {
     parameters: {
       query?: never
@@ -760,6 +780,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/series/{series_id}/entity-problems': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Entity Problems
+     * @description Validation of the series' enemies, items and random tables.
+     */
+    get: operations['get_entity_problems']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/series/{series_id}/export.zip': {
     parameters: {
       query?: never
@@ -808,6 +848,26 @@ export interface paths {
     put?: never
     /** Rename Flag */
     post: operations['rename_flag']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/item-totals': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Item Totals
+     * @description Per item key: copies in the game (placed, given, sold, dropped) and references.
+     */
+    get: operations['get_item_totals']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -1564,6 +1624,17 @@ export interface components {
       /** Tags */
       tags?: string[] | null
     }
+    /** EnemyLevelsOut */
+    EnemyLevelsOut: {
+      /** Enemy Id */
+      enemy_id: string
+      /** Errors */
+      errors: {
+        [key: string]: string
+      }
+      /** Tiers */
+      tiers: components['schemas']['TierLevels'][]
+    }
     /** EnemyOut */
     EnemyOut: {
       /** Abilities */
@@ -1886,6 +1957,18 @@ export interface components {
       /** Value */
       value: number
     }
+    /** ItemTotal */
+    ItemTotal: {
+      /** Total */
+      total: number
+      /**
+       * Unlimited
+       * @default false
+       */
+      unlimited?: boolean
+      /** Uses */
+      uses: number
+    }
     /** ItemUpdate */
     ItemUpdate: {
       /** Book Id */
@@ -2045,6 +2128,15 @@ export interface components {
       print_text?: string | null
       /** Skill */
       skill: string
+    }
+    /** LevelRow */
+    LevelRow: {
+      /** Level */
+      level: number
+      /** Stats */
+      stats: {
+        [key: string]: number
+      }
     }
     /**
      * LinkFrom
@@ -2405,6 +2497,8 @@ export interface components {
     RefOut: {
       /** Book Id */
       book_id: string | null
+      /** Book Title */
+      book_title?: string | null
       /** Field */
       field: string
       /** Node Id */
@@ -2417,6 +2511,8 @@ export interface components {
       role: string
       /** Source Id */
       source_id: string
+      /** Source Label */
+      source_label?: string | null
       /** Source Type */
       source_type: string
     }
@@ -3080,6 +3176,19 @@ export interface components {
       /** Tests */
       tests?: components['schemas']['TestDef'][]
     }
+    /** TierLevels */
+    TierLevels: {
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Missing */
+      missing: string[]
+      /** Rows */
+      rows: components['schemas']['LevelRow'][]
+      /** Stats */
+      stats: string[]
+    }
     /** TierView */
     TierView: {
       /** Chain */
@@ -3170,6 +3279,11 @@ export interface components {
       target_type: string
       /** Total Qty */
       total_qty?: number | null
+      /**
+       * Unlimited
+       * @default false
+       */
+      unlimited?: boolean
     }
   }
   responses: never
@@ -4220,6 +4334,49 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_enemy_levels: {
+    parameters: {
+      query?: {
+        level_from?: number
+        level_to?: number
+      }
+      header?: never
+      path: {
+        enemy_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EnemyLevelsOut']
+        }
       }
       /** @description Validation Error */
       422: {
@@ -5900,6 +6057,46 @@ export interface operations {
       }
     }
   }
+  get_entity_problems: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProblemsOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   export_series: {
     parameters: {
       query?: never
@@ -6002,6 +6199,48 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['RenameResult']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_item_totals: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            [key: string]: components['schemas']['ItemTotal']
+          }
         }
       }
       /** @description Validation Error */

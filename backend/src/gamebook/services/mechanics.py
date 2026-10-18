@@ -6,20 +6,25 @@ from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from gamebook.core import gbx
 from gamebook.core.analysis import Problem, validate_rule_system
 from gamebook.core.engine import LabEnemy, LabError, level_sweep, simulate
 from gamebook.core.engine.combat import enemy_stats
+from gamebook.core.gbx.scope import Context, ScopeInputs, scope_for
 from gamebook.core.rules import RuleSystemDef, TierError, effective_tier, tier_view
 from gamebook.db.models import Enemy, RuleSystem, Series
 from gamebook.schemas.mechanics import (
     Distribution,
+    EnemyLevelsOut,
     LabEnemyOut,
     LabIn,
     LabOut,
     LabPlayerIn,
+    LevelRow,
     SweepIn,
     SweepOut,
     SweepPointOut,
+    TierLevels,
     TierView,
 )
 from gamebook.services.common import require
@@ -148,3 +153,42 @@ def run_sweep(session: Session, series_id: str, data: SweepIn) -> SweepOut:
     return SweepOut(
         name=name, points=[SweepPointOut.model_validate(p, from_attributes=True) for p in points]
     )
+
+
+def enemy_levels(session: Session, enemy_id: str, level_from: int, level_to: int) -> EnemyLevelsOut:
+    """An enemy's stats at each level, for every tier of the active rule system."""
+    enemy = require(session, Enemy, enemy_id)
+    system = _system(session, enemy.series_id, None)
+    keys = system.tier_keys()
+    errors: dict[str, str] = {}
+    all_stats: set[str] = set()
+    tiers: list[TierLevels] = []
+    for t in system.tiers:
+        try:
+            eff = effective_tier(system, t.key)
+        except TierError:
+            continue
+        stats = sorted(eff.enemy_stats())
+        all_stats.update(stats)
+        rows = [
+            LevelRow(
+                level=lv, stats=enemy_stats(enemy.stat_formulas, lv, frozenset(stats), keys, t.key)
+            )
+            for lv in range(level_from, level_to + 1)
+        ]
+        tiers.append(
+            TierLevels(
+                key=t.key,
+                label=t.label,
+                stats=stats,
+                missing=[s for s in stats if not enemy.stat_formulas.get(s, "").strip()],
+                rows=rows,
+            )
+        )
+    scope = scope_for(Context.ENEMY_FORMULA, ScopeInputs(tiers=keys))
+    for stat, src in sorted(enemy.stat_formulas.items()):
+        _, diags = gbx.check_source(src, scope)
+        bad = next((d for d in diags if d.severity == "error"), None)
+        if bad is not None:
+            errors[stat] = bad.message
+    return EnemyLevelsOut(enemy_id=enemy.id, tiers=tiers, errors=errors)

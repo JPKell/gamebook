@@ -37,6 +37,9 @@ class RefOut(Out):
     book_id: str | None
     node_id: str | None
     node_title: str | None = None
+    book_title: str | None = None
+    #: Name of the entity holding the reference when it isn't a node (e.g. an enemy's loot).
+    source_label: str | None = None
     role: str
     field: str
     qty: int | None
@@ -48,6 +51,8 @@ class WhereUsed(Out):
     refs: list[RefOut]
     #: Sum of quantities for item placements/grants/stock (None if not an item).
     total_qty: int | None = None
+    #: A shop sells the item without a stock limit (not counted in ``total_qty``).
+    unlimited: bool = False
 
 
 class FlagUsage(Out):

@@ -100,7 +100,8 @@ def where_used(
     key: str = Query(),
 ) -> WhereUsed:
     require(session, Series, series_id)
-    rows = refs.where_used(session, series_id, target_type, key)
+    rows = refs.where_used_detailed(session, series_id, target_type, key)
+    labels = refs.source_labels(session, ((r.source_type, r.source_id) for r, _, _ in rows))
     out = WhereUsed(
         target_type=target_type,
         target_key=key,
@@ -110,18 +111,35 @@ def where_used(
                 source_id=r.source_id,
                 book_id=r.book_id,
                 node_id=r.node_id,
-                node_title=title,
+                node_title=node_title,
+                book_title=book_title,
+                source_label=labels.get((r.source_type, r.source_id)),
                 role=r.role,
                 field=r.field,
                 qty=r.qty,
             )
-            for r, title in rows
+            for r, node_title, book_title in rows
         ],
     )
     if target_type == "item":
-        countable = {"placement", "shop", "effect.give", "table", "loot"}
-        out.total_qty = sum(r.qty or 1 for r, _ in rows if r.role in countable)
+        counts = [refs.supply(r.role, r.qty) for r, _, _ in rows]
+        out.total_qty = sum(n for n in counts if n is not None)
+        out.unlimited = any(n is None for n in counts)
     return out
+
+
+class ItemTotal(In):
+    total: int
+    uses: int
+    #: Some shop sells it without a stock limit (not counted in ``total``).
+    unlimited: bool = False
+
+
+@router.get("/series/{series_id}/item-totals", response_model=dict[str, ItemTotal])
+def get_item_totals(series_id: str, session: SessionDep) -> dict[str, ItemTotal]:
+    """Per item key: copies in the game (placed, given, sold, dropped) and references."""
+    require(session, Series, series_id)
+    return {k: ItemTotal(**v) for k, v in refs.item_totals(session, series_id).items()}
 
 
 @router.get("/series/{series_id}/flags", response_model=list[FlagUsage])

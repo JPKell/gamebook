@@ -35,13 +35,10 @@ describe('AppShell', () => {
     for (const s of SECTIONS) {
       expect(within(nav).getByRole('link', { name: s.label })).toBeInTheDocument()
     }
-    await user.click(within(nav).getByRole('link', { name: 'Enemies' }))
-    expect(await screen.findByRole('heading', { name: 'Enemies' })).toBeInTheDocument()
-    expect(router.state.location.pathname).toBe('/enemies')
-    expect(within(nav).getByRole('link', { name: 'Enemies' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
+    await user.click(within(nav).getByRole('link', { name: 'Lore' }))
+    expect(await screen.findByRole('heading', { name: 'Lore' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/lore')
+    expect(within(nav).getByRole('link', { name: 'Lore' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('shows backend connected status', async () => {

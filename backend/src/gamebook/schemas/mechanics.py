@@ -163,3 +163,28 @@ class SweepPointOut(Out):
 class SweepOut(Out):
     name: str
     points: list[SweepPointOut]
+
+
+# ── enemy level tables ───────────────────────────────────────────────────
+
+
+class LevelRow(Out):
+    level: int
+    stats: dict[str, int]
+
+
+class TierLevels(Out):
+    key: str
+    label: str
+    #: Enemy stats active at this tier.
+    stats: list[str]
+    #: Active stats with no formula (they count as 0).
+    missing: list[str]
+    rows: list[LevelRow]
+
+
+class EnemyLevelsOut(Out):
+    enemy_id: str
+    tiers: list[TierLevels]
+    #: stat → first error in its formula.
+    errors: dict[str, str]

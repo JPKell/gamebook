@@ -1900,6 +1900,31 @@
         "title": "EnemyCreate",
         "type": "object"
       },
+      "EnemyLevelsOut": {
+        "properties": {
+          "enemy_id": {
+            "title": "Enemy Id",
+            "type": "string"
+          },
+          "errors": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "object"
+          },
+          "tiers": {
+            "items": {
+              "$ref": "#/components/schemas/TierLevels"
+            },
+            "title": "Tiers",
+            "type": "array"
+          }
+        },
+        "required": ["enemy_id", "tiers", "errors"],
+        "title": "EnemyLevelsOut",
+        "type": "object"
+      },
       "EnemyOut": {
         "properties": {
           "abilities": {
@@ -2976,6 +3001,27 @@
         "title": "ItemOut",
         "type": "object"
       },
+      "ItemTotal": {
+        "additionalProperties": false,
+        "properties": {
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "unlimited": {
+            "default": false,
+            "title": "Unlimited",
+            "type": "boolean"
+          },
+          "uses": {
+            "title": "Uses",
+            "type": "integer"
+          }
+        },
+        "required": ["total", "uses"],
+        "title": "ItemTotal",
+        "type": "object"
+      },
       "ItemUpdate": {
         "additionalProperties": false,
         "properties": {
@@ -3452,6 +3498,24 @@
         },
         "required": ["skill"],
         "title": "LearnSkill",
+        "type": "object"
+      },
+      "LevelRow": {
+        "properties": {
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "stats": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Stats",
+            "type": "object"
+          }
+        },
+        "required": ["level", "stats"],
+        "title": "LevelRow",
         "type": "object"
       },
       "LinkFrom": {
@@ -4641,6 +4705,17 @@
             ],
             "title": "Book Id"
           },
+          "book_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Title"
+          },
           "field": {
             "title": "Field",
             "type": "string"
@@ -4685,6 +4760,17 @@
           "source_id": {
             "title": "Source Id",
             "type": "string"
+          },
+          "source_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Label"
           },
           "source_type": {
             "title": "Source Type",
@@ -6347,6 +6433,42 @@
         "title": "TierDef",
         "type": "object"
       },
+      "TierLevels": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "missing": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing",
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/LevelRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "stats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Stats",
+            "type": "array"
+          }
+        },
+        "required": ["key", "label", "stats", "missing", "rows"],
+        "title": "TierLevels",
+        "type": "object"
+      },
       "TierView": {
         "properties": {
           "chain": {
@@ -6619,6 +6741,11 @@
               }
             ],
             "title": "Total Qty"
+          },
+          "unlimited": {
+            "default": false,
+            "title": "Unlimited",
+            "type": "boolean"
           }
         },
         "required": ["target_type", "target_key", "refs"],
@@ -7973,6 +8100,81 @@
         },
         "summary": "Update Encounter",
         "tags": ["nodes"]
+      }
+    },
+    "/api/enemies/{enemy_id}/levels": {
+      "get": {
+        "description": "An enemy's stats at each level, per tier of the active rule system.",
+        "operationId": "get_enemy_levels",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "enemy_id",
+            "required": true,
+            "schema": {
+              "title": "Enemy Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "level_from",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Level From",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "level_to",
+            "required": false,
+            "schema": {
+              "default": 10,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Level To",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnemyLevelsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Enemy Levels",
+        "tags": ["mechanics"]
       }
     },
     "/api/enemies/{entity_id}": {
@@ -10157,6 +10359,57 @@
         "tags": ["entities"]
       }
     },
+    "/api/series/{series_id}/entity-problems": {
+      "get": {
+        "description": "Validation of the series' enemies, items and random tables.",
+        "operationId": "get_entity_problems",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Entity Problems",
+        "tags": ["mechanics"]
+      }
+    },
     "/api/series/{series_id}/export.zip": {
       "get": {
         "description": "Download the series as a git-friendly tree of YAML/Markdown files.",
@@ -10315,6 +10568,61 @@
           }
         },
         "summary": "Rename Flag",
+        "tags": ["series"]
+      }
+    },
+    "/api/series/{series_id}/item-totals": {
+      "get": {
+        "description": "Per item key: copies in the game (placed, given, sold, dropped) and references.",
+        "operationId": "get_item_totals",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ItemTotal"
+                  },
+                  "title": "Response Get Item Totals",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Item Totals",
         "tags": ["series"]
       }
     },

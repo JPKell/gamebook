@@ -64,7 +64,7 @@ export const SECTIONS: Section[] = [
     icon: Skull,
     phase: 4,
     summary: 'Every enemy, its per-level stat formulas and where it appears.',
-    upcoming: ['Per-tier stat formulas with live level tables', 'Where-used across all books'],
+    upcoming: [],
   },
   {
     id: 'items',
@@ -73,7 +73,7 @@ export const SECTIONS: Section[] = [
     icon: Gem,
     phase: 4,
     summary: 'Equipment, consumables, key items and shops.',
-    upcoming: ['Auto-computed quantities from placements', 'Modifiers per tier'],
+    upcoming: [],
   },
   {
     id: 'mechanics',

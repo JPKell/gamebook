@@ -84,7 +84,7 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 
 **Demo:** define three tiers, tune a fight in the lab, see difficulty curves shift.
 
-## Phase 4 — Enemies, items, encounters
+## Phase 4 — Enemies, items, encounters ✅ (2026-10-18, see `docs/handoffs/v2-phase-04-entities.md`)
 
 - Enemy manager: table, per-tier formula editor, live level table + chart, where-used,
   "simulate vs. reference build".

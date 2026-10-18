@@ -16,3 +16,15 @@ export const MechanicsIndex = lazy(() =>
 export const MechanicsPage = lazy(() =>
   import('@/features/mechanics/MechanicsPage').then((m) => ({ default: m.MechanicsPage })),
 )
+export const EnemiesIndex = lazy(() =>
+  import('@/features/entities/pages').then((m) => ({ default: m.EnemiesIndex })),
+)
+export const EnemiesPage = lazy(() =>
+  import('@/features/entities/pages').then((m) => ({ default: m.EnemiesPage })),
+)
+export const ItemsIndex = lazy(() =>
+  import('@/features/entities/pages').then((m) => ({ default: m.ItemsIndex })),
+)
+export const ItemsPage = lazy(() =>
+  import('@/features/entities/pages').then((m) => ({ default: m.ItemsPage })),
+)

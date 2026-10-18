@@ -339,6 +339,12 @@ ADR 0007 (compiled expressions).
 - **RefIndex** — rebuilt per source on write (a full rebuild must give identical rows; tested);
   targets are matched by key so references to not-yet-created entities resolve once they
   exist. Powers where-used, rename refactors, item totals and codeword usage.
+  **Item totals** count supply only: roles `placement`, `shop`, `effect.give`, `table` and
+  `loot` (takes, conditions and modifiers are uses, not supply). A shop counts its stock;
+  unlimited stock adds nothing to the total but sets an `unlimited` flag (shown as `×N+`).
+- **Series entity problems** — enemies, items and tables are validated outside any book by
+  running the book validator on an empty probe book in which every entity is available;
+  only entity problems are kept (Phase 4).
 - **Job** — `kind, status, progress, payload, result, error, created/started/finished`;
   progress streamed via SSE.
 - **SectionNumbering** — per book: seed, pins, stable `node/variant → number` map.

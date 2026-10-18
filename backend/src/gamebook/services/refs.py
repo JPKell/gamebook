@@ -356,9 +356,19 @@ def where_used(
     session: Session, series_id: str, target_type: str, target_key: str
 ) -> list[tuple[RefIndex, str | None]]:
     """References to a target, with the title of the node they live on."""
+    return [
+        (r, nt) for r, nt, _ in where_used_detailed(session, series_id, target_type, target_key)
+    ]
+
+
+def where_used_detailed(
+    session: Session, series_id: str, target_type: str, target_key: str
+) -> list[tuple[RefIndex, str | None, str | None]]:
+    """Like ``where_used`` plus the title of the book each reference is in."""
     stmt = (
-        select(RefIndex, Node.title)
+        select(RefIndex, Node.title, Book.title)
         .outerjoin(Node, Node.id == RefIndex.node_id)
+        .outerjoin(Book, Book.id == RefIndex.book_id)
         .where(
             RefIndex.series_id == series_id,
             RefIndex.target_type == target_type,
@@ -366,7 +376,23 @@ def where_used(
         )
         .order_by(RefIndex.book_id, Node.title, RefIndex.id)
     )
-    return [(r, t) for r, t in session.execute(stmt).all()]
+    return [(r, nt, bt) for r, nt, bt in session.execute(stmt).all()]
+
+
+def source_labels(
+    session: Session, sources: Iterable[tuple[str, str]]
+) -> dict[tuple[str, str], str]:
+    """Names of non-node reference sources (enemies, items, tables…), one query per type."""
+    by_type: dict[str, set[str]] = {}
+    for source_type, source_id in sources:
+        if source_type in _ENTITY_MODELS:
+            by_type.setdefault(source_type, set()).add(source_id)
+    out: dict[tuple[str, str], str] = {}
+    for source_type, ids in by_type.items():
+        model = _ENTITY_MODELS[source_type]
+        for oid, name in session.execute(select(model.id, model.name).where(model.id.in_(ids))):
+            out[(source_type, oid)] = name
+    return out
 
 
 def flag_usage(session: Session, series_id: str) -> dict[str, dict[str, int]]:
@@ -529,3 +555,38 @@ def _rename_in(
         obj.relationships = [
             {**r, "character": new} if r.get("character") == old else r for r in obj.relationships
         ]
+
+
+#: Reference roles that put copies of an item into the game.
+ITEM_SUPPLY_ROLES = frozenset({"placement", "shop", "effect.give", "table", "loot"})
+
+
+def supply(role: str, qty: int | None) -> int | None:
+    """Copies a reference puts into the game: 0 for non-supply roles, None if unlimited.
+
+    Shops store ``stock`` as qty (None = unlimited); other roles default to 1.
+    """
+    if role not in ITEM_SUPPLY_ROLES:
+        return 0
+    if qty is None:
+        return None if role == "shop" else 1
+    return qty
+
+
+def item_totals(session: Session, series_id: str) -> dict[str, dict[str, Any]]:
+    """Per item key: total copies placed/given/sold/dropped, and places used."""
+    out: dict[str, dict[str, Any]] = {}
+    rows = session.execute(
+        select(RefIndex.target_key, RefIndex.role, RefIndex.qty).where(
+            RefIndex.series_id == series_id, RefIndex.target_type == "item"
+        )
+    )
+    for key, role, qty in rows:
+        bucket = out.setdefault(key, {"total": 0, "uses": 0, "unlimited": False})
+        bucket["uses"] += 1
+        n = supply(role, qty)
+        if n is None:
+            bucket["unlimited"] = True
+        else:
+            bucket["total"] += n
+    return out

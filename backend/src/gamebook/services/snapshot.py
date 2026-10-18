@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
@@ -23,6 +24,7 @@ from gamebook.db.models import (
     Node,
     RandomTable,
     RuleSystem,
+    Series,
 )
 from gamebook.services import refs
 from gamebook.services.common import require
@@ -151,26 +153,17 @@ def _table_entry(raw: dict[str, Any]) -> m.TableEntry:
     )
 
 
-def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
-    book = require(session, Book, book_id)
-    sid = book.series_id
+def _series_entities(session: Session, series_id: str) -> dict[str, Any]:
+    """Snapshot fields for a series' entities, rules and codewords."""
 
     def scoped(model: type[Any]) -> list[Any]:
         return list(
-            session.scalars(select(model).where(model.series_id == sid).order_by(model.key))
+            session.scalars(select(model).where(model.series_id == series_id).order_by(model.key))
         )
 
-    return m.BookSnapshot(
-        book_id=book.id,
-        series_id=sid,
-        title=book.title,
-        start_node_id=book.start_node_id,
-        acts=tuple(
-            m.Act(id=a.id, key=a.key, title=a.title, position=a.position) for a in book.acts
-        ),
-        nodes=tuple(_node(n) for n in load_book_nodes(session, book_id)),
-        rules=active_rules(session, sid),
-        items=tuple(
+    return {
+        "rules": active_rules(session, series_id),
+        "items": tuple(
             m.Item(
                 id=i.id,
                 key=i.key,
@@ -188,7 +181,7 @@ def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
             )
             for i in scoped(Item)
         ),
-        enemies=tuple(
+        "enemies": tuple(
             m.Enemy(
                 id=e.id,
                 key=e.key,
@@ -199,7 +192,7 @@ def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
             )
             for e in scoped(Enemy)
         ),
-        tables=tuple(
+        "tables": tuple(
             m.RandomTable(
                 id=t.id,
                 key=t.key,
@@ -210,15 +203,49 @@ def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
             )
             for t in scoped(RandomTable)
         ),
-        characters=tuple(
+        "characters": tuple(
             m.Entity(id=c.id, key=c.key, name=c.name, book_id=c.book_id) for c in scoped(Character)
         ),
-        lore=tuple(
+        "lore": tuple(
             m.Entity(id=x.id, key=x.key, name=x.name, book_id=x.book_id) for x in scoped(LoreEntry)
         ),
-        series_flags_set=refs.flags_set_in_series(session, sid),
+        "series_flags_set": refs.flags_set_in_series(session, series_id),
+    }
+
+
+def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
+    book = require(session, Book, book_id)
+    return m.BookSnapshot(
+        book_id=book.id,
+        series_id=book.series_id,
+        title=book.title,
+        start_node_id=book.start_node_id,
+        acts=tuple(
+            m.Act(id=a.id, key=a.key, title=a.title, position=a.position) for a in book.acts
+        ),
+        nodes=tuple(_node(n) for n in load_book_nodes(session, book_id)),
+        **_series_entities(session, book.series_id),
     )
 
 
 def problems(session: Session, book_id: str) -> list[Problem]:
     return validate_book(book_snapshot(session, book_id))
+
+
+ENTITY_TYPES = frozenset({"enemy", "item", "table"})
+
+
+def series_entity_problems(session: Session, series_id: str) -> list[Problem]:
+    """Validation of a series' enemies, items and tables, independent of any book.
+
+    Runs the book validator on an empty book where every entity counts as
+    available (scope is a per-book concern), then keeps only entity problems.
+    """
+    require(session, Series, series_id)
+    fields = _series_entities(session, series_id)
+    for kind in ("items", "enemies", "tables"):
+        fields[kind] = tuple(replace(x, book_id=None) for x in fields[kind])
+    probe = m.BookSnapshot(
+        book_id="", series_id=series_id, title="", start_node_id=None, acts=(), nodes=(), **fields
+    )
+    return [p for p in validate_book(probe) if p.entity_type in ENTITY_TYPES]

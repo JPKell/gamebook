@@ -4,11 +4,21 @@ import { NotFound } from '@/features/placeholder/NotFound'
 import { SectionPlaceholder } from '@/features/placeholder/SectionPlaceholder'
 
 import { AppShell } from './AppShell'
-import { LibraryPage, MechanicsIndex, MechanicsPage, StoryIndex, StoryPage } from './lazyPages'
+import {
+  EnemiesIndex,
+  EnemiesPage,
+  ItemsIndex,
+  ItemsPage,
+  LibraryPage,
+  MechanicsIndex,
+  MechanicsPage,
+  StoryIndex,
+  StoryPage,
+} from './lazyPages'
 import { Page } from './Page'
 import { SECTIONS } from './sections'
 
-const BUILT = new Set(['library', 'story', 'mechanics'])
+const BUILT = new Set(['library', 'story', 'mechanics', 'enemies', 'items'])
 
 export const routes: RouteObject[] = [
   {
@@ -53,6 +63,38 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <MechanicsPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'enemies',
+        element: (
+          <Page>
+            <EnemiesIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'enemies/:seriesId',
+        element: (
+          <Page>
+            <EnemiesPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'items',
+        element: (
+          <Page>
+            <ItemsIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'items/:seriesId',
+        element: (
+          <Page>
+            <ItemsPage />
           </Page>
         ),
       },

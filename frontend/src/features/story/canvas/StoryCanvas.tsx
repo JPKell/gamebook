@@ -145,7 +145,15 @@ export function StoryCanvas({
     [select],
   )
 
-  // Reveal requests (from search, problems panel, palette).
+  // Reveal requests (from search, problems panel, palette, ?node= links).
+  // Fit the whole book on open, unless a reveal is waiting: the initial fit would
+  // override its centring. (A ?node= link may not have reached the store yet when
+  // the canvas mounts in the same commit, hence the URL check.)
+  const [fitOnOpen] = useState(
+    () =>
+      !useStoryStore.getState().revealId &&
+      !new URLSearchParams(window.location.search).has('node'),
+  )
   useEffect(() => {
     if (!revealId) return
     const n = nodes.find((x) => x.id === revealId)
@@ -289,7 +297,7 @@ export function StoryCanvas({
       onEdgeClick={(_, e) => e.data && openNode(e.source, 'choices', e.data.choice.id)}
       onNodeDoubleClick={(_, n) => n.type === 'story' && openNode(n.id, 'beat')}
       defaultEdgeOptions={{ markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 } }}
-      fitView
+      fitView={fitOnOpen}
       fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
       zoomOnDoubleClick={false}
       deleteKeyCode={['Delete', 'Backspace']}

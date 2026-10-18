@@ -1,7 +1,7 @@
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
 import { BookX, Library } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 
 import { ApiError } from '@/api/client'
@@ -47,10 +47,26 @@ export function StoryPage() {
   const graph = useBookGraph(bookId)
   const setLastBookId = useUiStore((s) => s.setLastBookId)
   const reset = useStoryStore((s) => s.reset)
+  const [params, setParams] = useSearchParams()
+  const deepNode = params.get('node')
 
   useEffect(() => {
     reset()
   }, [bookId, reset])
+  // ?node=<id> (e.g. from where-used lists): open and reveal it once, after the reset above.
+  useEffect(() => {
+    if (!deepNode) return
+    const { openNode, reveal } = useStoryStore.getState()
+    openNode(deepNode, 'beat')
+    reveal(deepNode)
+    setParams(
+      (p) => {
+        p.delete('node')
+        return p
+      },
+      { replace: true },
+    )
+  }, [bookId, deepNode, setParams])
   useEffect(() => {
     if (graph.isSuccess) setLastBookId(bookId)
     if (graph.error instanceof ApiError && graph.error.status === 404) setLastBookId(null)
