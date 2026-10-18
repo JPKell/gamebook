@@ -7,6 +7,7 @@ as the oracle in tests (incremental == full rebuild).
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Any, Literal, cast
@@ -20,6 +21,7 @@ from gamebook.core.effects import Effect, effect_refs, rename_in_effect
 from gamebook.core.gbx.scope import Context, RefKind, Scope, ScopeInputs, scope_for
 from gamebook.core.rules import RuleSystemDef
 from gamebook.db.models import (
+    Act,
     Book,
     Character,
     Choice,
@@ -31,12 +33,32 @@ from gamebook.db.models import (
     RandomTable,
     RefIndex,
     RuleSystem,
+    StoryBeat,
     TextVariant,
 )
 
 SourceType = Literal[
-    "node", "choice", "variant", "encounter", "enemy", "item", "table", "character"
+    "node", "choice", "variant", "encounter", "enemy", "item", "table", "character", "lore", "beat"
 ]
+
+#: Wiki mentions: ``[[key]]``, ``[[character:key]]`` / ``[[lore:key]]``, optional ``|label``.
+MENTION = re.compile(r"\[\[(?:(character|lore):)?([A-Za-z][A-Za-z0-9_]{0,63})(?:\|[^\]\n]*)?\]\]")
+
+
+def mentions(text: str | None) -> list[tuple[str | None, str]]:
+    """(explicit kind or None, key) for every mention in ``text``."""
+    return [(m.group(1), m.group(2)) for m in MENTION.finditer(text or "")]
+
+
+def _mention_rows(text: str | None, field: str) -> list[RefRow]:
+    rows: list[RefRow] = []
+    for kind, key in mentions(text):
+        # A bare [[key]] may name a character or a lore entry; index both so the
+        # backlink appears on whichever exists (keys rarely collide).
+        for target in (kind,) if kind else ("character", "lore"):
+            rows.append(RefRow(target, key, "mention", field))
+    return rows
+
 
 _EFFECTS = TypeAdapter(list[Effect])
 
@@ -164,6 +186,7 @@ def extract(source_type: SourceType, obj: Any, ctx: RefContext) -> list[RefRow]:
                 key = ctx.entity_key("lore", n.location_id)
                 if key:
                     rows.append(RefRow("lore", key, "location", "location_id"))
+            rows += _mention_rows(n.beat_notes, "beat_notes")
         case "choice":
             c: Choice = obj
             rows += _expr_rows(c.condition, ctx.scope(Context.CONDITION), "condition", "condition")
@@ -229,6 +252,15 @@ def extract(source_type: SourceType, obj: Any, ctx: RefContext) -> list[RefRow]:
                     rows.append(
                         RefRow("character", rel["character"], "relationship", f"relationships[{i}]")
                     )
+                rows += _mention_rows(rel.get("notes"), f"relationships[{i}]")
+            for f in ("appearance", "voice", "motivations", "secrets", "notes"):
+                rows += _mention_rows(getattr(ch, f), f)
+        case "lore":
+            le: LoreEntry = obj
+            rows += _mention_rows(le.body, "body")
+        case "beat":
+            bt: StoryBeat = obj
+            rows += _mention_rows(bt.description, "description")
     return rows
 
 
@@ -253,6 +285,9 @@ def _location(source_type: SourceType, obj: Any, session: Session) -> tuple[str 
         case "choice" | "variant" | "encounter":
             node = session.get(Node, obj.node_id)
             return (node.book_id if node else None), obj.node_id
+        case "beat":
+            act = session.get(Act, obj.act_id)
+            return (act.book_id if act else None), None
         case _:
             return obj.book_id, None
 
@@ -285,7 +320,7 @@ def reindex(
 
 
 def _series_of(session: Session, source_type: SourceType, obj: Any, book_id: str | None) -> str:
-    if source_type in ("enemy", "item", "table", "character"):
+    if source_type in ("enemy", "item", "table", "character", "lore"):
         return str(obj.series_id)
     book = session.get(Book, book_id)
     assert book is not None
@@ -344,9 +379,18 @@ def rebuild_series(session: Session, series_id: str) -> None:
         ("item", Item),
         ("table", RandomTable),
         ("character", Character),
+        ("lore", LoreEntry),
     ):
         for obj in session.scalars(select(model).where(model.series_id == series_id)):
             reindex(session, kind, obj, ctx)  # type: ignore[arg-type]
+    beats = session.scalars(
+        select(StoryBeat)
+        .join(Act, StoryBeat.act_id == Act.id)
+        .join(Book, Act.book_id == Book.id)
+        .where(Book.series_id == series_id)
+    )
+    for beat in beats:
+        reindex(session, "beat", beat, ctx)
 
 
 # ── queries ──────────────────────────────────────────────────────────────
@@ -387,8 +431,16 @@ def source_labels(
     for source_type, source_id in sources:
         if source_type in _ENTITY_MODELS:
             by_type.setdefault(source_type, set()).add(source_id)
+        elif source_type == "beat":
+            by_type.setdefault("beat", set()).add(source_id)
     out: dict[tuple[str, str], str] = {}
     for source_type, ids in by_type.items():
+        if source_type == "beat":
+            rows = session.execute(
+                select(StoryBeat.id, StoryBeat.title).where(StoryBeat.id.in_(ids))
+            )
+            out.update({("beat", i): f"Story beat: {t}" for i, t in rows})
+            continue
         model = _ENTITY_MODELS[source_type]
         for oid, name in session.execute(select(model.id, model.name).where(model.id.in_(ids))):
             out[(source_type, oid)] = name
@@ -428,6 +480,21 @@ def flags_set_in_series(session: Session, series_id: str) -> frozenset[str]:
 # ── renames ──────────────────────────────────────────────────────────────
 
 
+#: Model for every RefIndex source type.
+SOURCE_MODELS: dict[str, type[Any]] = {
+    "node": Node,
+    "choice": Choice,
+    "variant": TextVariant,
+    "encounter": Encounter,
+    "enemy": Enemy,
+    "item": Item,
+    "table": RandomTable,
+    "character": Character,
+    "lore": LoreEntry,
+    "beat": StoryBeat,
+}
+
+
 def rename_key(
     session: Session,
     series_id: str,
@@ -453,16 +520,7 @@ def rename_key(
     sources = session.execute(stmt.distinct()).all()
     ctx = RefContext(session, series_id)
     ref_kind = RefKind(kind_value) if kind_value in RefKind._value2member_map_ else None
-    models: dict[str, type[Any]] = {
-        "node": Node,
-        "choice": Choice,
-        "variant": TextVariant,
-        "encounter": Encounter,
-        "enemy": Enemy,
-        "item": Item,
-        "table": RandomTable,
-        "character": Character,
-    }
+    models = SOURCE_MODELS
     changed = 0
     for source_type, source_id in sources:
         obj = session.get(models[source_type], source_id)
@@ -500,6 +558,27 @@ def _rename_effects(
     return dump_effects([rename_in_effect(e, scope, kind, old, new) for e in effects])
 
 
+def rename_mentions(text: str, kind: str, old: str, new: str) -> str:
+    """Rewrite ``[[old]]`` / ``[[kind:old]]`` mentions (labels kept)."""
+
+    def sub(m: re.Match[str]) -> str:
+        if m.group(2) != old or (m.group(1) not in (None, kind)):
+            return m.group(0)
+        prefix = f"{m.group(1)}:" if m.group(1) else ""
+        rest = m.group(0)[2 + len(prefix) + len(old) :]
+        return f"[[{prefix}{new}{rest}"
+
+    return MENTION.sub(sub, text)
+
+
+_MENTION_FIELDS: dict[str, tuple[str, ...]] = {
+    "node": ("beat_notes",),
+    "character": ("appearance", "voice", "motivations", "secrets", "notes"),
+    "lore": ("body",),
+    "beat": ("description",),
+}
+
+
 def _rename_in(
     source_type: str,
     obj: Any,
@@ -511,6 +590,15 @@ def _rename_in(
 ) -> None:
     cond = ctx.scope(Context.CONDITION)
     amount = ctx.scope(Context.AMOUNT)
+    if kind in ("character", "lore"):
+        for f in _MENTION_FIELDS.get(source_type, ()):
+            if getattr(obj, f):
+                setattr(obj, f, rename_mentions(getattr(obj, f), kind, old, new))
+        if source_type == "character":
+            obj.relationships = [
+                {**r, "notes": rename_mentions(r["notes"], kind, old, new)} if r.get("notes") else r
+                for r in obj.relationships
+            ]
     if source_type == "node":
         obj.on_enter = _rename_effects(obj.on_enter, amount, ref_kind, old, new)
     elif source_type == "choice":

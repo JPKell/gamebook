@@ -80,6 +80,8 @@ def _node(d: dict[str, Any]) -> m.Node:
         items=tuple(m.Placement(**p) for p in d.get("items", [])),
         shop=tuple(m.ShopEntry(**s) for s in d["shop"]) if d.get("shop") is not None else None,
         section_pin=d.get("section_pin"),
+        character_ids=tuple(d.get("character_ids", ())),
+        canonical_predecessor_id=d.get("canonical_predecessor_id"),
     )
 
 
@@ -95,6 +97,10 @@ def from_bundle(bundle: dict[str, Any]) -> m.BookSnapshot:
         title=d["title"],
         start_node_id=d.get("start_node_id"),
         acts=tuple(m.Act(**a) for a in d.get("acts", [])),
+        beats=tuple(
+            m.Beat(id=x["id"], act_id=x["act_id"], title=x["title"], node_ids=tuple(x["node_ids"]))
+            for x in d.get("beats", [])
+        ),
         nodes=tuple(_node(n) for n in d.get("nodes", [])),
         rules=RuleSystemDef.model_validate(d["rules"]) if d.get("rules") else None,
         items=tuple(

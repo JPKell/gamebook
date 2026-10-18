@@ -34,3 +34,9 @@ export const PlaytestIndex = lazy(() =>
 export const PlaytestPage = lazy(() =>
   import('@/features/playtest/PlaytestPage').then((m) => ({ default: m.PlaytestPage })),
 )
+export const LoreIndex = lazy(() =>
+  import('@/features/lore/LorePage').then((m) => ({ default: m.LoreIndex })),
+)
+export const LorePage = lazy(() =>
+  import('@/features/lore/LorePage').then((m) => ({ default: m.LorePage })),
+)

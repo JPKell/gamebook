@@ -122,6 +122,7 @@ def delete_act(session: Session, act_id: str, *, force: bool = False) -> None:
     from gamebook.services.nodes import delete_nodes  # local: avoid import cycle
 
     delete_nodes(session, book, nodes)
+    refs.drop(session, "beat", [b.id for b in act.beats])
     session.delete(act)
     session.flush()
     remaining = sorted(book.acts, key=lambda a: a.position)

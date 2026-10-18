@@ -210,6 +210,15 @@ def build_rich_series(api: Api) -> Json:
         },
     )
     api.post(f"/series/{sid}/rule-systems", {"name": "Experimental"})
+    api.post(
+        f"/acts/{act1['id']}/beats",
+        {
+            "title": "Arrival",
+            "description": "Meet [[mara]] in the mist.",
+            "node_ids": [start["id"]],
+        },
+    )
+    api.post(f"/acts/{act2['id']}/beats", {"title": "Unwritten"})
     del b2
     result: Json = s
     return result
@@ -267,6 +276,7 @@ def test_round_trip_is_lossless_and_deterministic(api: Api, fresh_client: TestCl
         assert fresh.get(f"/books/{book['id']}/problems") == api.get(
             f"/books/{book['id']}/problems"
         )
+        assert fresh.get(f"/books/{book['id']}/outline") == api.get(f"/books/{book['id']}/outline")
 
     def strip(rows: list[Json]) -> list[Json]:
         return [{k: v for k, v in r.items() if k != "updated_at"} for r in rows]

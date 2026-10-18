@@ -33,7 +33,7 @@ KINDS: dict[str, EntityKind] = {
         EntityKind("item", Item, "item", ("use_effects",)),
         EntityKind("table", RandomTable, "table"),
         EntityKind("character", Character, "character"),
-        EntityKind("lore", LoreEntry, None),
+        EntityKind("lore", LoreEntry, "lore"),
     )
 }
 
@@ -188,18 +188,7 @@ def delete_entity(
 
 def _refresh_targeting(session: Session, kind: EntityKind, series_id: str, key: str) -> None:
     """Reindex sources whose references to ``key`` may resolve differently now."""
-    from gamebook.db.models import Choice, Encounter, Node, TextVariant
-
-    models: dict[str, type[Any]] = {
-        "node": Node,
-        "choice": Choice,
-        "variant": TextVariant,
-        "encounter": Encounter,
-        "enemy": Enemy,
-        "item": Item,
-        "table": RandomTable,
-        "character": Character,
-    }
+    models = refs.SOURCE_MODELS
     sources = {
         (r.source_type, r.source_id) for r, _ in refs.where_used(session, series_id, kind.name, key)
     }

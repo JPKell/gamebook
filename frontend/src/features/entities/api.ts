@@ -6,11 +6,13 @@ import { refresh, useApiMutation } from '@/api/queries'
 import type { components } from '@/api/schema'
 
 type S = components['schemas']
-export type EntityPlural = 'enemies' | 'items' | 'tables'
+export type EntityPlural = 'enemies' | 'items' | 'tables' | 'characters' | 'lore'
 export type EnemyCreate = S['EnemyCreate']
 export type EnemyUpdate = S['EnemyUpdate']
 export type ItemUpdate = S['ItemUpdate']
 export type TableUpdate = S['TableUpdate']
+export type CharacterUpdate = S['CharacterUpdate']
+export type LoreUpdate = S['LoreUpdate']
 
 const ek = {
   whereUsed: (seriesId: string, type: string, key: string) =>
@@ -93,6 +95,8 @@ export function useCreateEntity(plural: EntityPlural, seriesId: string) {
         enemies: () => api.POST('/api/series/{series_id}/enemies', params),
         items: () => api.POST('/api/series/{series_id}/items', params),
         tables: () => api.POST('/api/series/{series_id}/tables', params),
+        characters: () => api.POST('/api/series/{series_id}/characters', params),
+        lore: () => api.POST('/api/series/{series_id}/lore', params),
       }[plural]
       return unwrap(call() as Promise<{ data?: { id: string }; response: Response }>) as Promise<{
         id: string
@@ -102,8 +106,20 @@ export function useCreateEntity(plural: EntityPlural, seriesId: string) {
   )
 }
 
-type EntityOut = { enemies: S['EnemyOut']; items: S['ItemOut']; tables: S['TableOut'] }
-type EntityPatch = { enemies: EnemyUpdate; items: ItemUpdate; tables: TableUpdate }
+type EntityOut = {
+  enemies: S['EnemyOut']
+  items: S['ItemOut']
+  tables: S['TableOut']
+  characters: S['CharacterOut']
+  lore: S['LoreOut']
+}
+type EntityPatch = {
+  enemies: EnemyUpdate
+  items: ItemUpdate
+  tables: TableUpdate
+  characters: CharacterUpdate
+  lore: LoreUpdate
+}
 
 function patchEntity<P extends EntityPlural>(plural: P, id: string, body: EntityPatch[P]) {
   const params = { params: { path: { entity_id: id } } }
@@ -111,6 +127,9 @@ function patchEntity<P extends EntityPlural>(plural: P, id: string, body: Entity
     enemies: () => api.PATCH('/api/enemies/{entity_id}', { ...params, body: body as EnemyUpdate }),
     items: () => api.PATCH('/api/items/{entity_id}', { ...params, body: body as ItemUpdate }),
     tables: () => api.PATCH('/api/tables/{entity_id}', { ...params, body: body as TableUpdate }),
+    characters: () =>
+      api.PATCH('/api/characters/{entity_id}', { ...params, body: body as CharacterUpdate }),
+    lore: () => api.PATCH('/api/lore/{entity_id}', { ...params, body: body as LoreUpdate }),
   }[plural]
   return unwrap(call() as Promise<{ data?: unknown; response: Response }>)
 }
@@ -157,6 +176,8 @@ export function useDeleteEntity(plural: EntityPlural, seriesId: string) {
         enemies: () => api.DELETE('/api/enemies/{entity_id}', params),
         items: () => api.DELETE('/api/items/{entity_id}', params),
         tables: () => api.DELETE('/api/tables/{entity_id}', params),
+        characters: () => api.DELETE('/api/characters/{entity_id}', params),
+        lore: () => api.DELETE('/api/lore/{entity_id}', params),
       }[plural]
       return unwrap(call() as Promise<{ data?: unknown; response: Response }>)
     },

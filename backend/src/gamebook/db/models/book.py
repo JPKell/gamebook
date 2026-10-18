@@ -55,3 +55,41 @@ class Act(IdMixin, TimestampMixin, Base):
     summary: Mapped[str] = mapped_column(Text, default="")
 
     book: Mapped[Book] = relationship(back_populates="acts")
+    beats: Mapped[list[StoryBeat]] = relationship(
+        back_populates="act",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="StoryBeat.position",
+    )
+
+
+class StoryBeat(IdMixin, TimestampMixin, Base):
+    """One beat of an act's outline, linked to the nodes that tell it (SPEC §2.7)."""
+
+    __tablename__ = "story_beat"
+
+    act_id: Mapped[str] = mapped_column(ForeignKey("act.id", ondelete="CASCADE"), index=True)
+    position: Mapped[int] = mapped_column(Integer, default=0)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(Text, default="")
+
+    act: Mapped[Act] = relationship(back_populates="beats")
+    links: Mapped[list[BeatNode]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True, order_by="BeatNode.position"
+    )
+
+    @property
+    def node_ids(self) -> list[str]:
+        return [link.node_id for link in self.links]
+
+
+class BeatNode(Base):
+    __tablename__ = "story_beat_node"
+
+    beat_id: Mapped[str] = mapped_column(
+        ForeignKey("story_beat.id", ondelete="CASCADE"), primary_key=True
+    )
+    node_id: Mapped[str] = mapped_column(
+        ForeignKey("node.id", ondelete="CASCADE"), primary_key=True, index=True
+    )
+    position: Mapped[int] = mapped_column(Integer, default=0)

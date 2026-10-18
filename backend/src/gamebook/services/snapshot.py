@@ -135,6 +135,8 @@ def _node(n: Node) -> m.Node:
             else None
         ),
         section_pin=n.section_pin,
+        character_ids=tuple(c.character_id for c in n.characters),
+        canonical_predecessor_id=n.canonical_predecessor_id,
     )
 
 
@@ -222,6 +224,11 @@ def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
         start_node_id=book.start_node_id,
         acts=tuple(
             m.Act(id=a.id, key=a.key, title=a.title, position=a.position) for a in book.acts
+        ),
+        beats=tuple(
+            m.Beat(id=bt.id, act_id=a.id, title=bt.title, node_ids=tuple(bt.node_ids))
+            for a in book.acts
+            for bt in a.beats
         ),
         nodes=tuple(_node(n) for n in load_book_nodes(session, book_id)),
         **_series_entities(session, book.series_id),

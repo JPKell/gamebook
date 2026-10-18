@@ -22,6 +22,40 @@ export interface paths {
     patch: operations['update_act']
     trace?: never
   }
+  '/api/acts/{act_id}/beats': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Create Beat */
+    post: operations['create_beat']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/acts/{act_id}/beats/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Reorder Beats */
+    put: operations['reorder_beats']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/batches/{batch_id}': {
     parameters: {
       query?: never
@@ -75,6 +109,24 @@ export interface paths {
     options?: never
     head?: never
     patch?: never
+    trace?: never
+  }
+  '/api/beats/{beat_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Beat */
+    delete: operations['delete_beat']
+    options?: never
+    head?: never
+    /** Update Beat */
+    patch: operations['update_beat']
     trace?: never
   }
   '/api/books/{book_id}': {
@@ -168,6 +220,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/digest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Book Digest
+     * @description What readers must / may have at every node (default tier: the highest).
+     */
+    get: operations['get_book_digest']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}/duplicate': {
     parameters: {
       query?: never
@@ -247,6 +319,26 @@ export interface paths {
     put?: never
     /** Create Node */
     post: operations['create_node']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/outline': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Outline
+     * @description Acts with their summaries and story beats.
+     */
+    get: operations['get_outline']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -668,6 +760,23 @@ export interface paths {
     get?: never
     /** Reorder Choices */
     put: operations['reorder_choices']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/nodes/{node_id}/digest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Node Digest */
+    get: operations['get_node_digest']
+    put?: never
     post?: never
     delete?: never
     options?: never
@@ -1384,6 +1493,45 @@ export interface components {
       /** Win Rate */
       win_rate?: number | null
     }
+    /** BeatCreate */
+    BeatCreate: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Node Ids */
+      node_ids?: string[]
+      /**
+       * Title
+       * @default New beat
+       */
+      title?: string
+    }
+    /** BeatOut */
+    BeatOut: {
+      /** Act Id */
+      act_id: string
+      /** Description */
+      description: string
+      /** Id */
+      id: string
+      /** Node Ids */
+      node_ids: string[]
+      /** Position */
+      position: number
+      /** Title */
+      title: string
+    }
+    /** BeatUpdate */
+    BeatUpdate: {
+      /** Description */
+      description?: string | null
+      /** Node Ids */
+      node_ids?: string[] | null
+      /** Title */
+      title?: string | null
+    }
     /** BookCreate */
     BookCreate: {
       /** Key */
@@ -1397,6 +1545,15 @@ export interface components {
       synopsis?: string
       /** Title */
       title: string
+    }
+    /** BookDigestOut */
+    BookDigestOut: {
+      /** Nodes */
+      nodes: {
+        [key: string]: components['schemas']['NodeDigestOut']
+      }
+      /** Tier */
+      tier: string
     }
     /**
      * BookGraph
@@ -1828,7 +1985,7 @@ export interface components {
     CoverageIn: {
       /**
        * Max States
-       * @default 5000
+       * @default 20000
        */
       max_states?: number
       /**
@@ -2079,6 +2236,24 @@ export interface components {
         [key: string]: unknown
       } | null
     }
+    /** FactOut */
+    FactOut: {
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+    }
+    /** FactsOut */
+    FactsOut: {
+      /** Characters */
+      characters?: components['schemas']['FactOut'][]
+      /** Flags */
+      flags?: components['schemas']['FactOut'][]
+      /** Items */
+      items?: components['schemas']['FactOut'][]
+      /** Skills */
+      skills?: components['schemas']['FactOut'][]
+    }
     /** FlagRename */
     FlagRename: {
       /** New */
@@ -2109,6 +2284,20 @@ export interface components {
       kind: 'force'
       /** Total */
       total: number
+    }
+    /** GateOut */
+    GateOut: {
+      /** Choice Id */
+      choice_id: string
+      /** Condition */
+      condition: string
+      /** Label */
+      label: string
+      /**
+       * Verdict
+       * @enum {string}
+       */
+      verdict: 'always' | 'never' | 'depends'
     }
     /** GbxCheckIn */
     GbxCheckIn: {
@@ -2687,6 +2876,27 @@ export interface components {
        */
       y?: number
     }
+    /** NodeDigestOut */
+    NodeDigestOut: {
+      /** Canonical Predecessor */
+      canonical_predecessor: string | null
+      /** Canonical Predecessor Auto */
+      canonical_predecessor_auto: string | null
+      /** Canonical Predecessor Override */
+      canonical_predecessor_override: string | null
+      /** Depth Max */
+      depth_max: number | null
+      /** Depth Min */
+      depth_min: number | null
+      /** Gates */
+      gates: components['schemas']['GateOut'][]
+      may: components['schemas']['FactsOut']
+      must: components['schemas']['FactsOut']
+      /** Node Id */
+      node_id: string
+      /** Reachable */
+      reachable: boolean
+    }
     /** NodeOut */
     NodeOut: {
       /** Act Id */
@@ -2855,6 +3065,30 @@ export interface components {
       range_lo: number | null
       /** Target Node Id */
       target_node_id: string | null
+    }
+    /** OutlineAct */
+    OutlineAct: {
+      /** Beats */
+      beats: components['schemas']['BeatOut'][]
+      /** Color */
+      color: string | null
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Position */
+      position: number
+      /** Summary */
+      summary: string
+      /** Title */
+      title: string
+    }
+    /** OutlineOut */
+    OutlineOut: {
+      /** Acts */
+      acts: components['schemas']['OutlineAct'][]
+      /** Book Id */
+      book_id: string
     }
     /** PlacementIn */
     PlacementIn: {
@@ -4003,6 +4237,94 @@ export interface operations {
       }
     }
   }
+  create_beat: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BeatCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BeatOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_beats: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BeatOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_batch: {
     parameters: {
       query?: never
@@ -4146,6 +4468,88 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PlayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_beat: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        beat_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_beat: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        beat_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BeatUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BeatOut']
         }
       }
       /** @description Validation Error */
@@ -4506,6 +4910,48 @@ export interface operations {
       }
     }
   }
+  get_book_digest: {
+    parameters: {
+      query?: {
+        tier?: string | null
+      }
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookDigestOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   duplicate_nodes: {
     parameters: {
       query?: never
@@ -4694,6 +5140,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['NodeOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_outline: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OutlineOut']
         }
       }
       /** @description Validation Error */
@@ -6153,6 +6639,48 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ChoiceOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_node_digest: {
+    parameters: {
+      query?: {
+        tier?: string | null
+      }
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeDigestOut']
         }
       }
       /** @description Validation Error */

@@ -10,6 +10,8 @@ import {
   ItemsIndex,
   ItemsPage,
   LibraryPage,
+  LoreIndex,
+  LorePage,
   MechanicsIndex,
   MechanicsPage,
   PlaytestIndex,
@@ -20,7 +22,7 @@ import {
 import { Page } from './Page'
 import { SECTIONS } from './sections'
 
-const BUILT = new Set(['library', 'story', 'mechanics', 'enemies', 'items', 'playtest'])
+const BUILT = new Set(['library', 'story', 'mechanics', 'enemies', 'items', 'playtest', 'lore'])
 
 export const routes: RouteObject[] = [
   {
@@ -113,6 +115,22 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <PlaytestPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'lore',
+        element: (
+          <Page>
+            <LoreIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'lore/:seriesId',
+        element: (
+          <Page>
+            <LorePage />
           </Page>
         ),
       },

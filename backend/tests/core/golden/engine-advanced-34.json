@@ -79,6 +79,7 @@
      "title": "Act 1"
     }
    ],
+   "beats": [],
    "book_id": "b1",
    "characters": [],
    "enemies": [
@@ -185,6 +186,8 @@
    "nodes": [
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -353,6 +356,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -413,6 +418,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -551,6 +558,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -665,6 +674,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -721,6 +732,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -770,6 +783,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -819,6 +834,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [
       {
        "condition": null,
@@ -868,6 +885,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [],
      "encounters": [],
      "ending_grade": null,
@@ -893,6 +912,8 @@
     },
     {
      "act_id": "act1",
+     "canonical_predecessor_id": null,
+     "character_ids": [],
      "choices": [],
      "encounters": [],
      "ending_grade": null,

@@ -457,6 +457,113 @@
         "title": "BatchOut",
         "type": "object"
       },
+      "BeatCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "node_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 500,
+            "title": "Node Ids",
+            "type": "array"
+          },
+          "title": {
+            "default": "New beat",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "title": "BeatCreate",
+        "type": "object"
+      },
+      "BeatOut": {
+        "properties": {
+          "act_id": {
+            "title": "Act Id",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "node_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Node Ids",
+            "type": "array"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["id", "act_id", "position", "title", "description", "node_ids"],
+        "title": "BeatOut",
+        "type": "object"
+      },
+      "BeatUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "node_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 500,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Ids"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "BeatUpdate",
+        "type": "object"
+      },
       "BookCreate": {
         "additionalProperties": false,
         "properties": {
@@ -497,6 +604,24 @@
         },
         "required": ["title"],
         "title": "BookCreate",
+        "type": "object"
+      },
+      "BookDigestOut": {
+        "properties": {
+          "nodes": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeDigestOut"
+            },
+            "title": "Nodes",
+            "type": "object"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": ["tier", "nodes"],
+        "title": "BookDigestOut",
         "type": "object"
       },
       "BookGraph": {
@@ -1902,8 +2027,8 @@
         "additionalProperties": false,
         "properties": {
           "max_states": {
-            "default": 5000,
-            "maximum": 50000.0,
+            "default": 20000,
+            "maximum": 100000.0,
             "minimum": 10.0,
             "title": "Max States",
             "type": "integer"
@@ -2613,6 +2738,55 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "FactOut": {
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": ["key", "label"],
+        "title": "FactOut",
+        "type": "object"
+      },
+      "FactsOut": {
+        "properties": {
+          "characters": {
+            "items": {
+              "$ref": "#/components/schemas/FactOut"
+            },
+            "title": "Characters",
+            "type": "array"
+          },
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/FactOut"
+            },
+            "title": "Flags",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FactOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/FactOut"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "title": "FactsOut",
+        "type": "object"
+      },
       "FlagRename": {
         "additionalProperties": false,
         "properties": {
@@ -2672,6 +2846,30 @@
         },
         "required": ["kind", "total"],
         "title": "ForceInput",
+        "type": "object"
+      },
+      "GateOut": {
+        "properties": {
+          "choice_id": {
+            "title": "Choice Id",
+            "type": "string"
+          },
+          "condition": {
+            "title": "Condition",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "verdict": {
+            "enum": ["always", "never", "depends"],
+            "title": "Verdict",
+            "type": "string"
+          }
+        },
+        "required": ["choice_id", "label", "condition", "verdict"],
+        "title": "GateOut",
         "type": "object"
       },
       "GbxCheckIn": {
@@ -4396,6 +4594,100 @@
         "title": "NodeCreate",
         "type": "object"
       },
+      "NodeDigestOut": {
+        "properties": {
+          "canonical_predecessor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Predecessor"
+          },
+          "canonical_predecessor_auto": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Predecessor Auto"
+          },
+          "canonical_predecessor_override": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Predecessor Override"
+          },
+          "depth_max": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Max"
+          },
+          "depth_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth Min"
+          },
+          "gates": {
+            "items": {
+              "$ref": "#/components/schemas/GateOut"
+            },
+            "title": "Gates",
+            "type": "array"
+          },
+          "may": {
+            "$ref": "#/components/schemas/FactsOut"
+          },
+          "must": {
+            "$ref": "#/components/schemas/FactsOut"
+          },
+          "node_id": {
+            "title": "Node Id",
+            "type": "string"
+          },
+          "reachable": {
+            "title": "Reachable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "node_id",
+          "reachable",
+          "depth_min",
+          "depth_max",
+          "canonical_predecessor_auto",
+          "canonical_predecessor_override",
+          "canonical_predecessor",
+          "must",
+          "may",
+          "gates"
+        ],
+        "title": "NodeDigestOut",
+        "type": "object"
+      },
       "NodeOut": {
         "properties": {
           "act_id": {
@@ -5046,6 +5338,69 @@
         },
         "required": ["id", "position", "key", "target_node_id", "range_lo", "range_hi"],
         "title": "OutcomeOut",
+        "type": "object"
+      },
+      "OutlineAct": {
+        "properties": {
+          "beats": {
+            "items": {
+              "$ref": "#/components/schemas/BeatOut"
+            },
+            "title": "Beats",
+            "type": "array"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["id", "key", "title", "color", "summary", "position", "beats"],
+        "title": "OutlineAct",
+        "type": "object"
+      },
+      "OutlineOut": {
+        "properties": {
+          "acts": {
+            "items": {
+              "$ref": "#/components/schemas/OutlineAct"
+            },
+            "title": "Acts",
+            "type": "array"
+          },
+          "book_id": {
+            "title": "Book Id",
+            "type": "string"
+          }
+        },
+        "required": ["book_id", "acts"],
+        "title": "OutlineOut",
         "type": "object"
       },
       "PlacementIn": {
@@ -8020,6 +8375,130 @@
         "tags": ["books"]
       }
     },
+    "/api/acts/{act_id}/beats": {
+      "post": {
+        "operationId": "create_beat",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "act_id",
+            "required": true,
+            "schema": {
+              "title": "Act Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeatCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeatOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Beat",
+        "tags": ["outline"]
+      }
+    },
+    "/api/acts/{act_id}/beats/order": {
+      "put": {
+        "operationId": "reorder_beats",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "act_id",
+            "required": true,
+            "schema": {
+              "title": "Act Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BeatOut"
+                  },
+                  "title": "Response Reorder Beats",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Reorder Beats",
+        "tags": ["outline"]
+      }
+    },
     "/api/batches/{batch_id}": {
       "delete": {
         "operationId": "delete_batch",
@@ -8275,6 +8754,107 @@
         },
         "summary": "Replay Run",
         "tags": ["playtest"]
+      }
+    },
+    "/api/beats/{beat_id}": {
+      "delete": {
+        "operationId": "delete_beat",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "beat_id",
+            "required": true,
+            "schema": {
+              "title": "Beat Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Beat",
+        "tags": ["outline"]
+      },
+      "patch": {
+        "operationId": "update_beat",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "beat_id",
+            "required": true,
+            "schema": {
+              "title": "Beat Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeatUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeatOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update Beat",
+        "tags": ["outline"]
       }
     },
     "/api/books/{book_id}": {
@@ -8723,6 +9303,73 @@
         "tags": ["playtest"]
       }
     },
+    "/api/books/{book_id}/digest": {
+      "get": {
+        "description": "What readers must / may have at every node (default tier: the highest).",
+        "operationId": "get_book_digest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tier"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookDigestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Book Digest",
+        "tags": ["outline"]
+      }
+    },
     "/api/books/{book_id}/duplicate": {
       "post": {
         "operationId": "duplicate_nodes",
@@ -8994,6 +9641,57 @@
         },
         "summary": "Create Node",
         "tags": ["nodes"]
+      }
+    },
+    "/api/books/{book_id}/outline": {
+      "get": {
+        "description": "Acts with their summaries and story beats.",
+        "operationId": "get_outline",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutlineOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Outline",
+        "tags": ["outline"]
       }
     },
     "/api/books/{book_id}/play": {
@@ -10851,6 +11549,72 @@
         },
         "summary": "Reorder Choices",
         "tags": ["nodes"]
+      }
+    },
+    "/api/nodes/{node_id}/digest": {
+      "get": {
+        "operationId": "get_node_digest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "node_id",
+            "required": true,
+            "schema": {
+              "title": "Node Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tier"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeDigestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Node Digest",
+        "tags": ["outline"]
       }
     },
     "/api/nodes/{node_id}/encounters": {

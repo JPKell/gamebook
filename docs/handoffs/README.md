@@ -13,7 +13,8 @@ and what the next phase needs. Read the latest one before starting a phase.
 | 3 | Mechanics designer & engine | `v2-phase-03-mechanics.md` | ✅ Complete |
 | 4 | Enemies, items, encounters | `v2-phase-04-entities.md` | ✅ Complete |
 | 5 | In-app player & bot simulation | `v2-phase-05-playtest.md` | ✅ Complete |
-| 6 | Lore, outline, state digest | | Next |
+| 6 | Lore, outline, state digest | `v2-phase-06-lore-digest.md` | ✅ Complete |
+| 7 | LLM infrastructure & prose pipeline | | Next |
 
 ## v1 prototype (archived; code at tag `v1-prototype`)
 

@@ -4,6 +4,7 @@ import type { BookGraph, NodeOut } from '@/api/types'
 import { Field } from '@/components/ui/field'
 import { Checkbox, Select } from '@/components/ui/inputs'
 
+import { useDigestTier, useNodeDigest } from '../digest'
 import { nodeOptions } from '../model'
 
 export function LoreTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
@@ -21,6 +22,9 @@ export function LoreTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
     .map((o) => ({ ...o, group: incoming.has(o.value) ? 'Leads here' : 'Other nodes' }))
     .sort((a, b) => Number(b.group === 'Leads here') - Number(a.group === 'Leads here'))
   const chars = new Set(node.character_ids)
+  const digest = useNodeDigest(graph.book.id, node.id, useDigestTier(seriesId))
+  const auto = digest.data?.canonical_predecessor_auto
+  const autoTitle = graph.nodes.find((n) => n.id === auto)?.title
 
   return (
     <div className="space-y-5">
@@ -70,7 +74,7 @@ export function LoreTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
           <Select
             id={id}
             value={node.canonical_predecessor_id ?? null}
-            placeholder="Automatic"
+            placeholder={`Automatic${autoTitle ? ` (${autoTitle})` : ''}`}
             onValueChange={(canonical_predecessor_id) =>
               update.mutate({ id: node.id, canonical_predecessor_id })
             }

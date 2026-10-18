@@ -13,6 +13,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 
 from gamebook.core import gbx
+from gamebook.core.analysis.digest import compute as compute_digest
 from gamebook.core.analysis.graph import reachable, reverse, successors
 from gamebook.core.analysis.problems import SEVERITY_ORDER, Problem
 from gamebook.core.effects import (
@@ -234,6 +235,8 @@ def validate_book(book: BookSnapshot) -> list[Problem]:
         _check_node(book, node, col)
     _check_entities(book, col)
     _check_flags(book, col)
+    _check_digest(book, col)
+    _check_beats(book, col)
 
     problems = rule_problems + col.problems
     return sorted(problems, key=lambda p: SEVERITY_ORDER[p.severity])
@@ -775,6 +778,130 @@ def _check_flags(book: BookSnapshot, col: _Collector) -> None:
                 "flag_never_set",
                 f"Codeword {flag} is checked but never given anywhere in the series",
                 ctx,
+            )
+
+
+# ── outline ──────────────────────────────────────────────────────────────
+
+
+def _check_beats(book: BookSnapshot, col: _Collector) -> None:
+    """Only acts that have an outline are checked, so books without one stay quiet."""
+    in_beat: set[tuple[str, str]] = set()  # (act, node): a beat only covers its own act
+    outlined: set[str] = set()
+    nodes = {n.id for n in book.nodes}
+    for beat in book.beats:
+        outlined.add(beat.act_id)
+        linked = [n for n in beat.node_ids if n in nodes]
+        in_beat.update((beat.act_id, n) for n in linked)
+        if not linked:
+            col.add(
+                "info",
+                "beat_empty",
+                f"Story beat '{beat.title}' isn't linked to any node yet",
+                _Ctx(act_id=beat.act_id),
+            )
+    for n in book.nodes:
+        if n.act_id in outlined and (n.act_id, n.id) not in in_beat:
+            col.add(
+                "info",
+                "node_no_beat",
+                f"'{n.title}' isn't part of any story beat in its act's outline",
+                _Ctx(act_id=n.act_id, node_id=n.id),
+            )
+
+
+# ── state digest ─────────────────────────────────────────────────────────
+
+
+def _check_digest(book: BookSnapshot, col: _Collector) -> None:
+    """Rules that need the state digest (run at the highest tier, where every choice exists)."""
+    if book.rules is None or not book.rules.tiers or book.start_node_id is None:
+        return
+    try:
+        d = compute_digest(book)
+    except TierError:
+        return  # broken tiers are reported by the rule-system checks
+    by_id = {n.id: n for n in book.nodes}
+    for n in book.nodes:
+        nd = d.nodes[n.id]
+        if not nd.reachable:
+            continue
+        for c in n.choices:
+            verdict = nd.gates.get(c.id)
+            ctx = _Ctx(act_id=n.act_id, node_id=n.id, choice_id=c.id)
+            label = c.label or "(unlabelled)"
+            if verdict is False:
+                col.add(
+                    "warning",
+                    "gate_never",
+                    f"Choice '{label}' in '{n.title}' can never be taken: no path here meets "
+                    f"'{c.condition}'",
+                    ctx,
+                    "condition",
+                )
+            elif verdict is True:
+                col.add(
+                    "info",
+                    "gate_always",
+                    f"Choice '{label}' in '{n.title}' is always available: every path here "
+                    f"meets '{c.condition}'",
+                    ctx,
+                    "condition",
+                )
+
+    adj = successors(book)
+    structural = reachable(adj, [book.start_node_id]) if book.start_node_id in adj else set()
+    for n in book.nodes:
+        if n.id in structural and not d.nodes[n.id].reachable:
+            col.add(
+                "warning",
+                "unreachable_gated",
+                f"'{n.title}' can only be reached through choices no reader can take",
+                _Ctx(act_id=n.act_id, node_id=n.id),
+            )
+
+    # Trapped: an ending is reachable on paper, but only through never-satisfiable gates.
+    # Reported where readers first get stuck (not at every node upstream of it).
+    endings = [n.id for n in book.nodes if n.ending_kind is not None]
+    if endings:
+        live: dict[str, set[str]] = {n.id: set() for n in book.nodes}
+        for n in book.nodes:
+            for c in n.choices:
+                if d.nodes[n.id].gates.get(c.id) is False:
+                    continue
+                for o in c.outcomes:
+                    if o.target_id in live:
+                        live[n.id].add(o.target_id)
+        can_end_live = reachable(reverse(live), endings)
+        can_end = reachable(reverse(adj), endings)
+        trapped = {
+            n.id
+            for n in book.nodes
+            if d.nodes[n.id].reachable and n.id in can_end and n.id not in can_end_live
+        }
+        preds_live = reverse(live)
+        for n in book.nodes:
+            if n.id in trapped and not (preds_live.get(n.id, set()) & trapped):
+                col.add(
+                    "warning",
+                    "trapped",
+                    f"Readers at '{n.title}' can get trapped: every route to an ending passes a "
+                    "choice no reader can take",
+                    _Ctx(act_id=n.act_id, node_id=n.id),
+                )
+
+    # Canonical predecessor overrides must be real predecessors.
+    preds = reverse(successors(book))
+    for n in book.nodes:
+        p = n.canonical_predecessor_id
+        if p is not None and p not in preds.get(n.id, set()):
+            col.add(
+                "warning",
+                "bad_canonical",
+                f"The canonical predecessor of '{n.title}' "
+                f"('{by_id[p].title if p in by_id else 'deleted'}') has no choice leading here",
+                _Ctx(act_id=n.act_id, node_id=n.id),
+                "canonical_predecessor_id",
             )
 
 

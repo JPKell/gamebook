@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type InspectorTab = 'beat' | 'choices' | 'encounters' | 'variants' | 'lore'
+export type InspectorTab = 'beat' | 'choices' | 'encounters' | 'variants' | 'lore' | 'digest'
 
 export interface StoryFilters {
   problems: boolean

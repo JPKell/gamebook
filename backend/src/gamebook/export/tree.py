@@ -32,6 +32,7 @@ from sqlalchemy.orm import Session
 from gamebook.core.keys import key_problem
 from gamebook.db.models import (
     Act,
+    BeatNode,
     Book,
     Character,
     Choice,
@@ -48,6 +49,7 @@ from gamebook.db.models import (
     RuleSystem,
     Series,
     ShopItem,
+    StoryBeat,
     TextVariant,
 )
 
@@ -309,7 +311,24 @@ def _book_files(session: Session, b: Book, keys: _ExportKeys) -> dict[str, str]:
     for a in acts:
         files[f"{act_dirs[a.id]}/act.yaml"] = _dump(
             _clean(
-                {"id": a.id, "key": a.key, "title": a.title, "color": a.color, "summary": a.summary}
+                {
+                    "id": a.id,
+                    "key": a.key,
+                    "title": a.title,
+                    "color": a.color,
+                    "summary": a.summary,
+                    "beats": [
+                        _clean(
+                            {
+                                "id": bt.id,
+                                "title": bt.title,
+                                "description": bt.description,
+                                "nodes": [node_keys[n] for n in bt.node_ids if n in node_keys],
+                            }
+                        )
+                        for bt in a.beats
+                    ],
+                }
             )
         )
     for n in nodes:
@@ -351,6 +370,7 @@ def restore_book(session: Session, book_id: str, files: Mapping[str, str]) -> No
         refs.drop_node_tree(session, node)
         session.delete(node)
     session.flush()
+    refs.drop(session, "beat", [b.id for a in book.acts for b in a.beats])
     for act in list(book.acts):
         session.delete(act)
     session.flush()
@@ -365,6 +385,10 @@ def restore_book(session: Session, book_id: str, files: Mapping[str, str]) -> No
     ctx = refs.RefContext(session, book.series_id)
     for node in session.scalars(select(Node).where(Node.book_id == book_id)):
         refs.reindex_node_tree(session, node, ctx)
+    for beat in session.scalars(
+        select(StoryBeat).join(Act, StoryBeat.act_id == Act.id).where(Act.book_id == book_id)
+    ):
+        refs.reindex(session, "beat", beat, ctx)
 
 
 def _node_meta(
@@ -812,6 +836,7 @@ def _import_entities(
 def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _EntityKeys) -> None:
     act_files = sorted(k for k in files if k.startswith("acts/") and k.endswith("/act.yaml"))
     node_metas: list[tuple[str, dict[str, Any], str, str]] = []  # (act id, meta, body, path)
+    beat_data: list[tuple[str, list[dict[str, Any]], str]] = []  # (act id, beats, path)
     for position, act_rel in enumerate(act_files):
         d = _load_yaml(files[act_rel], act_rel)
         act = Act(
@@ -824,6 +849,7 @@ def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _
             summary=d.get("summary", ""),
         )
         session.add(act)
+        beat_data.append((act.id, d.get("beats", []), act_rel))
         act_dir = act_rel.rsplit("/", 1)[0]
         for rel in sorted(k for k in files if k.startswith(f"{act_dir}/nodes/")):
             meta, body = _parse_front_matter(files[rel], rel)
@@ -948,6 +974,21 @@ def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _
         stored = session.get(Node, meta["id"])
         assert stored is not None
         stored.canonical_predecessor_id = node_ref(meta.get("canonical_predecessor"), rel)
+    for act_id, beats, rel in beat_data:
+        for i, bt in enumerate(beats):
+            beat = StoryBeat(
+                id=bt["id"],
+                act_id=act_id,
+                position=i,
+                title=bt.get("title", ""),
+                description=bt.get("description", ""),
+            )
+            beat.links = [
+                BeatNode(node_id=nid, position=j)
+                for j, key in enumerate(bt.get("nodes", []))
+                if (nid := node_ref(key, rel)) is not None
+            ]
+            session.add(beat)
     book.start_node_id = node_ref(
         _load_yaml(files["book.yaml"], "book.yaml").get("start"), "book.yaml"
     )

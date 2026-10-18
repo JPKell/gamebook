@@ -55,7 +55,7 @@ export const SECTIONS: Section[] = [
     icon: BookOpen,
     phase: 6,
     summary: 'Characters, places, factions, act outlines and story beats.',
-    upcoming: ['Wiki with [[mentions]] and backlinks', 'Act outlines linked to nodes'],
+    upcoming: [],
   },
   {
     id: 'enemies',

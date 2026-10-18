@@ -274,9 +274,17 @@ act, node link, quantity and context ("found", "reward", "shop", "required by ch
   relationships `[{character, kind, notes}]`, appearances (derived from node links).
 - **LoreEntry**: `type: location | faction | history | glossary | other`, name, body (markdown),
   typed fields. Nodes link to a location and characters.
-- **ActOutline**: act summary + ordered **StoryBeats** `{title, description, linked nodes[]}`.
-  Beats with no linked nodes, and nodes in no beat, are surfaced as warnings.
-- Wiki-style `[[key]]` mentions with backlinks across lore, beats and beat notes.
+- **ActOutline**: act summary + ordered **StoryBeats** `{title, description, linked nodes[]}`
+  (`story_beat`, `story_beat_node`; exported in each act's `act.yaml`, part of undo history).
+  In acts that have an outline, beats with no linked nodes and nodes in no beat are reported
+  (info); books without outlines stay quiet.
+- **Wiki mentions:** `[[key]]`, `[[character:key]]` / `[[lore:key]]`, optional `|label`.
+  - Mentions are allowed in node beat notes, character text fields, relationship notes,
+    lore bodies and beat descriptions.
+  - They are indexed in the RefIndex (role `mention`), so they appear as backlinks.
+  - A bare key is indexed against both characters and lore. The UI resolves it to a
+    character first.
+  - Renaming a character or lore key rewrites its mentions, keeping prefixes and labels.
 
 ### 2.8 Prose
 
@@ -288,14 +296,54 @@ linked lore, style). Changing an upstream approved text marks downstream nodes s
 
 ### 2.9 State digest (static analysis)
 
-A dataflow analysis over the book graph (fixpoint, handles loops) computing, per node:
-- **must**: flags definitely set, items definitely held, characters definitely met;
-- **may**: flags/items/characters possibly present;
-- reachability, min/max path depth, stat ranges where bounded.
+A forward dataflow analysis over the book graph for one tier (`core/analysis/digest.py`).
+It is computed by fixpoint, so loops terminate (the lattice is finite). For each node it
+gives the reader's state **on arrival, after on-entry effects**:
+- **must**: codewords, items held, characters met and skills that are true on every route.
+  This is the intersection over incoming routes.
+- **may**: the same kinds of fact, true on some route (the union).
+- **reachability**, fewest choices from the start, and most choices from the start (unbounded
+  if a loop allows longer routes). Validation reports per-node reachability by itself; the
+  digest is also what derives "trapped" warnings.
+- **canonical predecessor**: the first node on a shortest route, in choice order. An author
+  override is validated as a real predecessor.
 
-Used by: the LLM writer ("the reader may or may not have the Silver Key — don't assume
-it"), the consistency checker, validation (a gated choice that is never / always
-satisfiable), and the author (shown in the node inspector).
+**Along each choice**, the analysis adds what the reader *might* do first, as "may":
+- optional pickups and shop purchases
+- using consumables, which also removes them from must
+- selling items
+
+It then adds:
+- what the condition proves (`has(rope) and flag(X)` → rope and X are certain afterwards;
+  `not flag(X)` → X is absent)
+- the choice's effects
+- a test's after-effects
+- random-table item results on combat choices, as "may"
+
+Choices whose condition no reader can meet contribute nothing, so they don't make anything
+reachable either. Further rules:
+- A once-only gain on a node or choice inside a loop is only "may" when the book can remove
+  that fact.
+- Combat outcomes drop consumables, since they can be drunk mid-fight.
+- The flee outcome applies the tier's flee cost.
+- Codewords set only in other books of the series are "may" from the start.
+
+**Gate verdicts** are three-valued (always / never / depends), using `has`, `flag`, `skill`,
+`equipped`, `count(x) >= n` and Boolean connectives. Stat comparisons and `visits()` are
+"depends".
+
+**Not tracked:** item counts and stat values.
+
+**Used by:**
+- the inspector's **Digest** tab
+- validation:
+  - `gate_never` (warning) and `gate_always` (info)
+  - `unreachable_gated` (warning): reachable only through choices no reader can take
+  - `trapped` (warning, reported where readers first get stuck): an ending is reachable on
+    paper, but only through choices no reader can take
+- the LLM writer and consistency checker (Phase 7+)
+
+Validation runs the digest at the highest tier, where every choice is available.
 
 ### 2.10 Playtests
 

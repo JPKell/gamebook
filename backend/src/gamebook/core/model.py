@@ -108,6 +108,10 @@ class Node:
     items: tuple[Placement, ...] = ()
     shop: tuple[ShopEntry, ...] | None = None
     section_pin: int | None = None
+    #: Characters present (ids); used by the state digest ("characters met").
+    character_ids: tuple[str, ...] = ()
+    #: Author override for the canonical predecessor (None = automatic).
+    canonical_predecessor_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -116,6 +120,16 @@ class Act:
     key: str
     title: str
     position: int
+
+
+@dataclass(frozen=True)
+class Beat:
+    """An outline beat (authoring only; the engine ignores it)."""
+
+    id: str
+    act_id: str
+    title: str
+    node_ids: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -184,6 +198,7 @@ class BookSnapshot:
     lore: tuple[Entity, ...] = ()
     #: Flags set anywhere in the series (any book), for "never set" checks.
     series_flags_set: frozenset[str] = frozenset()
+    beats: tuple[Beat, ...] = ()
 
     def node(self, node_id: str) -> Node | None:
         return self._nodes_by_id().get(node_id)

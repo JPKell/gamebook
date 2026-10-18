@@ -226,15 +226,16 @@ def test_conditions_and_tier_scope() -> None:
         return book(
             with_choices(
                 node("start"),
-                goto("start", "end", condition=cond, min_tier=min_tier),
+                replace(goto("start", "end", condition=cond, min_tier=min_tier), id="gated"),
                 goto("start", "end", "Other"),
             ),
             ending("end"),
         )
 
-    assert validate_book(gated("has(rope) and GOLD >= 5")) == []
+    # Nobody can have rope here, which the state digest points out.
+    assert codes(validate_book(gated("has(rope) and GOLD >= 5"))) == ["gate_never"]
     c = codes(validate_book(gated("has(sword)")))
-    assert c == ["gbx.ref"]
+    assert c == ["gbx.ref", "gate_never"]
     # ARMOR only exists from Medium: warning suggesting a min tier...
     assert codes(validate_book(gated("ARMOR > 2"))) == ["tier_scope"]
     # ...which goes away once the min tier is set.
@@ -263,18 +264,19 @@ def test_effects() -> None:
 
 
 def test_flags_never_set() -> None:
-    gate = goto("start", "end", condition="flag(RAVEN)")
+    gate = replace(goto("start", "end", condition="flag(RAVEN)"), id="gate")
     b = book(with_choices(node("start"), gate, goto("start", "end", "Other")), ending("end"))
-    assert codes(validate_book(b)) == ["flag_never_set"]
+    assert codes(validate_book(b)) == ["flag_never_set", "gate_never"]
 
+    # Set later in the book (after the gate): not "never set", though still never true here.
     setter = replace(ending("end"), on_enter=effects({"op": "set_flag", "flag": "RAVEN"}))
-    assert (
+    assert codes(
         validate_book(
             book(with_choices(node("start"), gate, goto("start", "end", "Other")), setter)
         )
-        == []
-    )
-    assert validate_book(replace(b, series_flags_set=frozenset({"RAVEN"}))) == []
+    ) == ["gate_never"]
+    # Set in another book of the series: a reader may bring it along (no contradiction).
+    assert codes(validate_book(replace(b, series_flags_set=frozenset({"RAVEN"})))) == []
 
 
 def test_variants() -> None:
@@ -341,3 +343,38 @@ def test_problems_sorted_by_severity() -> None:
     b = book(with_choices(node("start"), goto("start", None)), node("stuck"))
     sev = [p.severity for p in validate_book(b)]
     assert sev == sorted(sev, key=["error", "warning", "info"].index)
+
+
+def test_digest_rules() -> None:
+    """Never/always-satisfiable gates, readers trapped behind them, bad canonical overrides."""
+    b = book(
+        with_choices(
+            replace(node("start"), on_enter=effects({"op": "set_flag", "flag": "RAVEN"})),
+            replace(goto("start", "hall", condition="flag(RAVEN)"), id="always"),
+        ),
+        with_choices(node("hall"), replace(goto("hall", "end", condition="has(rope)"), id="never")),
+        replace(ending("end"), canonical_predecessor_id="start"),
+    )
+    found = {(p.code, p.choice_id or p.node_id) for p in validate_book(b)}
+    assert ("gate_always", "always") in found
+    assert ("gate_never", "never") in found
+    assert ("trapped", "start") in found  # reported where readers first get stuck
+    assert ("bad_canonical", "end") in found
+
+
+def test_unreachable_through_impossible_choices_and_trapped_once() -> None:
+    b = book(
+        with_choices(
+            node("start"),
+            replace(goto("start", "vault", condition="has(rope)"), id="locked"),
+            goto("start", "a"),
+        ),
+        with_choices(node("a"), goto("a", "b")),
+        with_choices(node("b"), replace(goto("b", "end", condition="has(rope)"), id="b_gate")),
+        with_choices(node("vault"), goto("vault", "end")),
+        ending("end"),
+    )
+    found = [(p.code, p.node_id) for p in validate_book(b)]
+    assert ("unreachable_gated", "vault") in found
+    # start, a and b are all stuck; only the first stuck node is reported.
+    assert [n for c, n in found if c == "trapped"] == ["start"]

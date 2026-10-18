@@ -2,7 +2,7 @@
 complete for Alembic autogenerate and tests."""
 
 from gamebook.db.base import Base
-from gamebook.db.models.book import Act, Book
+from gamebook.db.models.book import Act, BeatNode, Book, StoryBeat
 from gamebook.db.models.entities import Character, Enemy, Item, LoreEntry, RandomTable
 from gamebook.db.models.history import HistoryEntry
 from gamebook.db.models.node import (
@@ -23,6 +23,7 @@ from gamebook.db.models.series import RuleSystem, Series
 __all__ = [
     "Act",
     "Base",
+    "BeatNode",
     "Book",
     "Character",
     "Choice",
@@ -44,5 +45,6 @@ __all__ = [
     "RuleSystem",
     "Series",
     "ShopItem",
+    "StoryBeat",
     "TextVariant",
 ]

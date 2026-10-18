@@ -109,7 +109,7 @@ shows correct total quantity across nodes, tables and shops.
 
 **Demo:** run 5,000 bot games per tier in seconds; find and fix an overly deadly node; compare batches.
 
-## Phase 6 — Lore, outline, state digest
+## Phase 6 — Lore, outline, state digest ✅ (2026-10-18, see `docs/handoffs/v2-phase-06-lore-digest.md`)
 
 - Lore wiki: characters (relationships, appearances), locations, factions, history,
   glossary; `[[key]]` mentions + backlinks.

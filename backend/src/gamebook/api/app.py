@@ -20,6 +20,7 @@ from gamebook.api.routers import (
     history,
     mechanics,
     nodes,
+    outline,
     playtest,
     series,
     tools,
@@ -79,7 +80,18 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         allow_headers=["*"],
     )
     install_error_handlers(app)
-    for module in (health, series, books, nodes, entities, history, mechanics, playtest, tools):
+    for module in (
+        health,
+        series,
+        books,
+        nodes,
+        entities,
+        history,
+        mechanics,
+        outline,
+        playtest,
+        tools,
+    ):
         app.include_router(module.router, prefix=API_PREFIX)
 
     if settings.frontend_dist is not None:

@@ -14,6 +14,7 @@ import { type InspectorTab, useStoryStore } from '../storyStore'
 import { BeatTab } from './BeatTab'
 import { ChoicesTab } from './ChoicesTab'
 import { EncountersTab } from './EncountersTab'
+import { DigestTab } from './DigestTab'
 import { LoreTab } from './LoreTab'
 import { VariantsTab } from './VariantsTab'
 
@@ -130,6 +131,7 @@ function NodeInspector({ graph, node }: { graph: BookGraph; node: NodeOut }) {
       content: <VariantsTab graph={graph} node={node} />,
     },
     { value: 'lore', label: 'Lore', content: <LoreTab graph={graph} node={node} /> },
+    { value: 'digest', label: 'Digest', content: <DigestTab graph={graph} node={node} /> },
   ]
 
   return (
