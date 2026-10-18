@@ -1,8 +1,23 @@
-venv/
+# Python
 __pycache__/
-**/__pycache__/
-*.pyc
-gamebook.db
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# App data & local config
+data/
 *.db
+*.db-wal
+*.db-shm
+config.yaml
 .env
-logs/
+
+# Editors / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store

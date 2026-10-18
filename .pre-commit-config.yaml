@@ -1,0 +1,28 @@
+# Install once with: cd backend && uv run pre-commit install
+# Hooks use the project's own tool versions (uv / node_modules).
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: bash -c 'cd backend && uv run ruff check --fix --force-exclude "${@#backend/}"' --
+        language: system
+        types: [python]
+        files: ^backend/
+      - id: ruff-format
+        name: ruff format
+        entry: bash -c 'cd backend && uv run ruff format --force-exclude "${@#backend/}"' --
+        language: system
+        types: [python]
+        files: ^backend/
+      - id: prettier
+        name: prettier
+        entry: bash -c 'cd frontend && npx prettier --write --ignore-unknown "${@#frontend/}"' --
+        language: system
+        files: ^frontend/
+        exclude: ^frontend/package-lock\.json$
+      - id: oxlint
+        name: oxlint
+        entry: bash -c 'cd frontend && npx oxlint --deny-warnings "${@#frontend/}"' --
+        language: system
+        files: ^frontend/.*\.(ts|tsx)$

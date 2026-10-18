@@ -23,13 +23,13 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 2. Build the phase; keep `core/` pure and typed.
 3. Bug pass + tests (unit, property, API, and e2e for new UI flows).
 4. Update SPEC.md if a decision changed; add an ADR for any architectural choice.
-5. Write `docs/handoffs/v2-phase-NN-<name>.md` (what was built, decisions, known issues, next steps).
+5. Write `docs/handoffs/v2-phase-NN-<name>.md` and update the index in `docs/handoffs/README.md` (what was built, decisions, known issues, next steps).
 6. **Definition of done:** CI green (ruff, mypy, pytest, tsc, vitest, playwright), the phase
    demo script works end-to-end in the running app.
 
 ---
 
-## Phase 0 — Foundations
+## Phase 0 — Foundations ✅ (2026-10-17, see `docs/handoffs/v2-phase-00-foundations.md`)
 
 - Tag `v1-prototype`; remove v1 code; new `backend/` (uv, src layout) and `frontend/` (Vite React TS).
 - FastAPI app factory, settings (pydantic-settings + `config.yaml`), structured logging.

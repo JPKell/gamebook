@@ -1,0 +1,21 @@
+# Gamebook Studio configuration.
+# Copy to config.yaml (in the directory you run the server from), or point
+# GAMEBOOK_CONFIG at a file. Environment variables override these values,
+# e.g. GAMEBOOK_LOG_LEVEL=DEBUG, GAMEBOOK_DATABASE_URL=sqlite:///other.db
+
+# Database, checkpoints and exports live here.
+data_dir: data
+
+# Defaults to sqlite:///<data_dir>/gamebook.db
+# database_url: sqlite:///data/gamebook.db
+
+auto_migrate: true
+log_level: INFO
+log_json: false
+
+# Vite dev server origin(s).
+cors_origins:
+  - http://localhost:5173
+
+# Serve the built frontend from the API server (production-style local run).
+# frontend_dist: ../frontend/dist

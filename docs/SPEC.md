@@ -11,7 +11,7 @@
 |---|---|
 | Users | Single author, runs locally. No auth. Clean seams so multi-user could be added later. |
 | Outputs | **All three**: Print/PDF (numbered sections), EPUB, digital interactive player. |
-| Frontend | React + TypeScript (Vite), React Flow (xyflow) for the story graph. |
+| Frontend | React + TypeScript (Vite), React Flow (xyflow) for the story graph. See ADR 0001. |
 | Storage | SQLite (source of truth while editing) + deterministic, git-friendly text export/import. |
 | Mechanics tiers | **Layered**: Basic ⊂ Medium ⊂ Advanced. Each tier inherits the one below and adds stats/rules. |
 | Resolution | Configurable dice expressions; the tool must help design & test the system. |
@@ -316,9 +316,10 @@ satisfiable), and the author (shown in the node inspector).
 | Jobs | In-process asyncio worker, persisted `Job` table, SSE progress |
 | LLM | `openai` SDK pointed at provider base URLs; Jinja2 templates |
 | Export | YAML/Markdown tree (git), WeasyPrint (PDF from HTML/CSS), `ebooklib` (EPUB) |
-| Frontend | Vite, React 18, TypeScript strict, React Flow + ELK.js (auto-layout), TanStack Query + Table, Zustand (UI state), react-hook-form + zod, shadcn/ui + Tailwind, CodeMirror 6 (gbx editor with autocomplete/lint; markdown prose) |
+| Frontend | Vite, React 19, TypeScript 6 strict, React Router, React Flow + ELK.js (auto-layout), TanStack Query + Table, Zustand (UI state), react-hook-form + zod, Radix primitives + cmdk + Tailwind v4 (semantic tokens), CodeMirror 6 (gbx editor with autocomplete/lint; markdown prose) |
 | Types | TS client + types generated from OpenAPI (`openapi-typescript` + `openapi-fetch`) |
-| Tests | pytest, Hypothesis (parser/engine properties), golden replay traces, Vitest, Playwright e2e |
+| Tests | pytest, Hypothesis (parser/engine properties), golden replay traces, Vitest + Testing Library, Playwright e2e |
+| Lint | ruff, mypy (strict on `core/`), oxlint, prettier |
 | CI | GitHub Actions: lint, type-check, tests, build |
 
 ### 3.2 Repository layout
@@ -333,13 +334,12 @@ backend/
       engine/        #   GameState, actions, step(), combat, RNG
       analysis/      #   validation, state digest, coverage walker
       sim/           #   bots, batch runner
-    db/              # models, session, repositories, RefIndex maintenance
+    db/              # models, session, repositories, RefIndex, in-package migrations
     api/             # routers + pydantic schemas (thin)
     services/        # use-cases: authoring ops, playtests, generation, export
     llm/             # providers, templates, pipelines (writer/critic/editor), players
     export/          # tree (git), bundle (player), print (html→pdf), epub
     jobs/            # worker, SSE
-  alembic/
   tests/
 frontend/
   src/
