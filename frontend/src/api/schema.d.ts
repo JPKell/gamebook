@@ -56,6 +56,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/acts/{act_id}/generate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Generate Act
+     * @description Write an act's sections in canonical order (a background job).
+     */
+    post: operations['generate_act']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/batches/{batch_id}': {
     parameters: {
       query?: never
@@ -416,6 +436,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/writing-queue': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Queue
+     * @description Every text variant in canonical order with its prose status.
+     */
+    get: operations['get_queue']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/characters/{entity_id}': {
     parameters: {
       query?: never
@@ -695,6 +735,187 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/llm/calls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Calls */
+    get: operations['list_calls']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/calls/{call_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Call */
+    get: operations['get_call']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/costs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Costs */
+    get: operations['get_costs']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/providers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Providers */
+    get: operations['list_providers']
+    put?: never
+    /** Create Provider */
+    post: operations['create_provider']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/providers/{provider_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Provider */
+    delete: operations['delete_provider']
+    options?: never
+    head?: never
+    /** Update Provider */
+    patch: operations['update_provider']
+    trace?: never
+  }
+  '/api/llm/providers/{provider_id}/test': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Test Provider
+     * @description Connect and list the provider's models.
+     */
+    post: operations['test_provider']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/templates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Templates */
+    get: operations['list_templates']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/templates/{role}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Save Template
+     * @description Save a new version of a role's template and make it active.
+     */
+    post: operations['save_template']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/templates/{role}/preview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Preview Template
+     * @description Render a template (the active one, or the given text) against a real node's context.
+     */
+    post: operations['preview_template']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/llm/templates/{template_id}/activate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Activate Template */
+    post: operations['activate_template']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/lore/{entity_id}': {
     parameters: {
       query?: never
@@ -818,6 +1039,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/nodes/{node_id}/prose': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Node Prose */
+    get: operations['get_node_prose']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/nodes/{node_id}/shop': {
     parameters: {
       query?: never
@@ -869,6 +1107,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/pipeline-runs/{run_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Run */
+    get: operations['get_run']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/playtest/bots': {
     parameters: {
       query?: never
@@ -879,6 +1134,57 @@ export interface paths {
     /** List Bots */
     get: operations['list_bots']
     put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prose/{prose_id}/approve': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Approve */
+    post: operations['approve']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prose/{prose_id}/reject': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reject */
+    post: operations['reject']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/prose/{prose_id}/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Put Summary */
+    put: operations['put_summary']
     post?: never
     delete?: never
     options?: never
@@ -1276,6 +1582,24 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/series/{series_id}/writing-settings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Writing Settings */
+    get: operations['get_writing_settings']
+    /** Put Writing Settings */
+    put: operations['put_writing_settings']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/tables/{entity_id}': {
     parameters: {
       query?: never
@@ -1313,6 +1637,63 @@ export interface paths {
     patch: operations['update_variant']
     trace?: never
   }
+  '/api/variants/{variant_id}/context': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Context
+     * @description What the writer will see for this variant, with token estimates.
+     */
+    get: operations['get_context']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/variants/{variant_id}/generate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Generate
+     * @description Run writer → critic → editor for one variant (a background job).
+     */
+    post: operations['generate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/variants/{variant_id}/prose': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Write Prose */
+    post: operations['write_prose']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -1330,6 +1711,17 @@ export interface components {
       summary?: string
       /** Title */
       title: string
+    }
+    /** ActGenerateIn */
+    ActGenerateIn: {
+      /** Max Cost Usd */
+      max_cost_usd?: number | null
+      /**
+       * Only
+       * @default missing
+       * @enum {string}
+       */
+      only?: 'missing' | 'stale' | 'all'
     }
     /** ActOut */
     ActOut: {
@@ -1373,6 +1765,13 @@ export interface components {
        * @enum {string}
        */
       type: 'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
+    }
+    /** ApproveIn */
+    ApproveIn: {
+      /** Summary */
+      summary?: string | null
+      /** Text */
+      text?: string | null
     }
     /** BatchDetail */
     BatchDetail: {
@@ -1981,6 +2380,49 @@ export interface components {
       | 'stat_initial'
       | 'combat_attack'
       | 'combat_damage'
+    /** ContextOut */
+    ContextOut: {
+      /** Budget */
+      budget: number
+      /** Ctx */
+      ctx: {
+        [key: string]: unknown
+      }
+      /** Inputs Hash */
+      inputs_hash: string
+      /** Sections */
+      sections: {
+        [key: string]: number
+      }
+      /** Tokens */
+      tokens: number
+      /** Trimmed */
+      trimmed: string[]
+    }
+    /** CostRow */
+    CostRow: {
+      /** Calls */
+      calls: number
+      /** Completion Tokens */
+      completion_tokens: number
+      /** Cost Usd */
+      cost_usd: number
+      /** Key */
+      key: string
+      /** Prompt Tokens */
+      prompt_tokens: number
+    }
+    /** CostsOut */
+    CostsOut: {
+      /** By Day */
+      by_day: components['schemas']['CostRow'][]
+      /** By Model */
+      by_model: components['schemas']['CostRow'][]
+      /** By Role */
+      by_role: components['schemas']['CostRow'][]
+      /** Total Usd */
+      total_usd: number
+    }
     /** CoverageIn */
     CoverageIn: {
       /**
@@ -2345,6 +2787,14 @@ export interface components {
       severity: 'error' | 'warning' | 'info'
       /** Start */
       start: number
+    }
+    /** GenerateIn */
+    GenerateIn: {
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
     }
     /** GiveItem */
     GiveItem: {
@@ -2754,6 +3204,91 @@ export interface components {
       /** Node Id */
       node_id: string
     }
+    /** LlmCallDetail */
+    LlmCallDetail: {
+      /** Book Id */
+      book_id: string | null
+      /** Completion Tokens */
+      completion_tokens: number
+      /** Cost Usd */
+      cost_usd: number
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Error */
+      error: string | null
+      /** Id */
+      id: string
+      /** Latency Ms */
+      latency_ms: number
+      /** Messages */
+      messages: {
+        [key: string]: unknown
+      }[]
+      /** Model */
+      model: string
+      /** Node Id */
+      node_id: string | null
+      /** Pipeline Run Id */
+      pipeline_run_id: string | null
+      /** Prompt Tokens */
+      prompt_tokens: number
+      /** Provider Id */
+      provider_id: string | null
+      /** Response */
+      response: string
+      /** Role */
+      role: string
+      /** Status */
+      status: string
+      /** Template Version */
+      template_version: number | null
+    }
+    /** LlmCallOut */
+    LlmCallOut: {
+      /** Book Id */
+      book_id: string | null
+      /** Completion Tokens */
+      completion_tokens: number
+      /** Cost Usd */
+      cost_usd: number
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Error */
+      error: string | null
+      /** Id */
+      id: string
+      /** Latency Ms */
+      latency_ms: number
+      /** Model */
+      model: string
+      /** Node Id */
+      node_id: string | null
+      /** Pipeline Run Id */
+      pipeline_run_id: string | null
+      /** Prompt Tokens */
+      prompt_tokens: number
+      /** Provider Id */
+      provider_id: string | null
+      /** Role */
+      role: string
+      /** Status */
+      status: string
+      /** Template Version */
+      template_version: number | null
+    }
+    /** LlmCallPage */
+    LlmCallPage: {
+      /** Calls */
+      calls: components['schemas']['LlmCallOut'][]
+      /** Total */
+      total: number
+    }
     /** LootEntry */
     LootEntry: {
       /** Item */
@@ -2826,6 +3361,31 @@ export interface components {
       name?: string | null
       /** Type */
       type?: ('location' | 'faction' | 'history' | 'glossary' | 'other') | null
+    }
+    /** ModelInfo */
+    ModelInfo: {
+      /**
+       * Context Window
+       * @default 8192
+       */
+      context_window?: number
+      /** Id */
+      id: string
+      /**
+       * Input Per Mtok
+       * @default 0
+       */
+      input_per_mtok?: number
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /**
+       * Output Per Mtok
+       * @default 0
+       */
+      output_per_mtok?: number
     }
     /** ModifyStat */
     ModifyStat: {
@@ -2976,6 +3536,13 @@ export interface components {
       /** Y */
       y: number
     }
+    /** NodeProse */
+    NodeProse: {
+      /** Node Id */
+      node_id: string
+      /** Variants */
+      variants: components['schemas']['VariantProse'][]
+    }
     /** NodeUpdate */
     NodeUpdate: {
       /** Act Id */
@@ -3089,6 +3656,38 @@ export interface components {
       acts: components['schemas']['OutlineAct'][]
       /** Book Id */
       book_id: string
+    }
+    /** PipelineRunOut */
+    PipelineRunOut: {
+      /** Cost Usd */
+      cost_usd: number
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Error */
+      error: string | null
+      /** Final Score */
+      final_score: number | null
+      /** Finished At */
+      finished_at: string | null
+      /** Id */
+      id: string
+      /** Iterations */
+      iterations: number
+      /** Node Id */
+      node_id: string
+      /** Notes */
+      notes: string
+      /** Status */
+      status: string
+      /** Trail */
+      trail: {
+        [key: string]: unknown
+      }[]
+      /** Variant Id */
+      variant_id: string
     }
     /** PlacementIn */
     PlacementIn: {
@@ -3209,6 +3808,8 @@ export interface components {
       id: string
       /** Key */
       key: string
+      /** Prose */
+      prose?: string | null
       /** Title */
       title: string
       /** Variant Label */
@@ -3301,6 +3902,190 @@ export interface components {
       /** Problems */
       problems: components['schemas']['ProblemOut'][]
     }
+    /** ProseCreate */
+    ProseCreate: {
+      /**
+       * Approve
+       * @default false
+       */
+      approve?: boolean
+      /**
+       * Summary
+       * @default
+       */
+      summary?: string
+      /** Text */
+      text: string
+    }
+    /** ProseOut */
+    ProseOut: {
+      /** Approved At */
+      approved_at: string | null
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Id */
+      id: string
+      /** Inputs Hash */
+      inputs_hash: string
+      /** Node Id */
+      node_id: string
+      /** Notes */
+      notes: string
+      /** Parent Id */
+      parent_id: string | null
+      /** Pipeline Run Id */
+      pipeline_run_id: string | null
+      /** Source */
+      source: string
+      /** Status */
+      status: string
+      /** Summary */
+      summary: string
+      /** Text */
+      text: string
+      /** Variant Id */
+      variant_id: string
+    }
+    /** ProviderIn */
+    ProviderIn: {
+      /** Api Key Env */
+      api_key_env?: string | null
+      /**
+       * Base Url
+       * @default
+       */
+      base_url?: string
+      /**
+       * Enabled
+       * @default true
+       */
+      enabled?: boolean
+      /** Headers */
+      headers?: {
+        [key: string]: string
+      }
+      /**
+       * Kind
+       * @default openai
+       * @enum {string}
+       */
+      kind?: 'openai' | 'fake'
+      /**
+       * Max Concurrency
+       * @default 2
+       */
+      max_concurrency?: number
+      /** Models */
+      models?: components['schemas']['ModelInfo'][]
+      /** Name */
+      name: string
+      /**
+       * Timeout S
+       * @default 120
+       */
+      timeout_s?: number
+    }
+    /** ProviderOut */
+    ProviderOut: {
+      /** Api Key Env */
+      api_key_env: string | null
+      /** Api Key Present */
+      api_key_present: boolean
+      /** Base Url */
+      base_url: string
+      /** Enabled */
+      enabled: boolean
+      /** Headers */
+      headers: {
+        [key: string]: string
+      }
+      /** Id */
+      id: string
+      /** Kind */
+      kind: string
+      /** Max Concurrency */
+      max_concurrency: number
+      /** Models */
+      models: {
+        [key: string]: unknown
+      }[]
+      /** Name */
+      name: string
+      /** Timeout S */
+      timeout_s: number
+    }
+    /** ProviderTestOut */
+    ProviderTestOut: {
+      /** Latency Ms */
+      latency_ms?: number | null
+      /** Message */
+      message: string
+      /** Models */
+      models?: string[]
+      /** Ok */
+      ok: boolean
+    }
+    /** ProviderUpdate */
+    ProviderUpdate: {
+      /** Api Key Env */
+      api_key_env?: string | null
+      /** Base Url */
+      base_url?: string | null
+      /** Enabled */
+      enabled?: boolean | null
+      /** Headers */
+      headers?: {
+        [key: string]: string
+      } | null
+      /** Max Concurrency */
+      max_concurrency?: number | null
+      /** Models */
+      models?: components['schemas']['ModelInfo'][] | null
+      /** Name */
+      name?: string | null
+      /** Timeout S */
+      timeout_s?: number | null
+    }
+    /** QueueOut */
+    QueueOut: {
+      /** Counts */
+      counts: {
+        [key: string]: number
+      }
+      /** Rows */
+      rows: components['schemas']['QueueRow'][]
+    }
+    /** QueueRow */
+    QueueRow: {
+      /** Act Id */
+      act_id: string
+      /** Act Title */
+      act_title: string
+      /** Latest Id */
+      latest_id: string | null
+      /** Node Id */
+      node_id: string
+      /** Node Title */
+      node_title: string
+      /** Order */
+      order: number
+      /** Reachable */
+      reachable: boolean
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'none' | 'draft' | 'in_review' | 'approved' | 'stale'
+      /** Variant Id */
+      variant_id: string
+      /** Variant Label */
+      variant_label: string
+      /** Words */
+      words: number
+    }
     /** RefOut */
     RefOut: {
       /** Book Id */
@@ -3324,6 +4109,14 @@ export interface components {
       /** Source Type */
       source_type: string
     }
+    /** RejectIn */
+    RejectIn: {
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
+    }
     /** Relationship */
     Relationship: {
       /** Character */
@@ -3345,6 +4138,23 @@ export interface components {
     Reorder: {
       /** Ids */
       ids: string[]
+    }
+    /** RoleModel */
+    RoleModel: {
+      /**
+       * Max Tokens
+       * @default 1500
+       */
+      max_tokens?: number
+      /** Model */
+      model?: string | null
+      /** Provider Id */
+      provider_id?: string | null
+      /**
+       * Temperature
+       * @default 0.7
+       */
+      temperature?: number
     }
     /** RuleSystemCreate */
     RuleSystemCreate: {
@@ -3753,6 +4563,11 @@ export interface components {
       /** Word Min */
       word_min?: number | null
     }
+    /** SummaryIn */
+    SummaryIn: {
+      /** Summary */
+      summary: string
+    }
     /** SweepIn */
     SweepIn: {
       /**
@@ -3941,6 +4756,60 @@ export interface components {
        */
       qty?: number
     }
+    /** TemplateIn */
+    TemplateIn: {
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
+      /** System */
+      system: string
+      /** User */
+      user: string
+    }
+    /** TemplateOut */
+    TemplateOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Id */
+      id: string
+      /** Is Active */
+      is_active: boolean
+      /** Notes */
+      notes: string
+      /** Role */
+      role: string
+      /** System */
+      system: string
+      /** User */
+      user: string
+      /** Version */
+      version: number
+    }
+    /** TemplatePreviewIn */
+    TemplatePreviewIn: {
+      /** System */
+      system?: string | null
+      /** User */
+      user?: string | null
+      /** Variant Id */
+      variant_id: string
+    }
+    /** TemplatePreviewOut */
+    TemplatePreviewOut: {
+      /** Error */
+      error?: string | null
+      /** System */
+      system: string
+      /** Tokens */
+      tokens: number
+      /** User */
+      user: string
+    }
     /** TestDef */
     TestDef: {
       /** After */
@@ -4119,6 +4988,24 @@ export interface components {
       /** Priority */
       priority: number
     }
+    /** VariantProse */
+    VariantProse: {
+      approved: components['schemas']['ProseOut'] | null
+      /** Condition */
+      condition: string | null
+      /** Label */
+      label: string
+      latest: components['schemas']['ProseOut'] | null
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'none' | 'draft' | 'in_review' | 'approved' | 'stale'
+      /** Variant Id */
+      variant_id: string
+      /** Versions */
+      versions: components['schemas']['ProseOut'][]
+    }
     /** VariantUpdate */
     VariantUpdate: {
       /** Condition */
@@ -4143,6 +5030,28 @@ export interface components {
        * @default false
        */
       unlimited?: boolean
+    }
+    /** WritingSettings */
+    WritingSettings: {
+      /**
+       * Context Tokens
+       * @default 6000
+       */
+      context_tokens?: number
+      /**
+       * Max Iterations
+       * @default 2
+       */
+      max_iterations?: number
+      /**
+       * Pass Threshold
+       * @default 7.5
+       */
+      pass_threshold?: number
+      /** Roles */
+      roles?: {
+        [key: string]: components['schemas']['RoleModel']
+      }
     }
   }
   responses: never
@@ -4303,6 +5212,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['BeatOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  generate_act: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ActGenerateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
         }
       }
       /** @description Validation Error */
@@ -5366,6 +6319,46 @@ export interface operations {
       }
     }
   }
+  get_queue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['QueueOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_character: {
     parameters: {
       query?: never
@@ -6327,6 +7320,493 @@ export interface operations {
       }
     }
   }
+  list_calls: {
+    parameters: {
+      query?: {
+        series_id?: string | null
+        node_id?: string | null
+        role?: string | null
+        status?: string | null
+        pipeline_run_id?: string | null
+        offset?: number
+        limit?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LlmCallPage']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_call: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        call_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LlmCallDetail']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_costs: {
+    parameters: {
+      query?: {
+        series_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CostsOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_providers: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProviderOut'][]
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_provider: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProviderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProviderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_provider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        provider_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_provider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        provider_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProviderUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProviderOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  test_provider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        provider_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProviderTestOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_templates: {
+    parameters: {
+      query?: {
+        role?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplateOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  save_template: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        role: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TemplateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplateOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  preview_template: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        role: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TemplatePreviewIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplatePreviewOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  activate_template: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        template_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplateOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_lore_entry: {
     parameters: {
       query?: never
@@ -6791,6 +8271,46 @@ export interface operations {
       }
     }
   }
+  get_node_prose: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['NodeProse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   set_node_shop: {
     parameters: {
       query?: never
@@ -6923,6 +8443,46 @@ export interface operations {
       }
     }
   }
+  get_run: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        run_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PipelineRunOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   list_bots: {
     parameters: {
       query?: never
@@ -6939,6 +8499,138 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['BotOut'][]
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  approve: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prose_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ApproveIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reject: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prose_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RejectIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  put_summary: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prose_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SummaryIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProseOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
       /** @description Internal Server Error */
@@ -8337,6 +10029,90 @@ export interface operations {
       }
     }
   }
+  get_writing_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WritingSettings']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  put_writing_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WritingSettings']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['WritingSettings']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_table: {
     parameters: {
       query?: never
@@ -8521,6 +10297,134 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['VariantOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_context: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        variant_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContextOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  generate: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        variant_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenerateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  write_prose: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        variant_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProseCreate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProseOut']
         }
       }
       /** @description Validation Error */

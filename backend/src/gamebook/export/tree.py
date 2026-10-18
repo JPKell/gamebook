@@ -30,6 +30,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from gamebook.core.keys import key_problem
+from gamebook.db.base import utcnow
 from gamebook.db.models import (
     Act,
     BeatNode,
@@ -45,6 +46,7 @@ from gamebook.db.models import (
     Node,
     NodeCharacter,
     NodeItem,
+    ProseVersion,
     RandomTable,
     RuleSystem,
     Series,
@@ -263,7 +265,7 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
 
     keys = _ExportKeys(item_keys, enemy_keys, table_keys, char_keys, lore_keys)
     for b in books:
-        for rel, content in _book_files(session, b, keys).items():
+        for rel, content in _book_files(session, b, keys, include_prose=True).items():
             files[f"{book_dirs[b.id]}/{rel}"] = content
     return dict(sorted(files.items()))
 
@@ -288,7 +290,9 @@ class _ExportKeys:
         return cls(ids(Item), ids(Enemy), ids(RandomTable), ids(Character), ids(LoreEntry))
 
 
-def _book_files(session: Session, b: Book, keys: _ExportKeys) -> dict[str, str]:
+def _book_files(
+    session: Session, b: Book, keys: _ExportKeys, *, include_prose: bool = False
+) -> dict[str, str]:
     """Files for one book, relative to its directory (book.yaml, acts/…)."""
     files: dict[str, str] = {}
     nodes = list(session.scalars(select(Node).where(Node.book_id == b.id).order_by(Node.key)))
@@ -331,10 +335,34 @@ def _book_files(session: Session, b: Book, keys: _ExportKeys) -> dict[str, str]:
                 }
             )
         )
+    # Approved prose travels with the git tree (not with undo snapshots: prose has its
+    # own version history, which undo must not rewind).
+    approved: dict[str, ProseVersion] = {}
+    if include_prose:
+        for pv in session.scalars(
+            select(ProseVersion).where(
+                ProseVersion.book_id == b.id, ProseVersion.status == "approved"
+            )
+        ):
+            approved[pv.variant_id] = pv
     for n in nodes:
         meta = _node_meta(
             n, node_keys, keys.item, keys.enemy, keys.table, keys.character, keys.lore
         )
+        prose = [
+            _clean(
+                {
+                    "variant": v.id,
+                    "text": approved[v.id].text,
+                    "summary": approved[v.id].summary,
+                    "inputs_hash": approved[v.id].inputs_hash,
+                }
+            )
+            for v in n.variants
+            if v.id in approved
+        ]
+        if prose:
+            meta["prose"] = prose
         files[f"{act_dirs[n.act_id]}/nodes/{n.key}.md"] = _front_matter(meta, n.beat_notes)
     return files
 
@@ -974,6 +1002,23 @@ def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _
         stored = session.get(Node, meta["id"])
         assert stored is not None
         stored.canonical_predecessor_id = node_ref(meta.get("canonical_predecessor"), rel)
+        variant_ids = {v.id for v in stored.variants}
+        for p in meta.get("prose", []):
+            if p.get("variant") not in variant_ids:
+                raise TreeError(f"{rel}: prose for unknown variant {p.get('variant')!r}")
+            session.add(
+                ProseVersion(
+                    book_id=book.id,
+                    node_id=stored.id,
+                    variant_id=p["variant"],
+                    text=p.get("text", ""),
+                    summary=p.get("summary", ""),
+                    inputs_hash=p.get("inputs_hash", ""),
+                    status="approved",
+                    source="human",
+                    approved_at=utcnow(),
+                )
+            )
     for act_id, beats, rel in beat_data:
         for i, bt in enumerate(beats):
             beat = StoryBeat(

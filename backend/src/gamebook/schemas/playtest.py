@@ -58,6 +58,8 @@ class PlayNode(Out):
     key: str
     title: str
     beat_notes: str
+    #: Approved prose for the variant shown (None until written and approved).
+    prose: str | None = None
     act_title: str | None
     variant_label: str | None
     ending_kind: str | None

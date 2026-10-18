@@ -40,3 +40,12 @@ export const LoreIndex = lazy(() =>
 export const LorePage = lazy(() =>
   import('@/features/lore/LorePage').then((m) => ({ default: m.LorePage })),
 )
+export const WritingIndex = lazy(() =>
+  import('@/features/writing/WritingPage').then((m) => ({ default: m.WritingIndex })),
+)
+export const WritingPage = lazy(() =>
+  import('@/features/writing/WritingPage').then((m) => ({ default: m.WritingPage })),
+)
+export const SettingsPage = lazy(() =>
+  import('@/features/llm/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+)

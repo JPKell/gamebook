@@ -1,7 +1,7 @@
 """Golden traces: (bundle, tier, seed, creation, actions) → expected events.
 
 A trace pins down engine behaviour exactly. The Python engine is the
-reference; the TypeScript runtime (Phase 11) must replay every trace to the
+reference; the TypeScript runtime (Phase 12) must replay every trace to the
 same events and final state.
 """
 

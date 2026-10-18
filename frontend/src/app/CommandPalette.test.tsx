@@ -11,10 +11,10 @@ describe('CommandPalette', () => {
     const { user, router } = renderApp('/story')
     await user.keyboard('{Control>}k{/Control}')
     const input = await screen.findByPlaceholderText('Type a command or search…')
-    await user.type(input, 'writing')
+    await user.type(input, 'art')
     await user.keyboard('{Enter}')
-    expect(await screen.findByRole('heading', { name: 'Writing' })).toBeInTheDocument()
-    expect(router.state.location.pathname).toBe('/writing')
+    expect(await screen.findByRole('heading', { name: 'Art' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/art')
     expect(screen.queryByPlaceholderText('Type a command or search…')).not.toBeInTheDocument()
   })
 

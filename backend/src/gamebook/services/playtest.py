@@ -256,6 +256,7 @@ def replay(session: Session, batch_id: str, index: int, upto: int | None) -> Pla
         applied=len(picks),
         error=None,
         beat_notes=play.beat_notes_for(session, ids),
+        prose=play.prose_for(session, [game.state.variant_id] if game.state.variant_id else []),
     )
 
 

@@ -18,12 +18,14 @@ from gamebook.api.routers import (
     entities,
     health,
     history,
+    llm,
     mechanics,
     nodes,
     outline,
     playtest,
     series,
     tools,
+    writing,
 )
 from gamebook.config import Settings, get_settings
 from gamebook.db import migrate
@@ -90,6 +92,8 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         mechanics,
         outline,
         playtest,
+        llm,
+        writing,
         tools,
     ):
         app.include_router(module.router, prefix=API_PREFIX)

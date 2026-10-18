@@ -5,6 +5,7 @@ from gamebook.db.base import Base
 from gamebook.db.models.book import Act, BeatNode, Book, StoryBeat
 from gamebook.db.models.entities import Character, Enemy, Item, LoreEntry, RandomTable
 from gamebook.db.models.history import HistoryEntry
+from gamebook.db.models.llm import LlmCall, LlmProvider, PipelineRun, PromptTemplate, ProseVersion
 from gamebook.db.models.node import (
     Choice,
     ChoiceOutcome,
@@ -34,12 +35,17 @@ __all__ = [
     "HistoryEntry",
     "Item",
     "Job",
+    "LlmCall",
+    "LlmProvider",
     "LoreEntry",
     "Node",
     "NodeCharacter",
     "NodeItem",
+    "PipelineRun",
     "PlaytestBatch",
     "PlaytestRun",
+    "PromptTemplate",
+    "ProseVersion",
     "RandomTable",
     "RefIndex",
     "RuleSystem",

@@ -1,8 +1,9 @@
 """Base classes and shared field types for API/service schemas."""
 
-from typing import Annotated
+from datetime import UTC, datetime
+from typing import Annotated, Any
 
-from pydantic import BaseModel, ConfigDict, StringConstraints
+from pydantic import BaseModel, ConfigDict, StringConstraints, field_validator
 
 from gamebook.core.keys import KEY_PATTERN
 
@@ -18,6 +19,14 @@ class In(BaseModel):
 
 class Out(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("*", mode="after")
+    @classmethod
+    def _utc(cls, value: Any) -> Any:
+        """SQLite drops timezones: stored times are UTC, so say so (clients parse ISO)."""
+        if isinstance(value, datetime) and value.tzinfo is None:
+            return value.replace(tzinfo=UTC)
+        return value
 
 
 class Reorder(In):

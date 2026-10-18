@@ -4,6 +4,7 @@ import {
   FileOutput,
   FlaskConical,
   Gem,
+  Image,
   Library,
   type LucideIcon,
   PenLine,
@@ -76,6 +77,21 @@ export const SECTIONS: Section[] = [
     upcoming: [],
   },
   {
+    id: 'art',
+    label: 'Art',
+    path: '/art',
+    icon: Image,
+    phase: 10,
+    summary: 'Illustrations, full-page art, maps and appendices.',
+    upcoming: [
+      'Image library with alt text, credits and where-used',
+      'Node illustrations with print size, position, wrap and DPI checks',
+      'Act openers, covers and maps with clickable markers',
+      'Generated appendices: bestiary, adventure sheet, item catalogue, rules reference',
+      'Commissioning tracker and shot list for illustrators',
+    ],
+  },
+  {
     id: 'mechanics',
     label: 'Mechanics',
     path: '/mechanics',
@@ -91,7 +107,7 @@ export const SECTIONS: Section[] = [
     icon: PenLine,
     phase: 7,
     summary: 'LLM prose drafting with writer, critic and editor passes.',
-    upcoming: ['Review queue with diffs and critique trail', 'Stale-prose tracking'],
+    upcoming: [],
   },
   {
     id: 'playtest',
@@ -107,9 +123,13 @@ export const SECTIONS: Section[] = [
     label: 'Export',
     path: '/export',
     icon: FileOutput,
-    phase: 10,
+    phase: 11,
     summary: 'Git tree, print/PDF, EPUB and the digital player bundle.',
-    upcoming: ['Seeded, pinnable section numbering', 'Per-tier print editions'],
+    upcoming: [
+      'Seeded, pinnable section numbering',
+      'Per-tier print editions',
+      'Artwork laid out to your print sizes, appendices as back matter',
+    ],
   },
   {
     id: 'settings',
@@ -118,6 +138,6 @@ export const SECTIONS: Section[] = [
     icon: Settings,
     phase: 7,
     summary: 'LLM providers, prompt templates and app preferences.',
-    upcoming: ['Provider profiles (local, OpenAI, OpenRouter)', 'Prompt template editor'],
+    upcoming: [],
   },
 ]

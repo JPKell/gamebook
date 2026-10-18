@@ -239,7 +239,18 @@ export function Scene({ view, bookId, turn }: { view: PlayOut; bookId: string; t
         </header>
       )}
       {node &&
-        (node.beat_notes ? (
+        (node.prose ? (
+          <section aria-label="Prose" className="space-y-3 font-serif text-[16px] leading-relaxed">
+            {node.prose
+              .split(/\n{2,}/)
+              .filter((para) => para.trim())
+              .map((para, i) => (
+                <p key={i} className="whitespace-pre-wrap">
+                  {para}
+                </p>
+              ))}
+          </section>
+        ) : node.beat_notes ? (
           <div className="space-y-1">
             <p className="text-[11px] font-medium tracking-wide text-muted uppercase">
               Beat notes (no prose yet)

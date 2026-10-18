@@ -1,4 +1,8 @@
+import { Link } from 'react-router'
+
 import { useUpdateNode } from '@/api/mutations'
+import { STATUS_LABELS, STATUS_TONE, useNodeProse } from '@/features/writing/api'
+import { cn } from '@/lib/utils'
 import type { BookGraph, NodeOut, NodeUpdate } from '@/api/types'
 import { Field } from '@/components/ui/field'
 import { Checkbox, NumberInput, Select, TextArea, TextInput } from '@/components/ui/inputs'
@@ -11,6 +15,7 @@ export function BeatTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
 
   return (
     <div className="space-y-5">
+      <ProseStatus graph={graph} node={node} />
       <Field label="Beat notes" hint="What happens here. The prose writer works from these notes.">
         {(id) => (
           <TextArea
@@ -107,6 +112,37 @@ export function BeatTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
           />
         )}
       </Field>
+    </div>
+  )
+}
+
+/** One line per text variant: its prose status, linking to the Writing review. */
+function ProseStatus({ graph, node }: { graph: BookGraph; node: NodeOut }) {
+  const prose = useNodeProse(graph.book.id, node.id)
+  const variants = prose.data?.variants ?? []
+  if (!variants.length) return null
+  return (
+    <div
+      aria-label="Prose"
+      role="group"
+      className="space-y-1 rounded-lg border border-border p-2.5 text-sm"
+    >
+      {variants.map((v) => (
+        <div key={v.variant_id} className="flex items-center gap-2">
+          <span className="min-w-0 flex-1 truncate text-muted">
+            Prose{variants.length > 1 ? ` · ${v.label}` : ''}
+          </span>
+          <span className={cn('rounded-full px-2 text-xs', STATUS_TONE[v.status])}>
+            {STATUS_LABELS[v.status]}
+          </span>
+          <Link
+            to={`/writing/${graph.book.id}?variant=${v.variant_id}`}
+            className="text-xs text-accent hover:underline"
+          >
+            {v.status === 'none' ? 'Write' : 'Open'}
+          </Link>
+        </div>
+      ))}
     </div>
   )
 }

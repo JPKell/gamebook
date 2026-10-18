@@ -21,6 +21,8 @@ class Series(IdMixin, TimestampMixin, Base):
     description: Mapped[str] = mapped_column(Text, default="")
     #: Style guide for prose (pov, tense, word range, voice, notes).
     style: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    #: Prose pipeline settings: models per role, threshold, iterations (SPEC §4.5).
+    writing: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
     books: Mapped[list[Book]] = relationship(
         back_populates="series",

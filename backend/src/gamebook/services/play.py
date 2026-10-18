@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from gamebook.core.engine import Action, Game, GameError
 from gamebook.core.engine.narrate import Names, narrate
 from gamebook.core.model import BookSnapshot
-from gamebook.db.models import Node
+from gamebook.db.models import Node, ProseVersion
 from gamebook.schemas.playtest import (
     ActionInput,
     ForceInput,
@@ -64,6 +64,7 @@ def view(
     applied: int,
     error: str | None,
     beat_notes: dict[str, str],
+    prose: dict[str, str] | None = None,
 ) -> PlayOut:
     """Describe a game. ``turns[i]`` is the input index that produced ``game.log[i]``."""
     s, tier, book = game.state, game.tier, game.book
@@ -85,6 +86,7 @@ def view(
             key=node.key,
             title=node.title,
             beat_notes=beat_notes.get(node.id, ""),
+            prose=(prose or {}).get(s.variant_id or ""),
             act_title=acts.get(node.act_id),
             variant_label=variant.label if variant else None,
             ending_kind=node.ending_kind,
@@ -144,6 +146,18 @@ def view(
     )
 
 
+def prose_for(session: Session, variant_ids: list[str]) -> dict[str, str]:
+    """Approved prose per variant."""
+    if not variant_ids:
+        return {}
+    rows = session.execute(
+        select(ProseVersion.variant_id, ProseVersion.text).where(
+            ProseVersion.variant_id.in_(variant_ids), ProseVersion.status == "approved"
+        )
+    )
+    return {str(r[0]): str(r[1]) for r in rows}
+
+
 def beat_notes_for(session: Session, node_ids: list[str]) -> dict[str, str]:
     if not node_ids:
         return {}
@@ -168,5 +182,10 @@ def play(session: Session, book_id: str, data: PlayIn) -> PlayOut:
         applied += 1
     ids = [game.state.node_id] if game.state.node_id else []
     return view(
-        game, turns=turns, applied=applied, error=error, beat_notes=beat_notes_for(session, ids)
+        game,
+        turns=turns,
+        applied=applied,
+        error=error,
+        beat_notes=beat_notes_for(session, ids),
+        prose=prose_for(session, [game.state.variant_id] if game.state.variant_id else []),
     )

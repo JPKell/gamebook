@@ -4,7 +4,7 @@
 
 ## Context
 Every playthrough must be replayable from (book, tier, seed, actions), and the
-standalone player (Phase 11) will re-implement the engine in TypeScript. If both
+standalone player (Phase 12) will re-implement the engine in TypeScript. If both
 runtimes don't roll *identical* dice, traces can't prove parity. Python's
 `random.Random` (MT19937 + `_randbelow`) is impractical to reproduce exactly in TS.
 

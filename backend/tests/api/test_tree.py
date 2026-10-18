@@ -219,6 +219,11 @@ def build_rich_series(api: Api) -> Json:
         },
     )
     api.post(f"/acts/{act2['id']}/beats", {"title": "Unwritten"})
+    start_variant = api.get(f"/books/{b['id']}/graph")["nodes"][0]["variants"][0]["id"]
+    api.post(
+        f"/variants/{start_variant}/prose",
+        {"text": "Mist curls around you.\n\nSomewhere, a bell.", "approve": True},
+    )
     del b2
     result: Json = s
     return result
@@ -277,6 +282,13 @@ def test_round_trip_is_lossless_and_deterministic(api: Api, fresh_client: TestCl
             f"/books/{book['id']}/problems"
         )
         assert fresh.get(f"/books/{book['id']}/outline") == api.get(f"/books/{book['id']}/outline")
+
+        def queue(a: Api, book_id: str = book["id"]) -> Any:
+            q = a.get(f"/books/{book_id}/writing-queue")
+            # Imported prose versions get fresh ids; everything else must match.
+            return q["counts"], [{**r, "latest_id": None} for r in q["rows"]]
+
+        assert queue(fresh) == queue(api)
 
     def strip(rows: list[Json]) -> list[Json]:
         return [{k: v for k, v in r.items() if k != "updated_at"} for r in rows]

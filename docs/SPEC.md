@@ -33,6 +33,8 @@
 | Lore | Characters, act summaries & story beats, world/locations/factions; auto-fed to the LLM writer. |
 | Canvas | One canvas per book, acts as colored collapsible group frames, minimap. |
 | Section numbers | Seeded shuffle at export, pinnable, stable across re-exports. |
+| Artwork | Image library per series. Node illustrations with **print size/placement controls**, full-page act openers, cover/frontispiece, maps with markers, portraits for characters/enemies/items. Commissioning tracker for art not yet made. (§2.13) |
+| Appendices | Generated back matter per book: bestiary, adventure/stat sheet, item catalogue, rules quick reference, dramatis personae, glossary, maps, custom pages. Spoiler- and tier-aware. (§2.14) |
 | Style | Series style guide with per-book and per-node overrides. |
 | Migration | None — start fresh. v1 is tagged and removed. |
 | Priority | Authoring core → mechanics/engine → player & bots → lore → LLM writing → LLM play → export. |
@@ -288,11 +290,28 @@ act, node link, quantity and context ("found", "reward", "shop", "required by ch
 
 ### 2.8 Prose
 
-`ProseVersion {variant_id, text, status: draft|in_review|approved|rejected, source:
-human|llm, pipeline_run_id?, inputs_hash, parent_version_id, created_at}`.
-A variant has at most one approved version. **Stale** = approved version's `inputs_hash`
-≠ hash of current inputs (beat notes, canonical-predecessor approved text, state digest,
-linked lore, style). Changing an upstream approved text marks downstream nodes stale.
+`ProseVersion {variant_id, text, status: draft|in_review|approved|rejected|superseded,
+source: human|llm, pipeline_run_id?, inputs_hash, parent_id, summary, notes, created_at,
+approved_at}`.
+- **One approved version per variant.** Approving another version supersedes the old one.
+  Approving "with my edits" saves a new human version whose parent is the reviewed one.
+- **Stale** means the approved version's `inputs_hash` ≠ the hash of the variant's current
+  context, minus far-back path summaries. That context covers:
+  - beat notes, style, act summary and beats
+  - location, characters and mentioned lore
+  - the state digest
+  - the canonical predecessor's text (its text only, not whether it's approved)
+  - the choices
+  - the variant's condition
+
+  Changes upstream reach a node one hop at a time, through its predecessor's approved text.
+  Stale prose is reported in Problems (`prose_stale`, info).
+- **`summary`**: two or three sentences, written by the summarizer; the author can edit it.
+  It feeds later sections' "story so far".
+- **References:** prose rows refer to nodes and variants softly (no FK), so undo, which
+  rebuilds nodes with the same ids, never erases prose history. Undo snapshots don't
+  include prose.
+- **Git export** carries approved prose (text, summary, inputs hash) in node front matter.
 
 ### 2.9 State digest (static analysis)
 
@@ -393,13 +412,30 @@ ADR 0007 (compiled expressions).
 
 ### 2.11 LLM infrastructure
 
-- **Provider profiles**: `name, base_url, api_key_env, models[], pricing, max_concurrency`.
-  All OpenAI-compatible (local, OpenAI, OpenRouter).
-- **Prompt templates**: Jinja2, versioned in DB, editable in-app, per role
-  (writer, critic, editor, summarizer, consistency, suggester, lore-extractor, player).
+- **Provider profiles**: `name, kind (openai | fake), base_url, api_key_env, models[{id,
+  context_window, input/output $ per Mtok}], max_concurrency, timeout, headers`.
+  - All are OpenAI-compatible (local, OpenAI, OpenRouter).
+  - Keys live only in environment variables (named `…_KEY` or `…_TOKEN`); the API reports
+    whether the variable is set. Secret-looking header values are masked in API responses.
+  - `fake` is the built-in **offline test model**: deterministic, no network. It is used by
+    tests, e2e and demos.
+- **Client:** retries 408/409/425/429/5xx and connection errors with exponential backoff
+  (honouring Retry-After). If a server rejects `response_format`, the request is retried
+  without it.
+- **Prompt templates**: Jinja2 (sandboxed, strict undefined), a system prompt and a user
+  prompt per role, versioned in the DB and editable in-app, with a live preview against a
+  real section.
+  - Phase 7 roles: writer, critic, editor, summarizer.
+  - Later roles: consistency, suggester, lore-extractor, player.
+  - Built-in defaults are seeded as v1.
+- **Writing settings** (per series): provider, model, temperature and max tokens per role
+  (unset roles use the writer's), pass threshold, maximum rewrites, and a context token
+  budget.
 - **LLMCall log**: every call — role, template version, model, messages, response,
   tokens, latency, cost, job id. Browsable.
-- Structured output via JSON schema (`response_format`) with tolerant-parse + retry fallback.
+- Structured output via JSON schema (`response_format`), with tolerant parsing (code fences,
+  chatter, trailing commas). A bad reply gets one retry with a corrective nudge.
+- **Costs** are computed from the model's prices and reported by role, model and day.
 
 ### 2.12 Derived & support tables
 
@@ -419,6 +455,102 @@ ADR 0007 (compiled expressions).
 - **HistoryEntry** — per-book undo/redo stacks of `export_book` snapshots.
 
 ---
+
+### 2.13 Artwork & maps
+
+**Asset** (series library): `{id, series_id, filename, mime, width_px, height_px, bytes,
+sha256, alt_text, caption, credit, licence, tags[]}`.
+- **Formats:** PNG, JPEG and WebP. SVG comes later, once it can be sanitised.
+- **Storage:** content-addressed files under `<data_dir>/assets/<sha256>.<ext>`, not in
+  SQLite. Identical uploads are deduplicated.
+- **Thumbnails:** generated on upload with Pillow.
+- **Garbage collection:** files are removed only when no row *and no checkpoint* references
+  them.
+- **References:** assets are indexed in the RefIndex, so the library shows where each is
+  used and refuses to delete an asset in use (unless forced).
+
+**ArtPlacement**: where artwork appears.
+- **Fields:**
+  - `{target, asset?, role, layout, brief, status, caption?, tier?/variant?, media}`
+  - `media` is one of `print | digital | both`.
+  - `asset` may be empty: a **placeholder** with an art brief, so books can be laid out
+    before the art exists.
+- **Commissioning status:** `needed | sketch | final`. The commissioning tracker lists every
+  placement with its brief, target size and status, and exports a shot list (Markdown/CSV)
+  for illustrators.
+- **Targets and roles:**
+  - Node: `illustration`. Several per node are allowed, and a placement can be limited to one
+    text variant.
+  - Act: `opener`, a full-page piece at the start of an act, with the act title over it or
+    facing it.
+  - Book: `cover_front`, `cover_back`, `frontispiece`, `title_page`, `endpaper`.
+  - Character, enemy, item and lore entry: `portrait` / `image`, used by the lore pages,
+    appendices and the player's codex.
+
+**Print layout controls** (per placement; previewed in the proofing view):
+- **Size:**
+  - `full_page`, with an option to bleed off the trim edges
+  - `full_width` (the text block)
+  - `half` (½ text width)
+  - `third`
+  - `vignette`: a small spot illustration of about 25–35 mm
+  - `custom`: width in mm, or as a percentage of the text block
+  - A maximum height in mm caps tall images in every mode.
+- **Position:**
+  - `before_text` or `after_text`
+  - `after_paragraph: N`
+  - `own_page`, with recto/verso preference
+  - `facing_page`, opposite the section's text
+  - Act openers default to a recto full page.
+- **Alignment / wrap:** `left | right | center`. Half, third and vignette sizes can have text
+  wrap around them, with a gutter in mm.
+- **Crop:** a focal point (x, y) and an optional aspect ratio (`original`, `1:1`, `4:3`,
+  `3:2`, `2:3`, `16:9`). The printed crop is derived from these, never by destroying the
+  original.
+- **Keep-with:** a node illustration stays on the same spread as its section number. If it
+  can't fit, the compiler reports a layout warning rather than moving the section.
+- **Resolution check:** effective DPI = pixels ÷ (printed size in inches).
+  - Below 300 DPI is a warning; below 150 DPI is an error for print exports.
+  - Full-page bleed requires the image to cover trim plus bleed.
+- **Digital is set separately:** `full_width | inline | thumbnail`, plus whether a tap opens
+  the full-size image. Print sizes don't constrain the digital player.
+
+**Map**: `{key, title, book scope, asset, markers[]}`.
+- Each marker is `{x, y (0–1), label, links to a node or lore location, visible_if?: gbx condition}`.
+- **Print:** maps appear as act openers, appendix pages or full-page placements.
+- **Digital player:** an interactive map. Markers link to codex entries, and can be revealed
+  by codewords.
+
+### 2.14 Appendices (generated back matter)
+
+`Appendix {book, kind, title, position, enabled, options}`.
+- The pages are rendered from live data with the same HTML templates in the in-app
+  preview, print/EPUB and the digital player (as a codex).
+- Every appendix is **tier-aware**: a Basic edition shows Basic stats only.
+- Every appendix has a **spoiler policy**:
+  - `all`, or `met_on_canonical_path`
+  - `hide_key_items`
+  - `blank_entries`: names with blank stat boxes for the reader to fill in
+
+**Kinds:**
+- **Bestiary**
+  - Contents: every enemy appearing in the book (via encounters and random tables), with
+    portrait, description and lore link.
+  - Stat blocks are given per tier, at the levels used in the book, or as a level table.
+  - Order: alphabetical or by first appearance in canonical order.
+- **Adventure sheet / stat sheet:** generated from the tier's player stats.
+  - Boxes for initial, current and maximum values; class and skills checkboxes.
+  - Inventory slots and an equipment-slot table; a currency box.
+  - Codeword tick list (or blank lines); provisions and notes.
+  - Printed as a front- or back-matter page; also a printable PDF on its own.
+- **Item catalogue / inventory:** name, category, slot, modifiers per tier, use effects and
+  value, with optional images. Key items can be hidden.
+- **Rules quick reference:** the tier's test and combat procedures, damage hooks and flee
+  rules, condensed from the rule system and its rules-chapter text.
+- **Dramatis personae** (characters) and **glossary** (lore entries of type glossary).
+- **Maps:** each map as a full page, with a marker legend.
+- **Custom page:** Markdown with `[[mentions]]` and artwork, for an author's note, credits
+  and the like.
 
 ## 3. Architecture
 
@@ -544,6 +676,27 @@ list → expected event stream) generated by the Python engine and replayed in V
   grouped by node, cost; **compare two batches** (before/after a balance change).
 - Run viewer: step-by-step replay with state, rolls, reasoning; "highlight path on canvas".
 
+
+### 4.7 Art & appendices
+
+- **Art library** (per series): drag-and-drop upload; a grid with thumbnails, dimensions and
+  tags; metadata (alt text, caption, credit, licence); where-used; and the commissioning
+  tracker (placements by status, with briefs, and shot-list export).
+- **Node inspector, Art tab:** add illustrations from the library (or as placeholders with a
+  brief). The print controls are:
+  - size presets with a live outline of the page at trim size
+  - mm or % width and a maximum height
+  - position, alignment and wrap, and crop focal point/aspect
+  - live effective DPI with a traffic-light status
+
+  Separate digital settings follow. The canvas card shows a small thumbnail.
+- **Act & book art:** act opener and book cover/frontispiece pickers, with a full-page preview
+  showing trim, bleed and safe area.
+- **Map editor:** place markers by clicking, link each to a node or lore location, and set
+  optional reveal conditions.
+- **Appendix builder** (per book): enable and reorder appendices; set the tier and spoiler
+  options; see a live page preview that uses the print templates.
+
 ---
 
 ## 5. LLM Pipelines
@@ -557,6 +710,15 @@ compressed beyond N hops) · canonical predecessor's full approved text · outgo
 labels (prose must set them up) · encounter/item *names* (no numbers — mechanics are
 rendered separately). Token budget manager trims lowest-priority context first.
 
+As built (Phase 7):
+- **Story so far:** up to 8 approved summaries back along the canonical path.
+- **Predecessor text:** when the predecessor has no approved text, its newest draft is used,
+  marked "(unapproved draft)", so batch writing can build section on section.
+- **Token estimate:** about 4 characters per token.
+- **Trim order** when over budget: mentioned lore, then the oldest story-so-far entries,
+  beats, character details, the location text, and finally the start of the previous
+  section. Beat notes, choices, digest and style are never cut.
+
 ### 5.2 Writer → Critic → Editor loop
 
 1. **Writer** drafts prose.
@@ -565,6 +727,14 @@ rendered separately). Token budget manager trims lowest-priority context first.
    concrete issues with quotes.
 3. If below threshold and iterations remain, **Editor** rewrites addressing the issues → 2.
 4. Result lands as `in_review` with the full critique trail for the author.
+5. **Summarizer** writes the section's 2–3 sentence summary.
+
+Each run is a `PipelineRun {trail[draft|critique|edit], iterations, final_score, cost}`,
+and every model call is in the log.
+
+"Write an act" runs the loop for each selected section in canonical order (act, then
+distance from the start), as one job. It can be limited to missing or stale sections and
+capped by a budget.
 
 ### 5.3 Assist pipelines
 
@@ -595,9 +765,15 @@ books/01-<slug>/acts/01-<slug>/nodes/<key>.md   # YAML front-matter + prose per 
 ```
 Deterministic ordering and formatting; `import` rebuilds the DB; round-trip is a CI test.
 
+Assets export as `assets/<sha256>.<ext>` plus `assets.yaml` (metadata). Placements, maps and
+appendices are exported with their owners (node front matter, `act.yaml`, `book.yaml`,
+`maps/<key>.yaml`). Large binaries may use git LFS (documented, not required).
+
 ### 6.2 Game bundle (digital player)
 
-Validated, self-contained JSON for one book + tier set. Versioned schema.
+Validated, self-contained JSON for one book + tier set. Versioned schema. The bundle zip
+also carries the artwork used by digital placements, maps and the codex, resized for
+screens.
 
 ### 6.3 Print / EPUB
 
@@ -609,6 +785,9 @@ Validated, self-contained JSON for one book + tier set. Versioned schema.
 - **Editions**: one edition per tier, or a combined edition with tier-marked blocks
   (open question, §8).
 - Front matter: rules chapter for the tier, adventure sheet, character creation.
+- **Artwork:** print layout controls (§2.13), recto act openers, cover and frontispiece,
+  bleed and trim, and DPI checks.
+- **Back matter:** the book's enabled appendices (§2.14), in their configured order.
 - PDF via HTML/CSS templates (WeasyPrint); EPUB with internal links (ebooklib); both share
   templates.
 
@@ -633,6 +812,10 @@ Validated, self-contained JSON for one book + tier set. Versioned schema.
 | Non-printable construct with no compile strategy | Warning |
 | Beat with no nodes / node in no beat | Info |
 | Prose stale / missing | Info |
+| Artwork below 300 DPI at its printed size (below 150: error for print) | Warning / Error |
+| Full-page bleed artwork smaller than trim + bleed | Error (print) |
+| Art placement with no asset (placeholder) / no alt text | Info |
+| Map marker linking a deleted node or lore entry; asset unused in the library | Warning / Info |
 
 ---
 
@@ -646,3 +829,6 @@ Validated, self-contained JSON for one book + tier set. Versioned schema.
 4. **Rule-system versioning granularity** — snapshot on every playtest batch (planned) vs.
    explicit published versions.
 5. **Cost budgets** — per-batch caps are planned; global monthly budget?
+6. **AI image generation** for art briefs (placeholders), maybe through the same provider
+   profiles. Deferred; briefs and the commissioning tracker come first.
+7. **SVG artwork and vector maps**, which need sanitising. Raster only to start.

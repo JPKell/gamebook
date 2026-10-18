@@ -121,7 +121,7 @@ shows correct total quantity across nodes, tables and shops.
 **Demo:** node inspector shows "must have: RAVEN; may have: Silver Key"; a gate flagged
 as unsatisfiable.
 
-## Phase 7 — LLM infrastructure & prose pipeline
+## Phase 7 — LLM infrastructure & prose pipeline ✅ (2026-10-18, see `docs/handoffs/v2-phase-07-prose.md`)
 
 - Provider profiles (local / OpenAI / OpenRouter), model registry, pricing, concurrency.
 - Prompt template store (versioned, editable), LLMCall log browser, cost tracking.
@@ -149,19 +149,74 @@ and watch downstream nodes go stale.
 
 **Demo:** three models play Act 1–3 on Medium; dashboard shows where they got confused.
 
-## Phase 10 — Print & EPUB
+## Phase 10 — Artwork, maps & appendices
+
+- **Asset library** (SPEC §2.13):
+  - content-addressed storage under the data dir, Pillow thumbnails, dedupe by hash
+  - alt text, caption, credit and licence; tags
+  - where-used through the RefIndex; delete guard; checkpoint-safe garbage collection
+  - git export of `assets/` + `assets.yaml`
+- **Node artwork:**
+  - several illustrations per node, optionally per text variant
+  - inspector Art tab, plus a thumbnail on the canvas card and in the in-app player
+- **Print layout controls per placement:**
+  - size: full page with optional bleed, full width, half, third, vignette, or custom mm / %;
+    maximum height
+  - position: before or after the text, after paragraph N, own page (recto/verso), facing page
+  - alignment and text wrap with a gutter
+  - crop by focal point and aspect ratio
+  - keep with the section
+  - live effective-DPI check
+
+  Digital display has its own settings.
+- **Full-page art:** act openers (recto by default), front/back cover, frontispiece, title page.
+  The preview shows trim, bleed and safe area.
+- **Portraits and images** for characters, enemies, items and lore entries.
+- **Commissioning tracker:** placeholders with an art brief and status (needed → sketch →
+  final); shot-list export (Markdown/CSV) for illustrators.
+- **Maps:** a map entity over an image asset, with markers linked to nodes or lore locations
+  and optional codeword reveal conditions; map editor; interactive map in the in-app player.
+- **Appendix builder** (SPEC §2.14), per book; every appendix is tier-aware with spoiler
+  options. The kinds are:
+  - bestiary (stat blocks at the levels used, or level tables)
+  - adventure/stat sheet generated from the tier's stats, slots and codewords
+  - item catalogue / inventory
+  - rules quick reference
+  - dramatis personae
+  - glossary
+  - maps
+  - custom Markdown pages
+
+  Preview uses the HTML templates that Print will reuse. In the player, appendices appear as
+  a **Codex** whose bestiary and item entries unlock as they're met.
+- **Validation:** low DPI for the printed size, bleed coverage, placeholders and missing alt
+  text, broken map markers, unused assets.
+
+**Demo:**
+1. Upload ten images.
+2. Place a half-width wrapped vignette in a node and watch its DPI turn amber when you
+   enlarge it.
+3. Add a full-page act opener and a map with clickable markers.
+4. Preview the Medium-tier bestiary and the adventure sheet.
+5. Export the shot list of art still needed.
+
+## Phase 11 — Print & EPUB
 
 - Section numbering (seeded shuffle, pins, stable map, reshuffle).
 - Print compiler: variants → split sections, visits → tick boxes/codewords, gated choice
   phrasing, per-tier mechanics blocks.
 - HTML/CSS templates → PDF (WeasyPrint): front matter, rules chapter, adventure sheet,
-  sections; EPUB with internal links.
+  sections, back-matter appendices; EPUB with internal links and embedded art.
+- Artwork layout honours the Phase 10 print controls:
+  - full-page art and bleeds, recto act openers, wrap and keep-with rules
+  - layout warnings when an illustration can't stay with its section
+  - a pre-flight DPI and bleed report
 - Proofing view: section-by-section preview; "verify printed book" bot that plays the
   *compiled* sections to prove compilation preserved the game.
 
-## Phase 11 — Standalone digital player
+## Phase 12 — Standalone digital player
 
-- Game bundle export (versioned schema).
+- Game bundle export (versioned schema), including screen-sized artwork, maps and the codex.
 - TS port of gbx + engine; golden-trace parity suite in CI.
 - Static web/PWA reader app with save slots.
 
@@ -176,9 +231,11 @@ editions, mobile wrapper, multi-user.
 
 | Risk | Mitigation |
 |---|---|
-| Rules too expressive to print | Print renderer required for every gbx/effect construct; validation flags the rest; Phase 10 "verify printed book" bot |
-| Python ↔ TS engine drift | Golden traces from Phase 3; parity suite gates Phase 11 |
+| Rules too expressive to print | Print renderer required for every gbx/effect construct; validation flags the rest; Phase 11 "verify printed book" bot |
+| Python ↔ TS engine drift | Golden traces from Phase 3; parity suite gates Phase 12 |
 | LLM cost / slowness | Bots carry balance testing; budgets per batch; caching by inputs hash; local models first |
 | Prose contradicting branching state | State digest in prompt + critic path-validity score + consistency checker |
-| Scope creep | Each phase has a demo; phases 8–11 can be reordered without blocking authoring |
+| Scope creep | Each phase has a demo; phases 8–12 can be reordered without blocking authoring |
 | Data loss | Immediate persistence, checkpoints, git tree export from Phase 1 |
+| Art files outside SQLite (backups, checkpoints) | Content-addressed files never deleted while any row or checkpoint references them; included in git export and checkpoints' manifests |
+| Print art looks wrong only at the printer | Physical-size DPI check, trim/bleed preview, pre-flight report before PDF export |
