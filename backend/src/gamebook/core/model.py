@@ -41,6 +41,7 @@ class Choice:
     node_id: str
     label: str
     kind: ChoiceKind = "goto"
+    unmet_display: str = "hide"
     condition: str | None = None
     min_tier: str | None = None
     effects: tuple[Effect, ...] = ()
@@ -95,6 +96,7 @@ class Node:
     key: str
     title: str
     act_id: str
+    shop_sell_rate: int | None = None
     is_act_entry: bool = False
     is_act_exit: bool = False
     ending_kind: EndingKind | None = None
@@ -142,6 +144,9 @@ class ItemModifier:
 @dataclass(frozen=True)
 class Item(Entity):
     category: str = "treasure"
+    slot: str | None = None
+    value: int = 0
+    max_stack: int | None = None
     modifiers: tuple[ItemModifier, ...] = ()
     use_effects: tuple[Effect, ...] = ()
 

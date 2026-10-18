@@ -1,0 +1,5294 @@
+{
+ "actions": [
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "0",
+   "type": "buy"
+  },
+  {
+   "target": "potion",
+   "type": "use"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "potion",
+   "type": "use"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "start->hall",
+   "type": "choose"
+  },
+  {
+   "target": "luck",
+   "type": "choose"
+  },
+  {
+   "target": "wall",
+   "type": "choose"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  },
+  {
+   "type": "attack"
+  }
+ ],
+ "bundle": {
+  "book": {
+   "acts": [
+    {
+     "id": "act1",
+     "key": "act1",
+     "position": 1,
+     "title": "Act 1"
+    }
+   ],
+   "book_id": "b1",
+   "characters": [],
+   "enemies": [
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-orc",
+     "key": "orc",
+     "name": "Orc",
+     "stat_formulas": {
+      "ARMOR": "floor(level / 2)",
+      "SKILL": "5 + level",
+      "STAMINA": "4 + level * 2"
+     }
+    },
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-rat",
+     "key": "rat",
+     "name": "Rat",
+     "stat_formulas": {
+      "ARMOR": "0",
+      "SKILL": "3",
+      "STAMINA": "2"
+     }
+    },
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-wall",
+     "key": "wall",
+     "name": "Living Wall",
+     "stat_formulas": {
+      "ARMOR": "999",
+      "SKILL": "0",
+      "STAMINA": "999"
+     }
+    }
+   ],
+   "items": [
+    {
+     "book_id": null,
+     "category": "consumable",
+     "id": "i-potion",
+     "key": "potion",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Potion",
+     "slot": null,
+     "use_effects": [
+      {
+       "amount": "4",
+       "op": "modify",
+       "stat": "STAMINA"
+      }
+     ],
+     "value": 0
+    },
+    {
+     "book_id": null,
+     "category": "treasure",
+     "id": "i-rope",
+     "key": "rope",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Rope",
+     "slot": null,
+     "use_effects": [],
+     "value": 6
+    },
+    {
+     "book_id": null,
+     "category": "equipment",
+     "id": "i-sword",
+     "key": "sword",
+     "max_stack": null,
+     "modifiers": [
+      {
+       "amount": "2",
+       "min_tier": "medium",
+       "stat": "SKILL"
+      }
+     ],
+     "name": "Sword",
+     "slot": "weapon",
+     "use_effects": [],
+     "value": 10
+    },
+    {
+     "book_id": null,
+     "category": "key",
+     "id": "i-key",
+     "key": "iron_key",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Iron Key",
+     "slot": null,
+     "use_effects": [],
+     "value": 0
+    }
+   ],
+   "lore": [],
+   "nodes": [
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->market",
+       "kind": "goto",
+       "label": "To market",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->market-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "market"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->hall",
+       "kind": "goto",
+       "label": "Into the hall",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->hall-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "hall"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": "has(iron_key)",
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->vault",
+       "kind": "goto",
+       "label": "Unlock the vault",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->vault-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "vault"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": "flag(NEVER)",
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->secret",
+       "kind": "goto",
+       "label": "Secret door",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->secret-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "secret"
+        }
+       ],
+       "test": null,
+       "unmet_display": "show_disabled"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->elite",
+       "kind": "goto",
+       "label": "Elite path",
+       "min_tier": "advanced",
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->elite-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "elite"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "start",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [
+      {
+       "item_id": "i-rope",
+       "qty": 1
+      }
+     ],
+     "key": "start",
+     "on_enter": [
+      {
+       "item": "potion",
+       "op": "give",
+       "qty": 2
+      },
+      {
+       "flag": "ARRIVED",
+       "op": "set_flag"
+      },
+      {
+       "amount": "1",
+       "once": false,
+       "op": "modify",
+       "stat": "GOLD"
+      }
+     ],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Start",
+     "variants": [
+      {
+       "condition": null,
+       "id": "start-v",
+       "label": "First",
+       "priority": 0
+      },
+      {
+       "condition": "visits(start) > 1",
+       "id": "start-back",
+       "label": "Back again",
+       "priority": 1
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "market->start",
+       "kind": "goto",
+       "label": "Leave",
+       "min_tier": null,
+       "node_id": "market",
+       "outcomes": [
+        {
+         "id": "market->start-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "start"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "market",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "market",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": [
+      {
+       "item_id": "i-sword",
+       "price": 8,
+       "stock": 1
+      },
+      {
+       "item_id": "i-key",
+       "price": 50,
+       "stock": null
+      }
+     ],
+     "shop_sell_rate": 50,
+     "title": "Market",
+     "variants": [
+      {
+       "condition": null,
+       "id": "market-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-orc",
+       "flee_allowed": true,
+       "id": "fight",
+       "kind": "combat",
+       "label": "fight",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "fight-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        },
+        {
+         "id": "fight-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        },
+        {
+         "id": "fight-flee",
+         "key": "flee",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "start"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": "2d6",
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "gamble",
+       "kind": "roll",
+       "label": "gamble",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "gamble-low",
+         "key": "low",
+         "range_hi": 6,
+         "range_lo": 2,
+         "target_id": "trap"
+        },
+        {
+         "id": "gamble-high",
+         "key": "high",
+         "range_hi": 12,
+         "range_lo": 7,
+         "target_id": "den"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "luck",
+       "kind": "test",
+       "label": "luck",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "luck-success",
+         "key": "success",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        },
+        {
+         "id": "luck-failure",
+         "key": "failure",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "trap"
+        }
+       ],
+       "test": "luck",
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [
+      {
+       "enemies": [
+        {
+         "count": 1,
+         "enemy_id": "e-orc",
+         "level": 2
+        }
+       ],
+       "fight": "sequential",
+       "id": "enc-orc",
+       "label": "Orc guard",
+       "mode": "fixed",
+       "table_id": null
+      }
+     ],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "hall",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "hall",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Hall",
+     "variants": [
+      {
+       "condition": null,
+       "id": "hall-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-den",
+       "flee_allowed": false,
+       "id": "rats",
+       "kind": "combat",
+       "label": "rats",
+       "min_tier": null,
+       "node_id": "den",
+       "outcomes": [
+        {
+         "id": "rats-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        },
+        {
+         "id": "rats-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-wall",
+       "flee_allowed": false,
+       "id": "wall",
+       "kind": "combat",
+       "label": "wall",
+       "min_tier": null,
+       "node_id": "den",
+       "outcomes": [
+        {
+         "id": "wall-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        },
+        {
+         "id": "wall-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [
+      {
+       "enemies": [],
+       "fight": "sequential",
+       "id": "enc-den",
+       "label": "Den",
+       "mode": "table",
+       "table_id": "t-den"
+      },
+      {
+       "enemies": [
+        {
+         "count": 1,
+         "enemy_id": "e-wall",
+         "level": 1
+        },
+        {
+         "count": 2,
+         "enemy_id": "e-rat",
+         "level": 1
+        }
+       ],
+       "fight": "simultaneous",
+       "id": "enc-wall",
+       "label": "Wall",
+       "mode": "fixed",
+       "table_id": null
+      }
+     ],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "den",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "den",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Den",
+     "variants": [
+      {
+       "condition": null,
+       "id": "den-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "trap->den",
+       "kind": "goto",
+       "label": "Crawl on",
+       "min_tier": null,
+       "node_id": "trap",
+       "outcomes": [
+        {
+         "id": "trap->den-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "trap",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "trap",
+     "on_enter": [
+      {
+       "amount": "-3",
+       "once": false,
+       "op": "modify",
+       "stat": "STAMINA"
+      }
+     ],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Trap",
+     "variants": [
+      {
+       "condition": null,
+       "id": "trap-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "vault->end",
+       "kind": "goto",
+       "label": "Take the treasure",
+       "min_tier": null,
+       "node_id": "vault",
+       "outcomes": [
+        {
+         "id": "vault->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "vault",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "vault",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Vault",
+     "variants": [
+      {
+       "condition": null,
+       "id": "vault-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "secret->end",
+       "kind": "goto",
+       "label": "Go to end",
+       "min_tier": null,
+       "node_id": "secret",
+       "outcomes": [
+        {
+         "id": "secret->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "secret",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "secret",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Secret",
+     "variants": [
+      {
+       "condition": null,
+       "id": "secret-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "elite->end",
+       "kind": "goto",
+       "label": "Go to end",
+       "min_tier": null,
+       "node_id": "elite",
+       "outcomes": [
+        {
+         "id": "elite->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "elite",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "elite",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Elite",
+     "variants": [
+      {
+       "condition": null,
+       "id": "elite-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": "victory",
+     "id": "end",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "end",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "End",
+     "variants": [
+      {
+       "condition": null,
+       "id": "end-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": "death",
+     "id": "dead",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "dead",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Dead",
+     "variants": [
+      {
+       "condition": null,
+       "id": "dead-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    }
+   ],
+   "rules": {
+    "tiers": [
+     {
+      "classes": [],
+      "combat": {
+       "damage": "2",
+       "damage_hooks": [],
+       "damage_stat": "STAMINA",
+       "enemy_attack": "2d6 + enemy.SKILL",
+       "flee_allowed": true,
+       "flee_cost": [
+        {
+         "amount": "-2",
+         "min_tier": null,
+         "once": null,
+         "op": "modify",
+         "print_text": null,
+         "stat": "STAMINA"
+        }
+       ],
+       "multi_enemy": "sequential",
+       "player_attack": "2d6 + player.SKILL"
+      },
+      "description": "Three stats, two dice, simple combat.",
+      "key": "basic",
+      "label": "Basic",
+      "parent": null,
+      "rules_text": "Roll one die and add 6 for your SKILL, two dice and add 12 for your STAMINA, and one die plus 6 for your LUCK. You start with 10 Gold.\n\n**Fighting.** Each round, roll two dice and add your SKILL; then roll two dice and add your opponent's SKILL. Whoever scores higher wounds the other for 2 STAMINA. A tie means you both miss. Anyone reduced to 0 STAMINA is defeated.\n\n**Testing your Luck.** Roll two dice. If the total is equal to or less than your LUCK you are lucky. Either way, subtract 1 from your LUCK.",
+      "skills": [],
+      "slots": [],
+      "stats": [
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "1d6 + 6",
+        "key": "SKILL",
+        "kind": "stat",
+        "label": "Skill",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": 0,
+        "description": "",
+        "initial": "2d6 + 12",
+        "key": "STAMINA",
+        "kind": "stat",
+        "label": "Stamina",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "1d6 + 6",
+        "key": "LUCK",
+        "kind": "stat",
+        "label": "Luck",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "10",
+        "key": "GOLD",
+        "kind": "resource",
+        "label": "Gold",
+        "max": null,
+        "max_is_initial": false,
+        "min": 0
+       }
+      ],
+      "tests": [
+       {
+        "after": [
+         {
+          "amount": "-1",
+          "min_tier": null,
+          "once": null,
+          "op": "modify",
+          "print_text": null,
+          "stat": "LUCK"
+         }
+        ],
+        "description": "",
+        "key": "luck",
+        "label": "Test your Luck",
+        "roll": "2d6",
+        "success": "roll <= player.LUCK"
+       },
+       {
+        "after": [],
+        "description": "",
+        "key": "skill",
+        "label": "Test your Skill",
+        "roll": "2d6",
+        "success": "roll <= player.SKILL"
+       }
+      ]
+     },
+     {
+      "classes": [],
+      "combat": {
+       "damage": null,
+       "damage_hooks": [
+        "max(1, damage - target.ARMOR)"
+       ],
+       "damage_stat": null,
+       "enemy_attack": null,
+       "flee_allowed": null,
+       "flee_cost": null,
+       "multi_enemy": null,
+       "player_attack": null
+      },
+      "description": "Adds armour and equipment slots.",
+      "key": "medium",
+      "label": "Medium",
+      "parent": "basic",
+      "rules_text": "**Armour.** Every wound is reduced by the target's ARMOUR, but always does at least 1 damage. You may wear one weapon, one suit of body armour and one shield; their bonuses count only while equipped.",
+      "skills": [],
+      "slots": [
+       "weapon",
+       "body",
+       "shield"
+      ],
+      "stats": [
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "0",
+        "key": "ARMOR",
+        "kind": "stat",
+        "label": "Armour",
+        "max": null,
+        "max_is_initial": false,
+        "min": 0
+       }
+      ],
+      "tests": []
+     },
+     {
+      "classes": [
+       {
+        "description": "",
+        "key": "ranger",
+        "label": "Ranger",
+        "skills": [
+         "TRACKING",
+         "ARCHERY"
+        ]
+       },
+       {
+        "description": "",
+        "key": "rogue",
+        "label": "Rogue",
+        "skills": [
+         "STEALTH"
+        ]
+       },
+       {
+        "description": "",
+        "key": "scholar",
+        "label": "Scholar",
+        "skills": [
+         "LORE"
+        ]
+       }
+      ],
+      "combat": {
+       "damage": null,
+       "damage_hooks": [
+        "natural == 12 ? damage * 2 : damage"
+       ],
+       "damage_stat": null,
+       "enemy_attack": null,
+       "flee_allowed": null,
+       "flee_cost": null,
+       "multi_enemy": null,
+       "player_attack": null
+      },
+      "description": "Adds classes, skills and critical hits.",
+      "key": "advanced",
+      "label": "Advanced",
+      "parent": "medium",
+      "rules_text": "**Your calling.** Choose a class: it grants your starting skills, which open choices other adventurers cannot take.\n\n**Critical hits.** When an attack roll shows double six (a natural 12), its damage is doubled.",
+      "skills": [
+       {
+        "description": "",
+        "key": "TRACKING",
+        "label": "Tracking"
+       },
+       {
+        "description": "",
+        "key": "ARCHERY",
+        "label": "Archery"
+       },
+       {
+        "description": "",
+        "key": "STEALTH",
+        "label": "Stealth"
+       },
+       {
+        "description": "",
+        "key": "LORE",
+        "label": "Lore"
+       }
+      ],
+      "slots": [],
+      "stats": [],
+      "tests": []
+     }
+    ]
+   },
+   "series_flags_set": [],
+   "series_id": "s1",
+   "start_node_id": "start",
+   "tables": [
+    {
+     "book_id": null,
+     "dice": "1d6",
+     "entries": [
+      {
+       "amount": null,
+       "enemies": [],
+       "hi": 2,
+       "item": null,
+       "kind": "nothing",
+       "lo": 1,
+       "qty": 1
+      },
+      {
+       "amount": null,
+       "enemies": [],
+       "hi": 4,
+       "item": "potion",
+       "kind": "item",
+       "lo": 3,
+       "qty": 1
+      },
+      {
+       "amount": null,
+       "enemies": [
+        [
+         "rat",
+         1,
+         2
+        ]
+       ],
+       "hi": 6,
+       "item": null,
+       "kind": "enemies",
+       "lo": 5,
+       "qty": 1
+      }
+     ],
+     "id": "t-den",
+     "key": "den",
+     "name": "Den"
+    }
+   ],
+   "title": "Test"
+  },
+  "format": "gamebook-bundle",
+  "version": 1
+ },
+ "creation": {},
+ "events": [
+  {
+   "expr": "1d6 + 6",
+   "faces": [
+    4
+   ],
+   "purpose": "initial SKILL",
+   "total": 10,
+   "type": "roll"
+  },
+  {
+   "expr": "2d6 + 12",
+   "faces": [
+    2,
+    2
+   ],
+   "purpose": "initial STAMINA",
+   "total": 16,
+   "type": "roll"
+  },
+  {
+   "expr": "1d6 + 6",
+   "faces": [
+    1
+   ],
+   "purpose": "initial LUCK",
+   "total": 7,
+   "type": "roll"
+  },
+  {
+   "expr": "10",
+   "faces": [],
+   "purpose": "initial GOLD",
+   "total": 10,
+   "type": "roll"
+  },
+  {
+   "class": null,
+   "stats": {
+    "GOLD": 10,
+    "LUCK": 7,
+    "SKILL": 10,
+    "STAMINA": 16
+   },
+   "type": "character_created"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-v",
+   "visit": 1
+  },
+  {
+   "item": "potion",
+   "op": "give",
+   "qty": 2,
+   "source": "enter:start",
+   "type": "effect"
+  },
+  {
+   "flag": "ARRIVED",
+   "op": "set_flag",
+   "source": "enter:start",
+   "type": "effect"
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 11
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 1
+  },
+  {
+   "action": "buy",
+   "target": "0",
+   "type": "action"
+  },
+  {
+   "item": "sword",
+   "price": 8,
+   "type": "item_bought"
+  },
+  {
+   "action": "use",
+   "target": "potion",
+   "type": "action"
+  },
+  {
+   "item": "potion",
+   "type": "item_used"
+  },
+  {
+   "change": 0,
+   "op": "modify",
+   "source": "use:potion",
+   "stat": "STAMINA",
+   "type": "effect",
+   "value": 16
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 2
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 4
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 2
+  },
+  {
+   "action": "use",
+   "target": "potion",
+   "type": "action"
+  },
+  {
+   "item": "potion",
+   "type": "item_used"
+  },
+  {
+   "change": 0,
+   "op": "modify",
+   "source": "use:potion",
+   "stat": "STAMINA",
+   "type": "effect",
+   "value": 16
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 3
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 5
+  },
+  {
+   "action": "choose",
+   "target": "start->hall",
+   "type": "action"
+  },
+  {
+   "choice": "start->hall",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "hall",
+   "node": "hall",
+   "type": "enter",
+   "variant": "hall-v",
+   "visit": 1
+  },
+  {
+   "action": "choose",
+   "target": "luck",
+   "type": "action"
+  },
+  {
+   "expr": "2d6",
+   "faces": [
+    1,
+    2
+   ],
+   "purpose": "test luck",
+   "total": 3,
+   "type": "roll"
+  },
+  {
+   "roll": 3,
+   "success": true,
+   "test": "luck",
+   "type": "test"
+  },
+  {
+   "change": -1,
+   "op": "modify",
+   "source": "test:luck",
+   "stat": "LUCK",
+   "type": "effect",
+   "value": 6
+  },
+  {
+   "choice": "luck",
+   "outcome": "success",
+   "type": "outcome"
+  },
+  {
+   "key": "den",
+   "node": "den",
+   "type": "enter",
+   "variant": "den-v",
+   "visit": 1
+  },
+  {
+   "action": "choose",
+   "target": "wall",
+   "type": "action"
+  },
+  {
+   "encounter": "enc-wall",
+   "enemies": [
+    {
+     "key": "wall",
+     "level": 1,
+     "name": "Living Wall",
+     "stats": {
+      "SKILL": 0,
+      "STAMINA": 999
+     }
+    },
+    {
+     "key": "rat#1",
+     "level": 1,
+     "name": "Rat",
+     "stats": {
+      "SKILL": 3,
+      "STAMINA": 2
+     }
+    },
+    {
+     "key": "rat#2",
+     "level": 1,
+     "name": "Rat",
+     "stats": {
+      "SKILL": 3,
+      "STAMINA": 2
+     }
+    }
+   ],
+   "type": "combat_start"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 997,
+   "round": 1,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 16,
+   "round": 1,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 1,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 995,
+   "round": 2,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 19,
+   "round": 2,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 19,
+   "round": 2,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 993,
+   "round": 3,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 18,
+   "round": 3,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 18,
+   "round": 3,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 12,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 991,
+   "round": 4,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 4,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 4,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 989,
+   "round": 5,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 16,
+   "round": 5,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 16,
+   "round": 5,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 987,
+   "round": 6,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 16,
+   "round": 6,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 6,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 985,
+   "round": 7,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 7,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 15,
+   "hit": null,
+   "player_attack": 16,
+   "round": 7,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 983,
+   "round": 8,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 17,
+   "round": 8,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 17,
+   "round": 8,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 981,
+   "round": 9,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 9,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 9,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 979,
+   "round": 10,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 10,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 18,
+   "round": 10,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 977,
+   "round": 11,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 17,
+   "round": 11,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 11,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 975,
+   "round": 12,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 12,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 21,
+   "round": 12,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 973,
+   "round": 13,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 16,
+   "round": 13,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 16,
+   "round": 13,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 971,
+   "round": 14,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 18,
+   "round": 14,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 14,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 969,
+   "round": 15,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 15,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 15,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 967,
+   "round": 16,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 16,
+   "round": 16,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 16,
+   "round": 16,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 965,
+   "round": 17,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 15,
+   "round": 17,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 15,
+   "round": 17,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 963,
+   "round": 18,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 19,
+   "round": 18,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 19,
+   "round": 18,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 961,
+   "round": 19,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 19,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 19,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 959,
+   "round": 20,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 20,
+   "round": 20,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 20,
+   "round": 20,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 957,
+   "round": 21,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 16,
+   "round": 21,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 16,
+   "round": 21,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 955,
+   "round": 22,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 22,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 18,
+   "round": 22,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 11,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 953,
+   "round": 23,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 18,
+   "round": 23,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 23,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 951,
+   "round": 24,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 19,
+   "round": 24,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 19,
+   "round": 24,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 11,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 949,
+   "round": 25,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 15,
+   "round": 25,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 15,
+   "round": 25,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 947,
+   "round": 26,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 21,
+   "round": 26,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 26,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 22,
+   "remaining": 945,
+   "round": 27,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 22,
+   "round": 27,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 22,
+   "round": 27,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 943,
+   "round": 28,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 18,
+   "round": 28,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 18,
+   "round": 28,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 941,
+   "round": 29,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 19,
+   "round": 29,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 19,
+   "round": 29,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 939,
+   "round": 30,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 15,
+   "round": 30,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 15,
+   "round": 30,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 937,
+   "round": 31,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 15,
+   "round": 31,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 15,
+   "round": 31,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 935,
+   "round": 32,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 18,
+   "round": 32,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 18,
+   "round": 32,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 933,
+   "round": 33,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 16,
+   "round": 33,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 16,
+   "round": 33,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 931,
+   "round": 34,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 18,
+   "round": 34,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 18,
+   "round": 34,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 929,
+   "round": 35,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 17,
+   "round": 35,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 17,
+   "round": 35,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 927,
+   "round": 36,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 17,
+   "round": 36,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 36,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 925,
+   "round": 37,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 15,
+   "hit": null,
+   "player_attack": 21,
+   "round": 37,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 21,
+   "round": 37,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 923,
+   "round": 38,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 16,
+   "round": 38,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 38,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 921,
+   "round": 39,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 16,
+   "round": 39,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 16,
+   "round": 39,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 919,
+   "round": 40,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 20,
+   "round": 40,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 20,
+   "round": 40,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 917,
+   "round": 41,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 19,
+   "round": 41,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 19,
+   "round": 41,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 915,
+   "round": 42,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 20,
+   "round": 42,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 20,
+   "round": 42,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 14,
+   "remaining": 913,
+   "round": 43,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 14,
+   "round": 43,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 14,
+   "round": 43,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 911,
+   "round": 44,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 17,
+   "round": 44,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 44,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 909,
+   "round": 45,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 18,
+   "round": 45,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 18,
+   "round": 45,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 907,
+   "round": 46,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 46,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 46,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 12,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 905,
+   "round": 47,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 19,
+   "round": 47,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 19,
+   "round": 47,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 903,
+   "round": 48,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 15,
+   "round": 48,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 15,
+   "round": 48,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 901,
+   "round": 49,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 18,
+   "round": 49,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 18,
+   "round": 49,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 2,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 899,
+   "round": 50,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 5,
+   "hit": null,
+   "player_attack": 18,
+   "round": 50,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 50,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 897,
+   "round": 51,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 51,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 20,
+   "round": 51,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 14,
+   "remaining": 895,
+   "round": 52,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 14,
+   "round": 52,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 14,
+   "round": 52,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 893,
+   "round": 53,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 19,
+   "round": 53,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 19,
+   "round": 53,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 891,
+   "round": 54,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 54,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 17,
+   "round": 54,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 889,
+   "round": 55,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 17,
+   "round": 55,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 17,
+   "round": 55,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 887,
+   "round": 56,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 19,
+   "round": 56,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 19,
+   "round": 56,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 12,
+   "remaining": 885,
+   "round": 57,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 12,
+   "round": 57,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 12,
+   "round": 57,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 883,
+   "round": 58,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 21,
+   "round": 58,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 58,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 881,
+   "round": 59,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 17,
+   "round": 59,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 59,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 879,
+   "round": 60,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 60,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 20,
+   "round": 60,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 13,
+   "remaining": 877,
+   "round": 61,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 13,
+   "round": 61,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 13,
+   "round": 61,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 875,
+   "round": 62,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 16,
+   "round": 62,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 16,
+   "round": 62,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 873,
+   "round": 63,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 17,
+   "round": 63,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 17,
+   "round": 63,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 871,
+   "round": 64,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 20,
+   "round": 64,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 15,
+   "hit": null,
+   "player_attack": 20,
+   "round": 64,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 869,
+   "round": 65,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 17,
+   "round": 65,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 17,
+   "round": 65,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 14,
+   "remaining": 867,
+   "round": 66,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 14,
+   "round": 66,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 14,
+   "round": 66,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 865,
+   "round": 67,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 67,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 20,
+   "round": 67,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 863,
+   "round": 68,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 20,
+   "round": 68,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 68,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 861,
+   "round": 69,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 17,
+   "round": 69,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 69,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 859,
+   "round": 70,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 17,
+   "round": 70,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 70,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 22,
+   "remaining": 857,
+   "round": 71,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 22,
+   "round": 71,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 22,
+   "round": 71,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 855,
+   "round": 72,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 72,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 72,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 853,
+   "round": 73,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 73,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 16,
+   "round": 73,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 851,
+   "round": 74,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 16,
+   "round": 74,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 16,
+   "round": 74,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 849,
+   "round": 75,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 19,
+   "round": 75,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 19,
+   "round": 75,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 847,
+   "round": 76,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 17,
+   "round": 76,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 76,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 13,
+   "remaining": 845,
+   "round": 77,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 13,
+   "round": 77,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 13,
+   "round": 77,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 13,
+   "remaining": 843,
+   "round": 78,
+   "type": "combat_round"
+  },
+  {
+   "damage": 2,
+   "enemy": "rat#1",
+   "enemy_attack": 15,
+   "hit": "player",
+   "player_attack": 13,
+   "remaining": 14,
+   "round": 78,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 13,
+   "round": 78,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 12,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 841,
+   "round": 79,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 17,
+   "round": 79,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 17,
+   "round": 79,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 839,
+   "round": 80,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 17,
+   "round": 80,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 5,
+   "hit": null,
+   "player_attack": 17,
+   "round": 80,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 837,
+   "round": 81,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 19,
+   "round": 81,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 19,
+   "round": 81,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 835,
+   "round": 82,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 20,
+   "round": 82,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 20,
+   "round": 82,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 833,
+   "round": 83,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 15,
+   "round": 83,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 15,
+   "round": 83,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 831,
+   "round": 84,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 18,
+   "round": 84,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 84,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 11,
+   "hit": "enemy",
+   "player_attack": 12,
+   "remaining": 829,
+   "round": 85,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 12,
+   "round": 85,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 12,
+   "round": 85,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 827,
+   "round": 86,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 20,
+   "round": 86,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 20,
+   "round": 86,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 825,
+   "round": 87,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 17,
+   "round": 87,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 17,
+   "round": 87,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 2,
+   "hit": "enemy",
+   "player_attack": 20,
+   "remaining": 823,
+   "round": 88,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 20,
+   "round": 88,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 20,
+   "round": 88,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 821,
+   "round": 89,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 21,
+   "round": 89,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 89,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 819,
+   "round": 90,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 21,
+   "round": 90,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 5,
+   "hit": null,
+   "player_attack": 21,
+   "round": 90,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 817,
+   "round": 91,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 21,
+   "round": 91,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 21,
+   "round": 91,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 2,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 815,
+   "round": 92,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 16,
+   "round": 92,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 16,
+   "round": 92,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 3,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 813,
+   "round": 93,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 18,
+   "round": 93,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 18,
+   "round": 93,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 811,
+   "round": 94,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 17,
+   "round": 94,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 94,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 809,
+   "round": 95,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 21,
+   "round": 95,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 21,
+   "round": 95,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 12,
+   "remaining": 807,
+   "round": 96,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 12,
+   "round": 96,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 12,
+   "round": 96,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 14,
+   "remaining": 805,
+   "round": 97,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 14,
+   "round": 97,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 14,
+   "round": 97,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 10,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 803,
+   "round": 98,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 98,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 16,
+   "round": 98,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 2,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 801,
+   "round": 99,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 16,
+   "round": 99,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 8,
+   "hit": null,
+   "player_attack": 16,
+   "round": 99,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 4,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 799,
+   "round": 100,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 21,
+   "round": 100,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 13,
+   "hit": null,
+   "player_attack": 21,
+   "round": 100,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 9,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 797,
+   "round": 101,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 101,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 101,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 21,
+   "remaining": 795,
+   "round": 102,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 102,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 11,
+   "hit": null,
+   "player_attack": 21,
+   "round": 102,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 793,
+   "round": 103,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 15,
+   "round": 103,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 15,
+   "round": 103,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 11,
+   "hit": "enemy",
+   "player_attack": 14,
+   "remaining": 791,
+   "round": 104,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 14,
+   "round": 104,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 14,
+   "round": 104,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 17,
+   "remaining": 789,
+   "round": 105,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 14,
+   "hit": null,
+   "player_attack": 17,
+   "round": 105,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 17,
+   "round": 105,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 5,
+   "hit": "enemy",
+   "player_attack": 18,
+   "remaining": 787,
+   "round": 106,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 18,
+   "round": 106,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 18,
+   "round": 106,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 6,
+   "hit": "enemy",
+   "player_attack": 15,
+   "remaining": 785,
+   "round": 107,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 12,
+   "hit": null,
+   "player_attack": 15,
+   "round": 107,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 10,
+   "hit": null,
+   "player_attack": 15,
+   "round": 107,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 22,
+   "remaining": 783,
+   "round": 108,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 22,
+   "round": 108,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 7,
+   "hit": null,
+   "player_attack": 22,
+   "round": 108,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 8,
+   "hit": "enemy",
+   "player_attack": 16,
+   "remaining": 781,
+   "round": 109,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 15,
+   "hit": null,
+   "player_attack": 16,
+   "round": 109,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 16,
+   "round": 109,
+   "type": "combat_round"
+  },
+  {
+   "action": "attack",
+   "target": null,
+   "type": "action"
+  },
+  {
+   "damage": 2,
+   "enemy": "wall",
+   "enemy_attack": 7,
+   "hit": "enemy",
+   "player_attack": 19,
+   "remaining": 779,
+   "round": 110,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#1",
+   "enemy_attack": 9,
+   "hit": null,
+   "player_attack": 19,
+   "round": 110,
+   "type": "combat_round"
+  },
+  {
+   "enemy": "rat#2",
+   "enemy_attack": 6,
+   "hit": null,
+   "player_attack": 19,
+   "round": 110,
+   "type": "combat_round"
+  }
+ ],
+ "final_state": {
+  "class": null,
+  "combat": {
+   "choice_id": "wall",
+   "enemies": [
+    {
+     "key": "wall",
+     "level": 1,
+     "name": "Living Wall",
+     "stats": {
+      "SKILL": 0,
+      "STAMINA": 779
+     }
+    },
+    {
+     "key": "rat#1",
+     "level": 1,
+     "name": "Rat",
+     "stats": {
+      "SKILL": 3,
+      "STAMINA": 2
+     }
+    },
+    {
+     "key": "rat#2",
+     "level": 1,
+     "name": "Rat",
+     "stats": {
+      "SKILL": 3,
+      "STAMINA": 2
+     }
+    }
+   ],
+   "flee_allowed": false,
+   "round": 110,
+   "simultaneous": true
+  },
+  "ended": null,
+  "ending_node_id": null,
+  "equipped": {},
+  "flags": [
+   "ARRIVED"
+  ],
+  "items": {
+   "sword": 1
+  },
+  "max_stats": {
+   "LUCK": 7,
+   "SKILL": 10,
+   "STAMINA": 16
+  },
+  "node_id": "den",
+  "skills": [],
+  "stats": {
+   "GOLD": 5,
+   "LUCK": 6,
+   "SKILL": 10,
+   "STAMINA": 14
+  },
+  "steps": 120,
+  "tier": "basic",
+  "variant_id": "den-v",
+  "visits": {
+   "den": 1,
+   "hall": 1,
+   "market": 2,
+   "start": 3
+  }
+ },
+ "format": "gamebook-trace",
+ "seed": 11,
+ "tier": "basic",
+ "version": 1
+}

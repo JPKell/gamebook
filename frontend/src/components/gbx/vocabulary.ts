@@ -10,8 +10,11 @@ export interface VocabEntry {
 
 /** Names an author can use in gbx and effect editors, for one book. */
 export interface Vocabulary {
+  /** Empty outside a book (e.g. the Mechanics designer). */
   bookId: string
   seriesId: string
+  /** Check expressions against this rule system instead of the active one. */
+  ruleSystemId?: string | null
   tiers: VocabEntry[]
   stats: VocabEntry[]
   tests: VocabEntry[]

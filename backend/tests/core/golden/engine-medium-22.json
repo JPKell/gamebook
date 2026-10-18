@@ -1,0 +1,1710 @@
+{
+ "actions": [
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "0",
+   "type": "buy"
+  },
+  {
+   "target": "potion",
+   "type": "use"
+  },
+  {
+   "target": "sword",
+   "type": "equip"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "potion",
+   "type": "use"
+  },
+  {
+   "target": "sword",
+   "type": "sell"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "0",
+   "type": "take"
+  },
+  {
+   "target": "start->market",
+   "type": "choose"
+  },
+  {
+   "target": "rope",
+   "type": "sell"
+  },
+  {
+   "target": "market->start",
+   "type": "choose"
+  },
+  {
+   "target": "start->hall",
+   "type": "choose"
+  },
+  {
+   "target": "gamble",
+   "type": "choose"
+  },
+  {
+   "target": "trap->den",
+   "type": "choose"
+  },
+  {
+   "target": "rats",
+   "type": "choose"
+  }
+ ],
+ "bundle": {
+  "book": {
+   "acts": [
+    {
+     "id": "act1",
+     "key": "act1",
+     "position": 1,
+     "title": "Act 1"
+    }
+   ],
+   "book_id": "b1",
+   "characters": [],
+   "enemies": [
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-orc",
+     "key": "orc",
+     "name": "Orc",
+     "stat_formulas": {
+      "ARMOR": "floor(level / 2)",
+      "SKILL": "5 + level",
+      "STAMINA": "4 + level * 2"
+     }
+    },
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-rat",
+     "key": "rat",
+     "name": "Rat",
+     "stat_formulas": {
+      "ARMOR": "0",
+      "SKILL": "3",
+      "STAMINA": "2"
+     }
+    },
+    {
+     "book_id": null,
+     "default_level": 1,
+     "id": "e-wall",
+     "key": "wall",
+     "name": "Living Wall",
+     "stat_formulas": {
+      "ARMOR": "999",
+      "SKILL": "0",
+      "STAMINA": "999"
+     }
+    }
+   ],
+   "items": [
+    {
+     "book_id": null,
+     "category": "consumable",
+     "id": "i-potion",
+     "key": "potion",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Potion",
+     "slot": null,
+     "use_effects": [
+      {
+       "amount": "4",
+       "op": "modify",
+       "stat": "STAMINA"
+      }
+     ],
+     "value": 0
+    },
+    {
+     "book_id": null,
+     "category": "treasure",
+     "id": "i-rope",
+     "key": "rope",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Rope",
+     "slot": null,
+     "use_effects": [],
+     "value": 6
+    },
+    {
+     "book_id": null,
+     "category": "equipment",
+     "id": "i-sword",
+     "key": "sword",
+     "max_stack": null,
+     "modifiers": [
+      {
+       "amount": "2",
+       "min_tier": "medium",
+       "stat": "SKILL"
+      }
+     ],
+     "name": "Sword",
+     "slot": "weapon",
+     "use_effects": [],
+     "value": 10
+    },
+    {
+     "book_id": null,
+     "category": "key",
+     "id": "i-key",
+     "key": "iron_key",
+     "max_stack": null,
+     "modifiers": [],
+     "name": "Iron Key",
+     "slot": null,
+     "use_effects": [],
+     "value": 0
+    }
+   ],
+   "lore": [],
+   "nodes": [
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->market",
+       "kind": "goto",
+       "label": "To market",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->market-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "market"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->hall",
+       "kind": "goto",
+       "label": "Into the hall",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->hall-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "hall"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": "has(iron_key)",
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->vault",
+       "kind": "goto",
+       "label": "Unlock the vault",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->vault-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "vault"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": "flag(NEVER)",
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->secret",
+       "kind": "goto",
+       "label": "Secret door",
+       "min_tier": null,
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->secret-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "secret"
+        }
+       ],
+       "test": null,
+       "unmet_display": "show_disabled"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "start->elite",
+       "kind": "goto",
+       "label": "Elite path",
+       "min_tier": "advanced",
+       "node_id": "start",
+       "outcomes": [
+        {
+         "id": "start->elite-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "elite"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "start",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [
+      {
+       "item_id": "i-rope",
+       "qty": 1
+      }
+     ],
+     "key": "start",
+     "on_enter": [
+      {
+       "item": "potion",
+       "op": "give",
+       "qty": 2
+      },
+      {
+       "flag": "ARRIVED",
+       "op": "set_flag"
+      },
+      {
+       "amount": "1",
+       "once": false,
+       "op": "modify",
+       "stat": "GOLD"
+      }
+     ],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Start",
+     "variants": [
+      {
+       "condition": null,
+       "id": "start-v",
+       "label": "First",
+       "priority": 0
+      },
+      {
+       "condition": "visits(start) > 1",
+       "id": "start-back",
+       "label": "Back again",
+       "priority": 1
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "market->start",
+       "kind": "goto",
+       "label": "Leave",
+       "min_tier": null,
+       "node_id": "market",
+       "outcomes": [
+        {
+         "id": "market->start-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "start"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "market",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "market",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": [
+      {
+       "item_id": "i-sword",
+       "price": 8,
+       "stock": 1
+      },
+      {
+       "item_id": "i-key",
+       "price": 50,
+       "stock": null
+      }
+     ],
+     "shop_sell_rate": 50,
+     "title": "Market",
+     "variants": [
+      {
+       "condition": null,
+       "id": "market-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-orc",
+       "flee_allowed": true,
+       "id": "fight",
+       "kind": "combat",
+       "label": "fight",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "fight-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        },
+        {
+         "id": "fight-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        },
+        {
+         "id": "fight-flee",
+         "key": "flee",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "start"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": "2d6",
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "gamble",
+       "kind": "roll",
+       "label": "gamble",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "gamble-low",
+         "key": "low",
+         "range_hi": 6,
+         "range_lo": 2,
+         "target_id": "trap"
+        },
+        {
+         "id": "gamble-high",
+         "key": "high",
+         "range_hi": 12,
+         "range_lo": 7,
+         "target_id": "den"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "luck",
+       "kind": "test",
+       "label": "luck",
+       "min_tier": null,
+       "node_id": "hall",
+       "outcomes": [
+        {
+         "id": "luck-success",
+         "key": "success",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        },
+        {
+         "id": "luck-failure",
+         "key": "failure",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "trap"
+        }
+       ],
+       "test": "luck",
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [
+      {
+       "enemies": [
+        {
+         "count": 1,
+         "enemy_id": "e-orc",
+         "level": 2
+        }
+       ],
+       "fight": "sequential",
+       "id": "enc-orc",
+       "label": "Orc guard",
+       "mode": "fixed",
+       "table_id": null
+      }
+     ],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "hall",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "hall",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Hall",
+     "variants": [
+      {
+       "condition": null,
+       "id": "hall-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-den",
+       "flee_allowed": false,
+       "id": "rats",
+       "kind": "combat",
+       "label": "rats",
+       "min_tier": null,
+       "node_id": "den",
+       "outcomes": [
+        {
+         "id": "rats-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        },
+        {
+         "id": "rats-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      },
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": "enc-wall",
+       "flee_allowed": false,
+       "id": "wall",
+       "kind": "combat",
+       "label": "wall",
+       "min_tier": null,
+       "node_id": "den",
+       "outcomes": [
+        {
+         "id": "wall-win",
+         "key": "win",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        },
+        {
+         "id": "wall-lose",
+         "key": "lose",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "dead"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [
+      {
+       "enemies": [],
+       "fight": "sequential",
+       "id": "enc-den",
+       "label": "Den",
+       "mode": "table",
+       "table_id": "t-den"
+      },
+      {
+       "enemies": [
+        {
+         "count": 1,
+         "enemy_id": "e-wall",
+         "level": 1
+        },
+        {
+         "count": 2,
+         "enemy_id": "e-rat",
+         "level": 1
+        }
+       ],
+       "fight": "simultaneous",
+       "id": "enc-wall",
+       "label": "Wall",
+       "mode": "fixed",
+       "table_id": null
+      }
+     ],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "den",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "den",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Den",
+     "variants": [
+      {
+       "condition": null,
+       "id": "den-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "trap->den",
+       "kind": "goto",
+       "label": "Crawl on",
+       "min_tier": null,
+       "node_id": "trap",
+       "outcomes": [
+        {
+         "id": "trap->den-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "den"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "trap",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "trap",
+     "on_enter": [
+      {
+       "amount": "-3",
+       "once": false,
+       "op": "modify",
+       "stat": "STAMINA"
+      }
+     ],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Trap",
+     "variants": [
+      {
+       "condition": null,
+       "id": "trap-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "vault->end",
+       "kind": "goto",
+       "label": "Take the treasure",
+       "min_tier": null,
+       "node_id": "vault",
+       "outcomes": [
+        {
+         "id": "vault->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "vault",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "vault",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Vault",
+     "variants": [
+      {
+       "condition": null,
+       "id": "vault-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "secret->end",
+       "kind": "goto",
+       "label": "Go to end",
+       "min_tier": null,
+       "node_id": "secret",
+       "outcomes": [
+        {
+         "id": "secret->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "secret",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "secret",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Secret",
+     "variants": [
+      {
+       "condition": null,
+       "id": "secret-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [
+      {
+       "condition": null,
+       "dice": null,
+       "effects": [],
+       "encounter_id": null,
+       "flee_allowed": false,
+       "id": "elite->end",
+       "kind": "goto",
+       "label": "Go to end",
+       "min_tier": null,
+       "node_id": "elite",
+       "outcomes": [
+        {
+         "id": "elite->end-o",
+         "key": "default",
+         "range_hi": null,
+         "range_lo": null,
+         "target_id": "end"
+        }
+       ],
+       "test": null,
+       "unmet_display": "hide"
+      }
+     ],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": null,
+     "id": "elite",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "elite",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Elite",
+     "variants": [
+      {
+       "condition": null,
+       "id": "elite-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": "victory",
+     "id": "end",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "end",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "End",
+     "variants": [
+      {
+       "condition": null,
+       "id": "end-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    },
+    {
+     "act_id": "act1",
+     "choices": [],
+     "encounters": [],
+     "ending_grade": null,
+     "ending_kind": "death",
+     "id": "dead",
+     "is_act_entry": false,
+     "is_act_exit": false,
+     "items": [],
+     "key": "dead",
+     "on_enter": [],
+     "section_pin": null,
+     "shop": null,
+     "shop_sell_rate": null,
+     "title": "Dead",
+     "variants": [
+      {
+       "condition": null,
+       "id": "dead-v",
+       "label": "Default",
+       "priority": 0
+      }
+     ]
+    }
+   ],
+   "rules": {
+    "tiers": [
+     {
+      "classes": [],
+      "combat": {
+       "damage": "2",
+       "damage_hooks": [],
+       "damage_stat": "STAMINA",
+       "enemy_attack": "2d6 + enemy.SKILL",
+       "flee_allowed": true,
+       "flee_cost": [
+        {
+         "amount": "-2",
+         "min_tier": null,
+         "once": null,
+         "op": "modify",
+         "print_text": null,
+         "stat": "STAMINA"
+        }
+       ],
+       "multi_enemy": "sequential",
+       "player_attack": "2d6 + player.SKILL"
+      },
+      "description": "Three stats, two dice, simple combat.",
+      "key": "basic",
+      "label": "Basic",
+      "parent": null,
+      "rules_text": "Roll one die and add 6 for your SKILL, two dice and add 12 for your STAMINA, and one die plus 6 for your LUCK. You start with 10 Gold.\n\n**Fighting.** Each round, roll two dice and add your SKILL; then roll two dice and add your opponent's SKILL. Whoever scores higher wounds the other for 2 STAMINA. A tie means you both miss. Anyone reduced to 0 STAMINA is defeated.\n\n**Testing your Luck.** Roll two dice. If the total is equal to or less than your LUCK you are lucky. Either way, subtract 1 from your LUCK.",
+      "skills": [],
+      "slots": [],
+      "stats": [
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "1d6 + 6",
+        "key": "SKILL",
+        "kind": "stat",
+        "label": "Skill",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": 0,
+        "description": "",
+        "initial": "2d6 + 12",
+        "key": "STAMINA",
+        "kind": "stat",
+        "label": "Stamina",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "1d6 + 6",
+        "key": "LUCK",
+        "kind": "stat",
+        "label": "Luck",
+        "max": null,
+        "max_is_initial": true,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "10",
+        "key": "GOLD",
+        "kind": "resource",
+        "label": "Gold",
+        "max": null,
+        "max_is_initial": false,
+        "min": 0
+       }
+      ],
+      "tests": [
+       {
+        "after": [
+         {
+          "amount": "-1",
+          "min_tier": null,
+          "once": null,
+          "op": "modify",
+          "print_text": null,
+          "stat": "LUCK"
+         }
+        ],
+        "description": "",
+        "key": "luck",
+        "label": "Test your Luck",
+        "roll": "2d6",
+        "success": "roll <= player.LUCK"
+       },
+       {
+        "after": [],
+        "description": "",
+        "key": "skill",
+        "label": "Test your Skill",
+        "roll": "2d6",
+        "success": "roll <= player.SKILL"
+       }
+      ]
+     },
+     {
+      "classes": [],
+      "combat": {
+       "damage": null,
+       "damage_hooks": [
+        "max(1, damage - target.ARMOR)"
+       ],
+       "damage_stat": null,
+       "enemy_attack": null,
+       "flee_allowed": null,
+       "flee_cost": null,
+       "multi_enemy": null,
+       "player_attack": null
+      },
+      "description": "Adds armour and equipment slots.",
+      "key": "medium",
+      "label": "Medium",
+      "parent": "basic",
+      "rules_text": "**Armour.** Every wound is reduced by the target's ARMOUR, but always does at least 1 damage. You may wear one weapon, one suit of body armour and one shield; their bonuses count only while equipped.",
+      "skills": [],
+      "slots": [
+       "weapon",
+       "body",
+       "shield"
+      ],
+      "stats": [
+       {
+        "applies_to": [
+         "player",
+         "enemy"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "0",
+        "key": "ARMOR",
+        "kind": "stat",
+        "label": "Armour",
+        "max": null,
+        "max_is_initial": false,
+        "min": 0
+       }
+      ],
+      "tests": []
+     },
+     {
+      "classes": [
+       {
+        "description": "",
+        "key": "ranger",
+        "label": "Ranger",
+        "skills": [
+         "TRACKING",
+         "ARCHERY"
+        ]
+       },
+       {
+        "description": "",
+        "key": "rogue",
+        "label": "Rogue",
+        "skills": [
+         "STEALTH"
+        ]
+       },
+       {
+        "description": "",
+        "key": "scholar",
+        "label": "Scholar",
+        "skills": [
+         "LORE"
+        ]
+       }
+      ],
+      "combat": {
+       "damage": null,
+       "damage_hooks": [
+        "natural == 12 ? damage * 2 : damage"
+       ],
+       "damage_stat": null,
+       "enemy_attack": null,
+       "flee_allowed": null,
+       "flee_cost": null,
+       "multi_enemy": null,
+       "player_attack": null
+      },
+      "description": "Adds classes, skills and critical hits.",
+      "key": "advanced",
+      "label": "Advanced",
+      "parent": "medium",
+      "rules_text": "**Your calling.** Choose a class: it grants your starting skills, which open choices other adventurers cannot take.\n\n**Critical hits.** When an attack roll shows double six (a natural 12), its damage is doubled.",
+      "skills": [
+       {
+        "description": "",
+        "key": "TRACKING",
+        "label": "Tracking"
+       },
+       {
+        "description": "",
+        "key": "ARCHERY",
+        "label": "Archery"
+       },
+       {
+        "description": "",
+        "key": "STEALTH",
+        "label": "Stealth"
+       },
+       {
+        "description": "",
+        "key": "LORE",
+        "label": "Lore"
+       }
+      ],
+      "slots": [],
+      "stats": [],
+      "tests": []
+     }
+    ]
+   },
+   "series_flags_set": [],
+   "series_id": "s1",
+   "start_node_id": "start",
+   "tables": [
+    {
+     "book_id": null,
+     "dice": "1d6",
+     "entries": [
+      {
+       "amount": null,
+       "enemies": [],
+       "hi": 2,
+       "item": null,
+       "kind": "nothing",
+       "lo": 1,
+       "qty": 1
+      },
+      {
+       "amount": null,
+       "enemies": [],
+       "hi": 4,
+       "item": "potion",
+       "kind": "item",
+       "lo": 3,
+       "qty": 1
+      },
+      {
+       "amount": null,
+       "enemies": [
+        [
+         "rat",
+         1,
+         2
+        ]
+       ],
+       "hi": 6,
+       "item": null,
+       "kind": "enemies",
+       "lo": 5,
+       "qty": 1
+      }
+     ],
+     "id": "t-den",
+     "key": "den",
+     "name": "Den"
+    }
+   ],
+   "title": "Test"
+  },
+  "format": "gamebook-bundle",
+  "version": 1
+ },
+ "creation": {},
+ "events": [
+  {
+   "expr": "1d6 + 6",
+   "faces": [
+    6
+   ],
+   "purpose": "initial SKILL",
+   "total": 12,
+   "type": "roll"
+  },
+  {
+   "expr": "2d6 + 12",
+   "faces": [
+    4,
+    2
+   ],
+   "purpose": "initial STAMINA",
+   "total": 18,
+   "type": "roll"
+  },
+  {
+   "expr": "1d6 + 6",
+   "faces": [
+    3
+   ],
+   "purpose": "initial LUCK",
+   "total": 9,
+   "type": "roll"
+  },
+  {
+   "expr": "10",
+   "faces": [],
+   "purpose": "initial GOLD",
+   "total": 10,
+   "type": "roll"
+  },
+  {
+   "expr": "0",
+   "faces": [],
+   "purpose": "initial ARMOR",
+   "total": 0,
+   "type": "roll"
+  },
+  {
+   "class": null,
+   "stats": {
+    "ARMOR": 0,
+    "GOLD": 10,
+    "LUCK": 9,
+    "SKILL": 12,
+    "STAMINA": 18
+   },
+   "type": "character_created"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-v",
+   "visit": 1
+  },
+  {
+   "item": "potion",
+   "op": "give",
+   "qty": 2,
+   "source": "enter:start",
+   "type": "effect"
+  },
+  {
+   "flag": "ARRIVED",
+   "op": "set_flag",
+   "source": "enter:start",
+   "type": "effect"
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 11
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 1
+  },
+  {
+   "action": "buy",
+   "target": "0",
+   "type": "action"
+  },
+  {
+   "item": "sword",
+   "price": 8,
+   "type": "item_bought"
+  },
+  {
+   "action": "use",
+   "target": "potion",
+   "type": "action"
+  },
+  {
+   "item": "potion",
+   "type": "item_used"
+  },
+  {
+   "change": 0,
+   "op": "modify",
+   "source": "use:potion",
+   "stat": "STAMINA",
+   "type": "effect",
+   "value": 18
+  },
+  {
+   "action": "equip",
+   "target": "sword",
+   "type": "action"
+  },
+  {
+   "item": "sword",
+   "slot": "weapon",
+   "type": "equipped"
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 2
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 4
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 2
+  },
+  {
+   "action": "use",
+   "target": "potion",
+   "type": "action"
+  },
+  {
+   "item": "potion",
+   "type": "item_used"
+  },
+  {
+   "change": 0,
+   "op": "modify",
+   "source": "use:potion",
+   "stat": "STAMINA",
+   "type": "effect",
+   "value": 18
+  },
+  {
+   "action": "sell",
+   "target": "sword",
+   "type": "action"
+  },
+  {
+   "item": "sword",
+   "price": 5,
+   "type": "item_sold"
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 3
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 10
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 3
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 4
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 11
+  },
+  {
+   "action": "take",
+   "target": "0",
+   "type": "action"
+  },
+  {
+   "item": "rope",
+   "qty": 1,
+   "type": "item_taken"
+  },
+  {
+   "action": "choose",
+   "target": "start->market",
+   "type": "action"
+  },
+  {
+   "choice": "start->market",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "market",
+   "node": "market",
+   "type": "enter",
+   "variant": "market-v",
+   "visit": 4
+  },
+  {
+   "action": "sell",
+   "target": "rope",
+   "type": "action"
+  },
+  {
+   "item": "rope",
+   "price": 3,
+   "type": "item_sold"
+  },
+  {
+   "action": "choose",
+   "target": "market->start",
+   "type": "action"
+  },
+  {
+   "choice": "market->start",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "start",
+   "node": "start",
+   "type": "enter",
+   "variant": "start-back",
+   "visit": 5
+  },
+  {
+   "change": 1,
+   "op": "modify",
+   "source": "enter:start",
+   "stat": "GOLD",
+   "type": "effect",
+   "value": 15
+  },
+  {
+   "action": "choose",
+   "target": "start->hall",
+   "type": "action"
+  },
+  {
+   "choice": "start->hall",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "hall",
+   "node": "hall",
+   "type": "enter",
+   "variant": "hall-v",
+   "visit": 1
+  },
+  {
+   "action": "choose",
+   "target": "gamble",
+   "type": "action"
+  },
+  {
+   "expr": "2d6",
+   "faces": [
+    1,
+    2
+   ],
+   "purpose": "choice gamble",
+   "total": 3,
+   "type": "roll"
+  },
+  {
+   "choice": "gamble",
+   "outcome": "low",
+   "type": "outcome"
+  },
+  {
+   "key": "trap",
+   "node": "trap",
+   "type": "enter",
+   "variant": "trap-v",
+   "visit": 1
+  },
+  {
+   "change": -3,
+   "op": "modify",
+   "source": "enter:trap",
+   "stat": "STAMINA",
+   "type": "effect",
+   "value": 15
+  },
+  {
+   "action": "choose",
+   "target": "trap->den",
+   "type": "action"
+  },
+  {
+   "choice": "trap->den",
+   "outcome": "default",
+   "type": "outcome"
+  },
+  {
+   "key": "den",
+   "node": "den",
+   "type": "enter",
+   "variant": "den-v",
+   "visit": 1
+  },
+  {
+   "action": "choose",
+   "target": "rats",
+   "type": "action"
+  },
+  {
+   "expr": "1d6",
+   "faces": [
+    4
+   ],
+   "purpose": "table den",
+   "total": 4,
+   "type": "roll"
+  },
+  {
+   "result": "item",
+   "roll": 4,
+   "table": "den",
+   "type": "table"
+  },
+  {
+   "item": "potion",
+   "op": "give",
+   "qty": 1,
+   "source": "table:den",
+   "type": "effect"
+  },
+  {
+   "encounter": "enc-den",
+   "type": "combat_skipped"
+  },
+  {
+   "choice": "rats",
+   "outcome": "win",
+   "type": "outcome"
+  },
+  {
+   "key": "end",
+   "node": "end",
+   "type": "enter",
+   "variant": "end-v",
+   "visit": 1
+  },
+  {
+   "ending": "victory",
+   "node": "end",
+   "type": "game_over"
+  }
+ ],
+ "final_state": {
+  "class": null,
+  "combat": null,
+  "ended": "victory",
+  "ending_node_id": "end",
+  "equipped": {},
+  "flags": [
+   "ARRIVED"
+  ],
+  "items": {
+   "potion": 1
+  },
+  "max_stats": {
+   "LUCK": 9,
+   "SKILL": 12,
+   "STAMINA": 18
+  },
+  "node_id": "end",
+  "skills": [],
+  "stats": {
+   "ARMOR": 0,
+   "GOLD": 15,
+   "LUCK": 9,
+   "SKILL": 12,
+   "STAMINA": 15
+  },
+  "steps": 19,
+  "tier": "medium",
+  "variant_id": "end-v",
+  "visits": {
+   "den": 1,
+   "end": 1,
+   "hall": 1,
+   "market": 4,
+   "start": 5,
+   "trap": 1
+  }
+ },
+ "format": "gamebook-trace",
+ "seed": 22,
+ "tier": "medium",
+ "version": 1
+}

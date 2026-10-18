@@ -100,3 +100,15 @@ def test_commit_happens_before_the_response(
     with TestClient(client.app, raise_server_exceptions=False) as c:
         res = c.post("/api/series", json={"title": "Never saved"})
     assert res.status_code == 500
+
+
+def test_model_validator_errors_are_422_not_500(client: TestClient) -> None:
+    s = client.post("/api/series", json={"title": "S"}).json()
+    book = client.post(f"/api/series/{s['id']}/books", json={"title": "B"}).json()
+    start = client.get(f"/api/books/{book['id']}/graph").json()["nodes"][0]
+    res = client.post(
+        f"/api/nodes/{start['id']}/choices",
+        json={"target_node_id": start["id"], "outcomes": [{"key": "default"}]},
+    )
+    assert res.status_code == 422
+    assert "either target_node_id or outcomes" in res.json()["errors"][0]["msg"]

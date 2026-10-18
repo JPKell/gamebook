@@ -158,3 +158,18 @@ def test_incremental_index_matches_full_rebuild(
     lantern = [r for r in incremental if r[3] == "lantern"]
     assert lantern
     assert all(r[4] is not None for r in lantern)
+
+
+def test_gbx_check_against_a_specific_rule_system(api: Api, series: Json) -> None:
+    definition = api.get(f"/series/{series['id']}/rule-systems")[0]["definition"]
+    definition["tiers"][0]["stats"].append({"key": "MANA", "label": "Mana"})
+    draft = api.post(
+        f"/series/{series['id']}/rule-systems", {"name": "Draft", "definition": definition}
+    )
+    body = {"source": "MANA > 1", "context": "condition", "series_id": series["id"]}
+    assert api.post("/gbx/check", body, expect=200)["ok"] is False  # active system has no MANA
+    assert api.post("/gbx/check", body | {"rule_system_id": draft["id"]}, expect=200)["ok"] is True
+
+
+def test_gbx_check_unknown_series_is_404(api: Api) -> None:
+    api.post("/gbx/check", {"source": "1", "context": "roll", "series_id": "nope"}, expect=404)

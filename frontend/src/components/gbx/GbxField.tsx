@@ -17,8 +17,10 @@ const CHECK_DELAY_MS = 300
 function runCheck(body: {
   source: string
   context: GbxContext
-  book_id: string
-  tier: string | null
+  book_id?: string
+  series_id?: string
+  rule_system_id?: string
+  tier?: string
 }) {
   return unwrap(api.POST('/api/gbx/check', { body }))
 }
@@ -169,7 +171,7 @@ export function GbxField({
   // Debounced server check.
   useEffect(() => {
     const source = text.trim()
-    if (!source || !vocab.bookId) {
+    if (!source || (!vocab.bookId && !vocab.seriesId)) {
       setCheck(null)
       view.current?.dispatch(setDiagnostics(view.current.state, []))
       return
@@ -180,8 +182,10 @@ export function GbxField({
         const res = await runCheck({
           source: text,
           context,
-          book_id: vocab.bookId,
-          tier: tier ?? null,
+          book_id: vocab.bookId || undefined,
+          series_id: vocab.bookId ? undefined : vocab.seriesId,
+          rule_system_id: vocab.ruleSystemId ?? undefined,
+          tier: tier ?? undefined,
         })
         if (cancelled) return
         setCheck(res)
@@ -206,7 +210,7 @@ export function GbxField({
       cancelled = true
       clearTimeout(timer)
     }
-  }, [text, context, tier, vocab.bookId])
+  }, [text, context, tier, vocab.bookId, vocab.seriesId, vocab.ruleSystemId])
 
   const firstError = check?.diagnostics.find((d) => d.severity === 'error')
   const firstWarning = check?.diagnostics.find((d) => d.severity !== 'error')

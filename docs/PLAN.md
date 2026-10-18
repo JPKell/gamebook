@@ -69,7 +69,7 @@ v1 is tagged `v1-prototype` and its code removed in Phase 0; nothing is migrated
 
 **Demo:** author a 3-act, ~30-node book with gated, roll and combat choices entirely in the UI.
 
-## Phase 3 — Mechanics designer & engine
+## Phase 3 — Mechanics designer & engine ✅ (2026-10-18, see `docs/handoffs/v2-phase-03-mechanics.md`)
 
 - ~~RuleSystem schema, tier inheritance/merge, validation of tier definitions~~ (pulled into
   Phase 1, because expression checking needs per-tier stats; a starter template is seeded).

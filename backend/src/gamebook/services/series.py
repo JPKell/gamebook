@@ -36,7 +36,7 @@ def create_series(session: Session, data: SeriesCreate) -> Series:
             key="standard",
             name="Standard rules",
             is_active=True,
-            definition=default_rule_system().model_dump(mode="json", exclude_none=True),
+            definition=default_rule_system().model_dump(mode="json"),
         )
     )
     session.flush()
@@ -94,7 +94,7 @@ def create_rule_system(session: Session, series_id: str, data: RuleSystemCreate)
         key=assign_key(session, RuleSystem, data.key, data.name, series_id=series_id),
         name=data.name,
         is_active=False,
-        definition=definition.model_dump(mode="json", exclude_none=True),
+        definition=definition.model_dump(mode="json"),
     )
     session.add(rs)
     session.flush()
@@ -115,7 +115,7 @@ def update_rule_system(session: Session, rs_id: str, data: RuleSystemUpdate) -> 
     if data.name is not None:
         rs.name = data.name
     if data.definition is not None:
-        rs.definition = data.definition.model_dump(mode="json", exclude_none=True)
+        rs.definition = data.definition.model_dump(mode="json")
     if data.is_active:
         _activate(session, rs)
     elif data.is_active is False:

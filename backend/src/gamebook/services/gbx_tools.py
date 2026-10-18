@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -9,7 +10,7 @@ from gamebook.core import gbx
 from gamebook.core.gbx.english import Namer
 from gamebook.core.gbx.scope import Context, RefKind, ScopeInputs, scope_for
 from gamebook.core.rules import RuleSystemDef, TierError, effective_tier
-from gamebook.db.models import Book, Item, Node
+from gamebook.db.models import Book, Item, Node, RuleSystem, Series
 from gamebook.schemas.analysis import GbxCheckIn, GbxCheckOut, GbxDiagnosticOut
 from gamebook.services.common import require
 from gamebook.services.errors import InvalidError
@@ -68,8 +69,17 @@ def check(session: Session, data: GbxCheckIn) -> GbxCheckOut:
         series_id = book.series_id
     if series_id is None:
         raise InvalidError("Give a book_id or series_id", field="book_id")
+    require(session, Series, series_id)
 
     rules = active_rules(session, series_id)
+    if data.rule_system_id is not None:
+        rs = require(session, RuleSystem, data.rule_system_id)
+        if rs.series_id != series_id:
+            raise InvalidError("That rule system belongs to another series", field="rule_system_id")
+        try:
+            rules = RuleSystemDef.model_validate(rs.definition)
+        except ValidationError as exc:
+            raise InvalidError("That rule system is invalid") from exc
     inputs = ScopeInputs(
         items=frozenset(session.scalars(select(Item.key).where(Item.series_id == series_id)))
     )

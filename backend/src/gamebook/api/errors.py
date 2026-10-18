@@ -8,6 +8,7 @@ can handle them uniformly.
 import logging
 
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -46,7 +47,9 @@ def install_error_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(_: Request, exc: RequestValidationError) -> JSONResponse:
-        return _error(422, "Request validation failed", "validation_error", errors=exc.errors())
+        # jsonable_encoder: errors from model validators carry exception objects in ctx.
+        errors = jsonable_encoder(exc.errors())
+        return _error(422, "Request validation failed", "validation_error", errors=errors)
 
     @app.exception_handler(Exception)
     async def unhandled(request: Request, exc: Exception) -> JSONResponse:

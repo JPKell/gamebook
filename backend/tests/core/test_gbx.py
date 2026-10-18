@@ -403,3 +403,88 @@ def test_number_english(src: str, english: str) -> None:
 @given(booleans)
 def test_english_never_crashes(e: gbx.Expr) -> None:
     assert gbx.condition_to_english(e, namer, tiers=TIERS)
+
+
+# ── compiler ≡ evaluator ─────────────────────────────────────────────────
+
+
+def _same(e: gbx.Expr, seed: int) -> None:
+    from gamebook.core.gbx.compiler import compile_expr as compile_fn
+
+    try:
+        expected: object = gbx.evaluate(e, env(), gbx.SeededRng(seed))
+    except gbx.GbxEvalError as exc:
+        expected = type(exc)
+    try:
+        got: object = compile_fn(e)(env(), gbx.SeededRng(seed))
+    except gbx.GbxEvalError as exc:
+        got = type(exc)
+    if isinstance(expected, Fraction) and not isinstance(got, bool):
+        assert isinstance(got, int | Fraction)
+        assert Fraction(got) == expected
+    else:
+        assert got == expected
+
+
+@given(st.one_of(numbers, booleans), st.integers(0, 2**32))
+@settings(max_examples=400)
+def test_compiler_matches_evaluator(e: gbx.Expr, seed: int) -> None:
+    _same(e, seed)
+
+
+@pytest.mark.parametrize(
+    "src",
+    [
+        "7 / 2",
+        "-7 % 3",
+        "7 % -2",
+        "round(-5 / 2)",
+        "floor(7 / 2) * 2",
+        "1 / 0",
+        "clamp(15, 1, 10)",
+        "(1 / 3) * 3 == 1",
+        "tier >= medium",
+        "max(1 / 2, 1 / 3)",
+        "abs(-1 / 2)",
+        "true < false",
+    ],
+)
+def test_compiler_edge_cases(src: str) -> None:
+    _same(gbx.parse(src), 1)
+
+
+# ── portable dice (PCG32) ────────────────────────────────────────────────
+
+PCG_VECTORS = {
+    0: ([3894649422, 2055130073, 2315086854, 2925816488, 3443325253, 1644475139], [1, 6, 1, 3, 2]),
+    42: ([3270867926, 1795671209, 1924641435, 1143034755, 4121910957, 1757328946], [3, 6, 4, 4, 4]),
+    2**63 + 5: (
+        [3848082736, 1504244978, 3610293564, 1948130859, 1524195164, 434124324],
+        [5, 3, 1, 4, 3],
+    ),
+}
+
+
+@pytest.mark.parametrize("seed", list(PCG_VECTORS))
+def test_pcg_reference_vectors(seed: int) -> None:
+    """Pinned outputs: other runtimes (the TS player) must reproduce these exactly."""
+    raw, dice = PCG_VECTORS[seed]
+    rng = gbx.SeededRng(seed)
+    assert [rng._next32() for _ in range(6)] == raw
+    assert gbx.SeededRng(seed).roll(5, 6) == dice
+
+
+@given(st.integers(0, 2**64 - 1), st.integers(2, 1000))
+@settings(max_examples=200)
+def test_bounded_rolls_in_range(seed: int, sides: int) -> None:
+    faces = gbx.SeededRng(seed).roll(20, sides)
+    assert all(1 <= f <= sides for f in faces)
+
+
+def test_dice_are_roughly_uniform() -> None:
+    rng = gbx.SeededRng(123)
+    counts = [0] * 6
+    for f in rng.roll(60_000, 6):
+        counts[f - 1] += 1
+    chi2 = sum((c - 10_000) ** 2 / 10_000 for c in counts)
+    assert chi2 < 20.5  # p ≈ 0.001 for 5 degrees of freedom

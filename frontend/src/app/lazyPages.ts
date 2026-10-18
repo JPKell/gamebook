@@ -10,3 +10,9 @@ export const StoryIndex = lazy(() =>
 export const StoryPage = lazy(() =>
   import('@/features/story/StoryPage').then((m) => ({ default: m.StoryPage })),
 )
+export const MechanicsIndex = lazy(() =>
+  import('@/features/mechanics/MechanicsPage').then((m) => ({ default: m.MechanicsIndex })),
+)
+export const MechanicsPage = lazy(() =>
+  import('@/features/mechanics/MechanicsPage').then((m) => ({ default: m.MechanicsPage })),
+)

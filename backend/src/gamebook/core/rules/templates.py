@@ -23,6 +23,16 @@ def default_rule_system() -> RuleSystemDef:
                 key="basic",
                 label="Basic",
                 description="Three stats, two dice, simple combat.",
+                rules_text=(
+                    "Roll one die and add 6 for your SKILL, two dice and add 12 for your "
+                    "STAMINA, and one die plus 6 for your LUCK. You start with 10 Gold.\n\n"
+                    "**Fighting.** Each round, roll two dice and add your SKILL; then roll two "
+                    "dice and add your opponent's SKILL. Whoever scores higher wounds the "
+                    "other for 2 STAMINA. A tie means you both miss. Anyone reduced to 0 "
+                    "STAMINA is defeated.\n\n"
+                    "**Testing your Luck.** Roll two dice. If the total is equal to or less "
+                    "than your LUCK you are lucky. Either way, subtract 1 from your LUCK."
+                ),
                 stats=[
                     StatDef(
                         key="SKILL",
@@ -76,6 +86,11 @@ def default_rule_system() -> RuleSystemDef:
                 label="Medium",
                 parent="basic",
                 description="Adds armour and equipment slots.",
+                rules_text=(
+                    "**Armour.** Every wound is reduced by the target's ARMOUR, but always does "
+                    "at least 1 damage. You may wear one weapon, one suit of body armour and "
+                    "one shield; their bonuses count only while equipped."
+                ),
                 stats=[StatDef(key="ARMOR", label="Armour", applies_to=["player", "enemy"])],
                 slots=["weapon", "body", "shield"],
                 combat=CombatDef(damage_hooks=["max(1, damage - target.ARMOR)"]),
@@ -85,6 +100,12 @@ def default_rule_system() -> RuleSystemDef:
                 label="Advanced",
                 parent="medium",
                 description="Adds classes, skills and critical hits.",
+                rules_text=(
+                    "**Your calling.** Choose a class: it grants your starting skills, which "
+                    "open choices other adventurers cannot take.\n\n"
+                    "**Critical hits.** When an attack roll shows double six (a natural 12), "
+                    "its damage is doubled."
+                ),
                 skills=[
                     SkillDef(key="TRACKING", label="Tracking"),
                     SkillDef(key="ARCHERY", label="Archery"),

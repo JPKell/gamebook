@@ -222,9 +222,21 @@ combat:
   enemy_abilities: true
 ```
 
-Combat is a **fixed procedure with expression hooks** (attack rolls, compare, damage,
-damage hooks, round-start/round-end effects, flee, multi-enemy mode) — expressive enough
-for FF/Lone-Wolf/d20 styles, constrained enough to always be printable.
+Combat is a **fixed procedure with expression hooks** — expressive enough for
+FF/Lone-Wolf/d20 styles, constrained enough to always be printable:
+
+1. Each round the player rolls `player_attack` against their current target (the first
+   living enemy) and each *fighting* enemy rolls `enemy_attack` (sequential: only the
+   first living enemy fights; simultaneous: all living enemies fight).
+2. If the player beats their target's roll, the target takes damage; if an enemy beats
+   the player's roll, the player takes damage; ties and the player beating a non-target
+   enemy do nothing.
+3. Damage starts at `damage` (default 2) and passes through `damage_hooks` in order;
+   each hook sees `damage`, `natural` (the attacker's dice faces), `attacker`, `target`.
+   The result (rounded down, never negative) reduces `damage_stat`, clamped at its minimum.
+4. A side is defeated at `defeat_at` of the damage stat. Outcomes: `win`, `lose`,
+   `flee` (if allowed; `flee_cost` effects apply). 200 rounds without a result is a
+   stalemate and counts as `lose`.
 
 Also defined per rule system: character creation steps (roll stats, choose class, choose N
 skills, starting kit), equipment slot rules, adventure-sheet layout (for print), and the
@@ -296,6 +308,21 @@ satisfiable), and the author (shown in the node inspector).
   llm_confusion?: {flag, note}}`.
 - **Coverage walker**: exhaustive (bounded) enumeration of choice paths, ignoring dice
   outcomes as nondeterministic branches → reachable nodes/endings, unreachable content.
+
+### 2.10a Engine (Phase 3)
+
+`core/engine.Game(book, tier, seed)` plays one book deterministically. State: stats
+(+ max for `max_is_initial`), items, equipment slots, flags, skills, class, visits,
+once-only keys, shop stock, current combat, ending. Effective stats add item modifiers
+(equipment only while equipped; others while carried; `min_tier` respected). Actions:
+`choose`, `take` (found items, once), `buy`/`sell` (currency = first resource stat;
+sell at the shop's rate), `use` (consumables), `equip`/`unequip`, and in combat
+`attack`/`flee`. Entering a node picks the highest-priority matching text variant,
+applies on-entry effects, then ends the game on an authored ending (which wins over
+stat defeat), or with `stuck` if no choice is available. Content errors (bad
+expressions) become `error` events, never crashes. Every step appends JSON-friendly
+events; every die is recorded. See ADR 0006 (PCG32 dice, bundles, golden traces) and
+ADR 0007 (compiled expressions).
 
 ### 2.11 LLM infrastructure
 

@@ -592,6 +592,43 @@ export interface paths {
     patch: operations['update_rule_system']
     trace?: never
   }
+  '/api/rule-systems/{rule_system_id}/problems': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Rule System Problems */
+    get: operations['get_rule_system_problems']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/rule-systems/{rule_system_id}/tiers/{tier}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get Tier View
+     * @description A tier merged with its ancestors, with where each part comes from.
+     */
+    get: operations['get_tier_view']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/series': {
     parameters: {
       query?: never
@@ -659,6 +696,46 @@ export interface paths {
     put?: never
     /** Create Character */
     post: operations['create_character']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/combat-lab': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Run Combat Lab
+     * @description Monte Carlo fights: win rate, rounds and damage distributions.
+     */
+    post: operations['run_combat_lab']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/combat-lab/sweep': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Run Combat Sweep
+     * @description Win rate against one enemy across a range of levels.
+     */
+    post: operations['run_combat_sweep']
     delete?: never
     options?: never
     head?: never
@@ -1258,6 +1335,24 @@ export interface components {
       /** Skills */
       skills?: string[]
     }
+    /** ClassView */
+    ClassView: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Introduced */
+      introduced: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Origin */
+      origin: string
+      /** Skills */
+      skills?: string[]
+    }
     /** ClearFlag */
     ClearFlag: {
       /** Flag */
@@ -1326,6 +1421,19 @@ export interface components {
       | 'stat_initial'
       | 'combat_attack'
       | 'combat_damage'
+    /** Distribution */
+    Distribution: {
+      /** Histogram */
+      histogram: {
+        [key: string]: number
+      }
+      /** Mean */
+      mean: number
+      /** P50 */
+      p50?: number | null
+      /** P90 */
+      p90: number
+    }
     /** DuplicateRequest */
     DuplicateRequest: {
       /** Node Ids */
@@ -1565,6 +1673,8 @@ export interface components {
       /** Book Id */
       book_id?: string | null
       context: components['schemas']['Context']
+      /** Rule System Id */
+      rule_system_id?: string | null
       /** Series Id */
       series_id?: string | null
       /** Source */
@@ -1673,6 +1783,13 @@ export interface components {
       redo_label: string | null
       /** Undo Label */
       undo_label: string | null
+    }
+    /** HookView */
+    HookView: {
+      /** Expr */
+      expr: string
+      /** Origin */
+      origin: string
     }
     /** ItemCreate */
     ItemCreate: {
@@ -1806,6 +1923,107 @@ export interface components {
       uses?: number | null
       /** Value */
       value?: number | null
+    }
+    /**
+     * LabEnemyIn
+     * @description An enemy from the series (by id, at a level) or ad-hoc stats.
+     */
+    LabEnemyIn: {
+      /**
+       * Count
+       * @default 1
+       */
+      count?: number
+      /** Enemy Id */
+      enemy_id?: string | null
+      /**
+       * Level
+       * @default 1
+       */
+      level?: number
+      /**
+       * Name
+       * @default Enemy
+       */
+      name?: string
+      /** Stats */
+      stats?: {
+        [key: string]: number
+      } | null
+    }
+    /** LabEnemyOut */
+    LabEnemyOut: {
+      /** Count */
+      count: number
+      /** Level */
+      level: number
+      /** Name */
+      name: string
+      /** Stats */
+      stats: {
+        [key: string]: number
+      }
+    }
+    /** LabIn */
+    LabIn: {
+      /** Enemies */
+      enemies: components['schemas']['LabEnemyIn'][]
+      player?: components['schemas']['LabPlayerIn']
+      /**
+       * Rule System Id
+       * @description Defaults to the active system
+       */
+      rule_system_id?: string | null
+      /**
+       * Runs
+       * @default 2000
+       */
+      runs?: number
+      /**
+       * Seed
+       * @default 1
+       */
+      seed?: number
+      /** Simultaneous */
+      simultaneous?: boolean | null
+      /** Tier */
+      tier: string
+    }
+    /** LabOut */
+    LabOut: {
+      /** Damage Stat */
+      damage_stat: string
+      damage_taken: components['schemas']['Distribution']
+      /** Enemies */
+      enemies: components['schemas']['LabEnemyOut'][]
+      /** Losses */
+      losses: number
+      /** Remaining On Win Mean */
+      remaining_on_win_mean: number
+      rounds: components['schemas']['Distribution']
+      /** Runs */
+      runs: number
+      /** Stalemates */
+      stalemates: number
+      /** Truncated */
+      truncated: boolean
+      /** Win Rate */
+      win_rate: number
+      /** Wins */
+      wins: number
+    }
+    /** LabPlayerIn */
+    LabPlayerIn: {
+      /**
+       * Mode
+       * @default rolled
+       * @enum {string}
+       */
+      mode?: 'rolled' | 'fixed'
+      /** Stats */
+      stats?: {
+        [key: string]: number
+      }
     }
     /** LayoutUpdate */
     LayoutUpdate: {
@@ -2422,6 +2640,29 @@ export interface components {
       /** Label */
       label: string
     }
+    /** SkillView */
+    SkillView: {
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Introduced */
+      introduced: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Origin */
+      origin: string
+    }
+    /** SlotView */
+    SlotView: {
+      /** Origin */
+      origin: string
+      /** Slot */
+      slot: string
+    }
     /** StatDef */
     StatDef: {
       /** Applies To */
@@ -2460,6 +2701,49 @@ export interface components {
        * @default 0
        */
       min?: number | null
+    }
+    /** StatView */
+    StatView: {
+      /** Applies To */
+      applies_to?: ('player' | 'enemy')[]
+      /** Defeat At */
+      defeat_at?: number | null
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /**
+       * Initial
+       * @default 0
+       */
+      initial?: string
+      /** Introduced */
+      introduced: string
+      /** Key */
+      key: string
+      /**
+       * Kind
+       * @default stat
+       * @enum {string}
+       */
+      kind?: 'stat' | 'resource'
+      /** Label */
+      label: string
+      /** Max */
+      max?: number | null
+      /**
+       * Max Is Initial
+       * @default false
+       */
+      max_is_initial?: boolean
+      /**
+       * Min
+       * @default 0
+       */
+      min?: number | null
+      /** Origin */
+      origin: string
     }
     /**
      * StyleGuide
@@ -2513,6 +2797,75 @@ export interface components {
       word_max?: number | null
       /** Word Min */
       word_min?: number | null
+    }
+    /** SweepIn */
+    SweepIn: {
+      /**
+       * Count
+       * @default 1
+       */
+      count?: number
+      /** Enemy Id */
+      enemy_id?: string | null
+      /**
+       * Formulas
+       * @description Ad-hoc formulas of `level`
+       */
+      formulas?: {
+        [key: string]: string
+      } | null
+      /**
+       * Level From
+       * @default 1
+       */
+      level_from?: number
+      /**
+       * Level To
+       * @default 10
+       */
+      level_to?: number
+      /**
+       * Name
+       * @default Enemy
+       */
+      name?: string
+      player?: components['schemas']['LabPlayerIn']
+      /** Rule System Id */
+      rule_system_id?: string | null
+      /**
+       * Runs
+       * @default 500
+       */
+      runs?: number
+      /**
+       * Seed
+       * @default 1
+       */
+      seed?: number
+      /** Tier */
+      tier: string
+    }
+    /** SweepOut */
+    SweepOut: {
+      /** Name */
+      name: string
+      /** Points */
+      points: components['schemas']['SweepPointOut'][]
+    }
+    /** SweepPointOut */
+    SweepPointOut: {
+      /** Damage Taken Mean */
+      damage_taken_mean: number
+      /** Enemy */
+      enemy: {
+        [key: string]: number
+      }
+      /** Level */
+      level: number
+      /** Rounds Mean */
+      rounds_mean: number
+      /** Win Rate */
+      win_rate: number
     }
     /** TableCreate */
     TableCreate: {
@@ -2663,6 +3016,40 @@ export interface components {
       /** Success */
       success: string
     }
+    /** TestView */
+    TestView: {
+      /** After */
+      after?: (
+        | components['schemas']['ModifyStat']
+        | components['schemas']['SetStat']
+        | components['schemas']['GiveItem']
+        | components['schemas']['TakeItem']
+        | components['schemas']['EquipItem']
+        | components['schemas']['SetFlag']
+        | components['schemas']['ClearFlag']
+        | components['schemas']['LearnSkill']
+      )[]
+      /**
+       * Description
+       * @default
+       */
+      description?: string
+      /** Introduced */
+      introduced: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Origin */
+      origin: string
+      /**
+       * Roll
+       * @default 2d6
+       */
+      roll?: string
+      /** Success */
+      success: string
+    }
     /** TierDef */
     TierDef: {
       /** Classes */
@@ -2692,6 +3079,36 @@ export interface components {
       stats?: components['schemas']['StatDef'][]
       /** Tests */
       tests?: components['schemas']['TestDef'][]
+    }
+    /** TierView */
+    TierView: {
+      /** Chain */
+      chain: string[]
+      /** Classes */
+      classes: components['schemas']['ClassView'][]
+      combat: components['schemas']['CombatDef']
+      /** Combat Origin */
+      combat_origin: {
+        [key: string]: string
+      }
+      /** Damage Hooks */
+      damage_hooks: components['schemas']['HookView'][]
+      /** Index */
+      index: number
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+      /** Parent */
+      parent: string | null
+      /** Skills */
+      skills: components['schemas']['SkillView'][]
+      /** Slots */
+      slots: components['schemas']['SlotView'][]
+      /** Stats */
+      stats: components['schemas']['StatView'][]
+      /** Tests */
+      tests: components['schemas']['TestView'][]
     }
     /** ValidationError */
     ValidationError: {
@@ -4863,6 +5280,87 @@ export interface operations {
       }
     }
   }
+  get_rule_system_problems: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_system_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProblemsOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_tier_view: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        rule_system_id: string
+        tier: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TierView']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   list_series: {
     parameters: {
       query?: never
@@ -5205,6 +5703,94 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['CharacterOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  run_combat_lab: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['LabIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LabOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  run_combat_sweep: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SweepIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SweepOut']
         }
       }
       /** @description Validation Error */

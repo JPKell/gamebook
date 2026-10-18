@@ -8,7 +8,6 @@ up, which matches how gamebooks phrase it ("rounding fractions up").
 from __future__ import annotations
 
 import math
-import random
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from fractions import Fraction
@@ -28,7 +27,7 @@ from gamebook.core.gbx.ast import (
     Unary,
 )
 from gamebook.core.gbx.errors import GbxEvalError
-from gamebook.core.gbx.scope import REF_FUNCTIONS, RefKind
+from gamebook.core.gbx.scope import MATH_FUNCTIONS, REF_FUNCTIONS, RefKind
 
 
 @dataclass(frozen=True, slots=True, order=True)
@@ -54,19 +53,47 @@ class Rng(Protocol):
     def roll(self, count: int, sides: int) -> list[int]: ...
 
 
+_MASK64 = (1 << 64) - 1
+_PCG_MULT = 6364136223846793005
+_PCG_INC = 1442695040888963407  # any odd constant; fixed so streams are reproducible
+
+
 @dataclass
 class SeededRng:
-    """Deterministic dice. Every roll is recorded for the event log."""
+    """Deterministic, portable dice (PCG32, XSH-RR) — every roll is recorded.
+
+    The algorithm is fully specified so other runtimes (the TypeScript player)
+    reproduce identical rolls from the same seed; Python's ``random`` would not
+    be practical to port. Bounded rolls use rejection sampling (no modulo bias).
+    """
 
     seed: int
     history: list[tuple[int, int, list[int]]] = field(default_factory=list)
-    _random: random.Random = field(init=False, repr=False)
+    _state: int = field(init=False, repr=False, default=0)
 
     def __post_init__(self) -> None:
-        self._random = random.Random(self.seed)
+        self._state = 0
+        self._next32()
+        self._state = (self._state + (self.seed & _MASK64)) & _MASK64
+        self._next32()
+
+    def _next32(self) -> int:
+        old = self._state
+        self._state = (old * _PCG_MULT + _PCG_INC) & _MASK64
+        xorshifted = (((old >> 18) ^ old) >> 27) & 0xFFFFFFFF
+        rot = old >> 59
+        return ((xorshifted >> rot) | (xorshifted << ((-rot) & 31))) & 0xFFFFFFFF
+
+    def below(self, bound: int) -> int:
+        """Uniform integer in [0, bound)."""
+        threshold = (0x100000000 - bound) % bound
+        while True:
+            r = self._next32()
+            if r >= threshold:
+                return r % bound
 
     def roll(self, count: int, sides: int) -> list[int]:
-        faces = [self._random.randint(1, sides) for _ in range(count)]
+        faces = [self.below(sides) + 1 for _ in range(count)]
         self.history.append((count, sides, faces))
         return faces
 
@@ -220,6 +247,11 @@ class _Evaluator:
                 raise GbxEvalError(f"{f}() needs a key")
             result = self.env.ref(f, fn.kind, arg.name)
             return result if isinstance(result, bool) else Fraction(result)
+        arity = MATH_FUNCTIONS.get(f)
+        if arity is not None and (
+            len(args) < arity[0] or (arity[1] is not None and len(args) > arity[1])
+        ):
+            raise GbxEvalError(f"{f}() got {len(args)} argument(s)")
         vals = [self.num(a) for a in args]
         match f:
             case "min":

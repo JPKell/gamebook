@@ -73,6 +73,7 @@ def _node(n: Node) -> m.Node:
         key=n.key,
         title=n.title,
         act_id=n.act_id,
+        shop_sell_rate=n.shop_sell_rate if n.is_shop else None,
         is_act_entry=n.is_act_entry,
         is_act_exit=n.is_act_exit,
         ending_kind=n.ending_kind,  # type: ignore[arg-type]
@@ -88,6 +89,7 @@ def _node(n: Node) -> m.Node:
                 node_id=n.id,
                 label=c.label,
                 kind=c.kind,  # type: ignore[arg-type]
+                unmet_display=c.unmet_display,
                 condition=c.condition,
                 min_tier=c.min_tier,
                 effects=_effects(c.effects),
@@ -175,6 +177,9 @@ def book_snapshot(session: Session, book_id: str) -> m.BookSnapshot:
                 name=i.name,
                 book_id=i.book_id,
                 category=i.category,
+                slot=i.slot,
+                value=i.value,
+                max_stack=i.max_stack if i.stackable else 1,
                 modifiers=tuple(
                     m.ItemModifier(stat=x["stat"], amount=x["amount"], min_tier=x.get("min_tier"))
                     for x in i.modifiers

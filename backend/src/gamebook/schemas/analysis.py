@@ -62,6 +62,8 @@ class GbxCheckIn(In):
     context: Context
     book_id: str | None = None
     series_id: str | None = None
+    #: Check against this rule system instead of the series' active one.
+    rule_system_id: str | None = None
     tier: str | None = None
 
 

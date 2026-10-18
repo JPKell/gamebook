@@ -12,6 +12,7 @@ from gamebook.core.rules.schema import (
     TierError,
     effective_tier,
     tier_chain,
+    tier_view,
 )
 from gamebook.core.rules.templates import default_rule_system
 
@@ -28,4 +29,5 @@ __all__ = [
     "default_rule_system",
     "effective_tier",
     "tier_chain",
+    "tier_view",
 ]

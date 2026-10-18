@@ -7,7 +7,7 @@ declares only what it adds or overrides; :func:`effective_tier` merges the chain
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -188,3 +188,57 @@ def effective_tier(system: RuleSystemDef, key: str) -> EffectiveTier:
         combat=CombatDef.model_validate({**combat_fields, "damage_hooks": hooks}),
         stat_origin=origin,
     )
+
+
+def tier_view(system: RuleSystemDef, key: str) -> dict[str, object]:
+    """The merged tier plus provenance for each part, for editors.
+
+    For each stat/test/skill/class: ``introduced`` (first tier defining the key)
+    and ``origin`` (tier whose definition is in effect, i.e. the last override).
+    Combat scalars carry the tier that set them; hooks list their tier.
+    """
+    chain = tier_chain(system, key)
+    eff = effective_tier(system, key)
+
+    def provenance(attr: str) -> dict[str, tuple[str, str]]:
+        out: dict[str, tuple[str, str]] = {}
+        for t in chain:
+            for d in getattr(t, attr):
+                first = out[d.key][0] if d.key in out else t.key
+                out[d.key] = (first, t.key)
+        return out
+
+    def rows(attr: str, merged: dict[str, Any]) -> list[dict[str, object]]:
+        prov = provenance(attr)
+        return [
+            {**d.model_dump(mode="json"), "introduced": prov[k][0], "origin": prov[k][1]}
+            for k, d in merged.items()
+        ]
+
+    slot_origin: dict[str, str] = {}
+    combat_origin: dict[str, str] = {}
+    hooks: list[dict[str, str]] = []
+    for t in chain:
+        for slot in t.slots:
+            slot_origin.setdefault(slot, t.key)
+        for name in CombatDef.model_fields:
+            if name == "damage_hooks":
+                hooks += [{"expr": h, "origin": t.key} for h in t.combat.damage_hooks]
+            elif getattr(t.combat, name) is not None:
+                combat_origin[name] = t.key
+    top = chain[-1]
+    return {
+        "key": eff.key,
+        "label": eff.label,
+        "index": eff.index,
+        "parent": top.parent,
+        "chain": [t.key for t in chain],
+        "stats": rows("stats", eff.stats),
+        "tests": rows("tests", eff.tests),
+        "skills": rows("skills", eff.skills),
+        "classes": rows("classes", eff.classes),
+        "slots": [{"slot": s, "origin": slot_origin[s]} for s in eff.slots],
+        "combat": eff.combat.model_dump(mode="json"),
+        "combat_origin": combat_origin,
+        "damage_hooks": hooks,
+    }
