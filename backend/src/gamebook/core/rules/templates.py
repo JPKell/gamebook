@@ -1,15 +1,17 @@
 """Starter rule system seeded into new series.
 
 Basic is classic Fighting-Fantasy-style (SKILL/STAMINA/LUCK, 2d6 attack
-strength, 2 damage). Medium adds armour and equipment slots. Advanced adds
-classes, skills and critical hits. Authors reshape it in the Mechanics designer.
+strength, 2 damage). Medium adds armour, equipment slots, experience and
+levels. Advanced adds classes (with stat bonuses), skills and critical hits. Authors reshape it in the Mechanics designer.
 """
 
 from gamebook.core.rules.schema import (
     ClassDef,
     CombatDef,
+    ProgressionDef,
     RuleSystemDef,
     SkillDef,
+    StatBonus,
     StatDef,
     TestDef,
     TierDef,
@@ -85,15 +87,36 @@ def default_rule_system() -> RuleSystemDef:
                 key="medium",
                 label="Medium",
                 parent="basic",
-                description="Adds armour and equipment slots.",
+                description="Adds armour, equipment slots, experience and levels.",
                 rules_text=(
                     "**Armour.** Every wound is reduced by the target's ARMOUR, but always does "
                     "at least 1 damage. You may wear one weapon, one suit of body armour and "
-                    "one shield; their bonuses count only while equipped."
+                    "one shield; their bonuses count only while equipped.\n\n"
+                    "**Experience.** You begin at LEVEL 1 with 0 XP. Each enemy you defeat in "
+                    "a fight you win earns 10 XP, plus 5 for every level it is above yours "
+                    "(or minus 5 for every level below; always at least 1). When your XP "
+                    "reaches 100 times your LEVEL, subtract that much XP and go up a level: "
+                    "add 2 to your STAMINA and its starting value, and at every third level "
+                    "add 1 to your SKILL and its starting value. The highest level is 10."
                 ),
-                stats=[StatDef(key="ARMOR", label="Armour", applies_to=["player", "enemy"])],
+                stats=[
+                    StatDef(key="ARMOR", label="Armour", applies_to=["player", "enemy"]),
+                    StatDef(key="XP", label="Experience", initial="0"),
+                    StatDef(key="LEVEL", label="Level", initial="1", min=1),
+                ],
                 slots=["weapon", "body", "shield"],
                 combat=CombatDef(damage_hooks=["max(1, damage - target.ARMOR)"]),
+                progression=ProgressionDef(
+                    xp_stat="XP",
+                    level_stat="LEVEL",
+                    xp_award="max(1, 10 + 5 * (enemy_level - level))",
+                    xp_to_next="100 * level",
+                    max_level=10,
+                    level_up=[
+                        StatBonus(stat="STAMINA", amount="2"),
+                        StatBonus(stat="SKILL", amount="level % 3 == 0 ? 1 : 0"),
+                    ],
+                ),
             ),
             TierDef(
                 key="advanced",
@@ -102,7 +125,9 @@ def default_rule_system() -> RuleSystemDef:
                 description="Adds classes, skills and critical hits.",
                 rules_text=(
                     "**Your calling.** Choose a class: it grants your starting skills, which "
-                    "open choices other adventurers cannot take.\n\n"
+                    "open choices other adventurers cannot take, and a bonus to your stats: "
+                    "a Ranger adds 1 to SKILL, a Rogue adds 2 to LUCK and a Scholar adds "
+                    "1 to LUCK and 2 to STAMINA.\n\n"
                     "**Critical hits.** When an attack roll shows double six (a natural 12), "
                     "its damage is doubled."
                 ),
@@ -113,9 +138,27 @@ def default_rule_system() -> RuleSystemDef:
                     SkillDef(key="LORE", label="Lore"),
                 ],
                 classes=[
-                    ClassDef(key="ranger", label="Ranger", skills=["TRACKING", "ARCHERY"]),
-                    ClassDef(key="rogue", label="Rogue", skills=["STEALTH"]),
-                    ClassDef(key="scholar", label="Scholar", skills=["LORE"]),
+                    ClassDef(
+                        key="ranger",
+                        label="Ranger",
+                        skills=["TRACKING", "ARCHERY"],
+                        modifiers=[StatBonus(stat="SKILL", amount="1")],
+                    ),
+                    ClassDef(
+                        key="rogue",
+                        label="Rogue",
+                        skills=["STEALTH"],
+                        modifiers=[StatBonus(stat="LUCK", amount="2")],
+                    ),
+                    ClassDef(
+                        key="scholar",
+                        label="Scholar",
+                        skills=["LORE"],
+                        modifiers=[
+                            StatBonus(stat="LUCK", amount="1"),
+                            StatBonus(stat="STAMINA", amount="2"),
+                        ],
+                    ),
                 ],
                 combat=CombatDef(damage_hooks=["natural == 12 ? damage * 2 : damage"]),
             ),

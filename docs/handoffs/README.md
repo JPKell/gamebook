@@ -20,6 +20,7 @@ and what the next phase needs. Read the latest one before starting a phase.
 | 10 | Artwork, maps & appendices | `v2-phase-10-art.md` | ✅ Complete |
 | 11 | Print & EPUB | `v2-phase-11-print.md` | ✅ Complete |
 | 12 | Standalone digital player | `v2-phase-12-player.md` | ✅ Complete |
+| 13 | Character progression | `v2-phase-13-progression.md` | ✅ Complete |
 
 ## v1 prototype (archived; code at tag `v1-prototype`)
 

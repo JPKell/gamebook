@@ -113,6 +113,10 @@ export function narrate(e: GameEvent, names: Names): string | null {
           >
         )[String(d.outcome)] ?? `Combat over: ${String(d.outcome)}`
       )
+    case 'xp_gained':
+      return `Gained ${String(d.amount)} ${names.stats[String(d.stat)] ?? String(d.stat)} (now ${String(d.value)})`
+    case 'level_up':
+      return `Level up! ${names.stats[String(d.stat)] ?? String(d.stat)} ${String(d.level)}`
     case 'combat_stalemate':
       return `Stalemate after ${String(d.rounds)} rounds`
     case 'combat_skipped':

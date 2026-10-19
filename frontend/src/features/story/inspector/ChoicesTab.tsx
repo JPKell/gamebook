@@ -462,6 +462,7 @@ function ChoiceCard({
                     tier={choice.min_tier}
                     onChange={(effects) => patch({ effects })}
                     emptyText="Taking this choice changes nothing."
+                    quickCurrency="repeat"
                   />
                 )}
               </Field>

@@ -3332,8 +3332,12 @@ export interface components {
       key: string
       /** Label */
       label: string
+      /** Modifiers */
+      modifiers?: components['schemas']['StatBonus'][]
       /** Skills */
       skills?: string[]
+      /** Starting Items */
+      starting_items?: components['schemas']['StartingItem'][]
     }
     /** ClassView */
     ClassView: {
@@ -3348,10 +3352,14 @@ export interface components {
       key: string
       /** Label */
       label: string
+      /** Modifiers */
+      modifiers?: components['schemas']['StatBonus'][]
       /** Origin */
       origin: string
       /** Skills */
       skills?: string[]
+      /** Starting Items */
+      starting_items?: components['schemas']['StartingItem'][]
     }
     /** ClearFlag */
     ClearFlag: {
@@ -3446,6 +3454,9 @@ export interface components {
       | 'stat_initial'
       | 'combat_attack'
       | 'combat_damage'
+      | 'xp_award'
+      | 'xp_to_next'
+      | 'stat_bonus'
     /** ContextOut */
     ContextOut: {
       /** Budget */
@@ -5171,6 +5182,8 @@ export interface components {
       classes: components['schemas']['Option'][]
       codex?: components['schemas']['PlayCodex']
       combat: components['schemas']['PlayCombat'] | null
+      /** Currency */
+      currency?: string | null
       /** Ended */
       ended: string | null
       /** Error */
@@ -5188,6 +5201,7 @@ export interface components {
         [key: string]: unknown
       } | null
       node: components['schemas']['PlayNode'] | null
+      progress?: components['schemas']['PlayProgress'] | null
       /** Seed */
       seed: number
       /** Skills */
@@ -5198,6 +5212,19 @@ export interface components {
       steps: number
       /** Tier */
       tier: string
+    }
+    /** PlayProgress */
+    PlayProgress: {
+      /** Level */
+      level: number
+      /** Level Stat */
+      level_stat: string
+      /** Xp */
+      xp: number
+      /** Xp Needed */
+      xp_needed: number | null
+      /** Xp Stat */
+      xp_stat: string
     }
     /** PlayStat */
     PlayStat: {
@@ -5391,6 +5418,29 @@ export interface components {
       counts: components['schemas']['ProblemCounts']
       /** Problems */
       problems: components['schemas']['ProblemOut'][]
+    }
+    /**
+     * ProgressionDef
+     * @description Experience and levels (SPEC §2.5). Fields left None inherit from the parent tier.
+     *
+     *     Winning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``
+     *     and ``level``, the reader's level) to ``xp_stat``. While XP reaches
+     *     ``xp_to_next`` (variable ``level``), that much XP is spent, ``level_stat``
+     *     goes up by one and every ``level_up`` bonus is applied.
+     */
+    ProgressionDef: {
+      /** Level Stat */
+      level_stat?: string | null
+      /** Level Up */
+      level_up?: components['schemas']['StatBonus'][] | null
+      /** Max Level */
+      max_level?: number | null
+      /** Xp Award */
+      xp_award?: string | null
+      /** Xp Stat */
+      xp_stat?: string | null
+      /** Xp To Next */
+      xp_to_next?: string | null
     }
     /** ProseCreate */
     ProseCreate: {
@@ -5999,6 +6049,52 @@ export interface components {
       /** Slot */
       slot: string
     }
+    /** StartingItem */
+    StartingItem: {
+      /**
+       * Equip
+       * @default false
+       */
+      equip?: boolean
+      /** Item */
+      item: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /** StartingItemView */
+    StartingItemView: {
+      /**
+       * Equip
+       * @default false
+       */
+      equip?: boolean
+      /** Item */
+      item: string
+      /** Origin */
+      origin: string
+      /**
+       * Qty
+       * @default 1
+       */
+      qty?: number
+    }
+    /**
+     * StatBonus
+     * @description Add ``amount`` (gbx, dice allowed) to a player stat — and to its maximum
+     *     when the maximum is the starting value.
+     */
+    StatBonus: {
+      /**
+       * Amount
+       * @default 1
+       */
+      amount?: string
+      /** Stat */
+      stat: string
+    }
     /** StatDef */
     StatDef: {
       /** Applies To */
@@ -6477,6 +6573,7 @@ export interface components {
       label: string
       /** Parent */
       parent?: string | null
+      progression?: components['schemas']['ProgressionDef']
       /**
        * Rules Text
        * @default
@@ -6486,6 +6583,8 @@ export interface components {
       skills?: components['schemas']['SkillDef'][]
       /** Slots */
       slots?: string[]
+      /** Starting Items */
+      starting_items?: components['schemas']['StartingItem'][]
       /** Stats */
       stats?: components['schemas']['StatDef'][]
       /** Tests */
@@ -6525,10 +6624,17 @@ export interface components {
       label: string
       /** Parent */
       parent: string | null
+      progression: components['schemas']['ProgressionDef']
+      /** Progression Origin */
+      progression_origin: {
+        [key: string]: string
+      }
       /** Skills */
       skills: components['schemas']['SkillView'][]
       /** Slots */
       slots: components['schemas']['SlotView'][]
+      /** Starting Items */
+      starting_items: components['schemas']['StartingItemView'][]
       /** Stats */
       stats: components['schemas']['StatView'][]
       /** Tests */

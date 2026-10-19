@@ -46,7 +46,7 @@
 {% macro fight(f) %}
 {% if f.enemies %}<table class="fight">
   <tr><th></th>{% for l in f.labels %}<th class="num">{{ l }}</th>{% endfor %}</tr>
-  {% for e in f.enemies %}<tr><td>{{ e.name|upper }}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+  {% for e in f.enemies %}<tr><td>{{ e.name|upper }}{% if e.level %} <span class="level">(level {{ e.level }})</span>{% endif %}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
 </table>{% endif %}
 {% if not f.enemies and not f.table %}<p class="hint">There is nothing to fight here: count it as a win.</p>{% endif %}
 {% if f.together and f.enemies|length > 1 %}<p class="hint">Fight them all at once.</p>{% endif %}
@@ -56,7 +56,7 @@
   <tr><th></th><th></th>{% for l in f.labels %}<th class="num">{{ l }}</th>{% endfor %}</tr>
   {% for r in f.table.rows %}
     {% if r.kind == "enemies" %}
-      {% for e in r.enemies %}<tr><td>{% if loop.first %}{{ r.span }}{% endif %}</td><td>{{ e.name|upper }}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+      {% for e in r.enemies %}<tr><td>{% if loop.first %}{{ r.span }}{% endif %}</td><td>{{ e.name|upper }}{% if e.level %} <span class="level">(level {{ e.level }})</span>{% endif %}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
     {% else %}<tr><td>{{ r.span }}</td><td colspan="{{ f.labels|length + 1 }}">{{ r.text }} (no fight: count it as a win)</td></tr>{% endif %}
   {% endfor %}
 </table>

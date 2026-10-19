@@ -577,9 +577,18 @@ def _fight(c: _Ctx, enc: Encounter) -> dict[str, Any]:
     enemies = {e.id: e for e in c.book.enemies}
     by_key = {e.key: e for e in c.book.enemies}
 
+    # Readers work out XP from the enemy's level, so print it when fights give XP.
+    pr = c.tier.progression
+    show_level = pr.enabled() and bool(pr.xp_award)
+
     def row(enemy: Any, level: int, count: int) -> dict[str, Any]:
         stats = enemy_stats(enemy.stat_formulas, level, frozenset(keys), c.tiers, c.tier.key)
-        return {"name": enemy.name, "count": count, "stats": [stats.get(k, 0) for k in keys]}
+        return {
+            "name": enemy.name,
+            "count": count,
+            "stats": [stats.get(k, 0) for k in keys],
+            "level": level if show_level else None,
+        }
 
     out: dict[str, Any] = {
         "labels": labels,

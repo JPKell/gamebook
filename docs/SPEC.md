@@ -240,9 +240,52 @@ FF/Lone-Wolf/d20 styles, constrained enough to always be printable:
    `flee` (if allowed; `flee_cost` effects apply). 200 rounds without a result is a
    stalemate and counts as `lose`.
 
-Also defined per rule system: character creation steps (roll stats, choose class, choose N
-skills, starting kit), equipment slot rules, adventure-sheet layout (for print), and the
+Also defined per rule system: character creation (roll stats, choose a class with skills,
+stat bonuses and gear, starting gear; §2.4a), experience and levels (§2.4a), equipment slot rules, adventure-sheet layout (for print), and the
 author-written rules chapter text per tier.
+
+### 2.4a Character creation & progression
+
+Creation runs in a fixed order:
+1. Roll every player stat's `initial`.
+2. Choose a class: grant its skills and apply its **stat bonuses**. A bonus is
+   `{stat, amount: gbx}`; it adds to the stat, and to its maximum when the maximum is the
+   starting value.
+3. Log `character_created`.
+4. Give the **starting gear**: the tier chain's `starting_items` (they accumulate, root
+   first), then the class's. Each entry is `{item, qty, equip}`, and `equip` puts the item
+   in its slot when the tier uses that slot.
+
+```yaml
+tier: medium
+stats: [ {key: XP, label: Experience, initial: "0"}, {key: LEVEL, label: Level, initial: "1", min: 1} ]
+progression:            # each field left unset inherits from the parent tier
+  xp_stat: XP
+  level_stat: LEVEL
+  xp_award: "max(1, 10 + 5 * (enemy_level - level))"   # per enemy beaten
+  xp_to_next: "100 * level"                            # no dice
+  max_level: 10
+  level_up: [ {stat: STAMINA, amount: "2"}, {stat: SKILL, amount: "level % 3 == 0 ? 1 : 0"} ]
+starting_items: [ {item: potion, qty: 2} ]
+```
+
+**Experience.** Winning a fight (not fleeing) evaluates `xp_award` once per enemy in it,
+with `enemy_level` and `level` (the reader's level stat). The total goes to `xp_stat`
+(`xp_gained` event). Levelling is on when `xp_stat`, `level_stat` and `xp_to_next` are set.
+
+**Levelling up.** After any change to the XP stat (a fight, or an effect such as
+`modify XP 50`), the engine repeats:
+- While XP ≥ `xp_to_next(level)` and the level is below `max_level` and the level stat's
+  maximum, spend that much XP, add 1 to the level (`level_up` event), then apply each
+  `level_up` bonus with `level` = the new level.
+- A non-positive or broken `xp_to_next` stops levelling.
+- At most 100 levels are gained per change.
+
+Item modifiers (§2.6) apply to every item category, so equipment and carried items alike
+can change battle stats.
+
+Print explains all of this in the "Your Character" section, and prints enemy levels in
+fight tables when fights give XP.
 
 ### 2.5 Enemies, encounters, random tables
 
@@ -262,7 +305,9 @@ grant, gold, or nothing. Reusable across nodes.
 
 **Item**: `key, name, description, category (equipment | consumable | key | treasure),
 slot?, stackable, max_stack, value, uses?, modifiers[{stat, expr, min_tier}],
-use_effects[], lore_link`. Currency is a rule-system resource (GOLD), not an item.
+use_effects[], lore_link`. Modifiers apply to any category: an item with a slot counts while
+equipped, and any other item counts while carried. Currency is a rule-system resource
+(GOLD), not an item. Node arrival and choice effects have a quick money field.
 
 **Shop** (on a node): `buy[{item, price, stock?}]`, `sell_rate`.
 

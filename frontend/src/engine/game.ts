@@ -16,9 +16,11 @@ import {
   type Encounter,
   type Item,
   type Node,
+  type StartingItem,
+  type StatBonus,
 } from './model'
 import { Q } from './rational'
-import { type EffectiveTier, effectiveTier } from './rules'
+import { type EffectiveTier, effectiveTier, progressionEnabled } from './rules'
 
 export type ActionType =
   'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
@@ -37,6 +39,9 @@ export interface GameEvent {
 }
 
 export class GameError extends Error {}
+
+/** Level-ups handled at once (guards against a formula that makes levels free). */
+const MAX_LEVEL_UPS = 100
 
 const MAX_ROUNDS = 200
 const GAIN_OPS = new Set(['give', 'equip', 'set_flag', 'learn'])
@@ -521,16 +526,135 @@ export class Game {
       if (!cls) throw new GameError(`Unknown class '${chosen}'`)
       this.state.character_class = cls.key
       for (const s of cls.skills) this.state.skills.add(s)
+      for (const b of cls.modifiers ?? []) this.bonus(b, `class ${cls.key} bonus`)
     }
     this.log.push({
       type: 'character_created',
       stats: sortedObj(this.state.stats),
       class: this.state.character_class,
     })
+    const cls = this.tier.classes.get(this.state.character_class ?? '')
+    this.startingItems([...this.tier.startingItems, ...(cls?.starting_items ?? [])])
     const start = this.nodes.get(this.book.start_node_id ?? '')
     if (!start) this.end('stuck', null, 'The book has no start node')
     else this.enter(start)
     return this.log.slice(mark)
+  }
+
+  private startingItems(entries: StartingItem[]): void {
+    for (const si of entries) {
+      const item = this.items.get(si.item)
+      if (!item) {
+        this.error('starting items', new GbxEvalError(`unknown item ${si.item}`))
+        continue
+      }
+      const got = this.give(item.key, si.qty)
+      this.log.push({ type: 'effect', source: 'start', op: 'give', item: item.key, qty: got })
+      if (
+        si.equip &&
+        item.slot !== null &&
+        this.tier.slots.includes(item.slot) &&
+        (this.state.items.get(item.key) ?? 0) > 0
+      ) {
+        this.state.equipped.set(item.slot, item.key)
+        this.log.push({ type: 'effect', source: 'start', op: 'equip', item: item.key })
+      }
+    }
+  }
+
+  // ── progression ──
+
+  /** The reader's level (1 when the rules have no levels). */
+  level(): number {
+    const key = this.tier.progression.level_stat
+    return key && this.tier.stats.has(key) ? (this.state.stats.get(key) ?? 1) : 1
+  }
+
+  /** XP the next level costs, for display (null without levels or at the top). */
+  xpNeeded(): number | null {
+    const pr = this.tier.progression
+    if (!progressionEnabled(pr) || !this.tier.stats.has(pr.level_stat!)) return null
+    const level = this.state.stats.get(pr.level_stat!) ?? 0
+    const cap = this.state.max_stats.get(pr.level_stat!)
+    if ((pr.max_level !== null && level >= pr.max_level) || (cap !== undefined && level >= cap))
+      return null
+    const quiet = this.quiet
+    this.quiet = true
+    try {
+      const env = this.env.with({ level: Q.of(level) })
+      const need = this.int(pr.xp_to_next!, 'XP for the next level', { rng: false, env })
+      return need > 0 ? need : null
+    } finally {
+      this.quiet = quiet
+    }
+  }
+
+  /** Raise a player stat (and a starting-value maximum) by a bonus; returns the change. */
+  private bonus(b: StatBonus, where: string): number {
+    const sd = this.tier.stats.get(b.stat)
+    if (!sd || !sd.applies_to.includes('player')) return 0
+    const amount = this.int(b.amount, where, { env: this.env.with({ level: Q.of(this.level()) }) })
+    const cap = this.state.max_stats.get(b.stat)
+    if (sd.max_is_initial && cap !== undefined) this.state.max_stats.set(b.stat, cap + amount)
+    const before = this.state.stats.get(b.stat) ?? 0
+    return this.setStat(b.stat, before + amount) - before
+  }
+
+  private awardXp(enemies: Combatant[]): void {
+    const pr = this.tier.progression
+    if (!progressionEnabled(pr) || !pr.xp_award || !this.tier.stats.has(pr.xp_stat!)) return
+    let total = 0
+    for (const e of enemies) {
+      const env = this.env.with({ enemy_level: Q.of(e.level), level: Q.of(this.level()) })
+      total += this.int(pr.xp_award, 'XP award', { env })
+    }
+    const xp = pr.xp_stat!
+    const before = this.state.stats.get(xp) ?? 0
+    const after = this.setStat(xp, before + total)
+    this.log.push({ type: 'xp_gained', stat: xp, amount: after - before, value: after })
+    this.checkLevelUp()
+  }
+
+  private checkLevelUp(): void {
+    const pr = this.tier.progression
+    const xpKey = pr.xp_stat
+    const levelKey = pr.level_stat
+    if (
+      !progressionEnabled(pr) ||
+      !this.tier.stats.has(xpKey!) ||
+      !this.tier.stats.has(levelKey!) ||
+      xpKey === levelKey
+    )
+      return
+    for (let n = 0; n < MAX_LEVEL_UPS; n++) {
+      const level = this.state.stats.get(levelKey!) ?? 0
+      const cap = this.state.max_stats.get(levelKey!)
+      if ((pr.max_level !== null && level >= pr.max_level) || (cap !== undefined && level >= cap))
+        return
+      const env = this.env.with({ level: Q.of(level) })
+      const need = this.int(pr.xp_to_next!, 'XP for the next level', { rng: false, env })
+      const xp = this.state.stats.get(xpKey!) ?? 0
+      if (need <= 0 || xp < need) return
+      this.setStat(xpKey!, xp - need)
+      const now = this.setStat(levelKey!, level + 1)
+      this.log.push({
+        type: 'level_up',
+        stat: levelKey,
+        level: now,
+        xp: this.state.stats.get(xpKey!) ?? 0,
+      })
+      for (const b of pr.level_up ?? []) {
+        const change = this.bonus(b, 'level-up bonus')
+        this.log.push({
+          type: 'effect',
+          source: 'level_up',
+          op: 'modify',
+          stat: b.stat,
+          change,
+          value: this.state.stats.get(b.stat) ?? 0,
+        })
+      }
+    }
   }
 
   // ── effects ──
@@ -572,6 +696,8 @@ export class Game {
     opts: { respectOnce?: boolean; checkDefeat?: boolean } = {},
   ): void {
     const respectOnce = opts.respectOnce ?? true
+    const xpKey = this.tier.progression.xp_stat
+    let xpTouched = false
     effects.forEach((eff, i) => {
       if (!this.tierAllows(eff.min_tier)) return
       const onceKey = `${source}:${i}`
@@ -626,7 +752,9 @@ export class Game {
           break
       }
       this.log.push(data)
+      xpTouched ||= xpKey !== null && data.stat === xpKey
     })
+    if (xpTouched) this.checkLevelUp()
     if (opts.checkDefeat ?? true) this.checkDefeat()
   }
 
@@ -1034,6 +1162,7 @@ export class Game {
     const cs = this.state.combat!
     this.state.combat = null
     this.log.push({ type: 'combat_end', outcome, rounds: cs.round })
+    if (outcome === 'win') this.awardXp(cs.enemies)
     const choice = this.node!.choices.find((c) => c.id === cs.choice_id)!
     this.go(choice, outcome)
   }

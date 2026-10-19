@@ -192,54 +192,56 @@ export function ItemEditor({
         </Field>
       </Panel>
 
-      {(item.category === 'equipment' || item.modifiers.length > 0) && (
-        <Panel title="Modifiers">
-          <p className="text-xs text-muted">
-            Added to the reader's stat while the item is in effect. Limit a modifier to higher tiers
-            to keep Basic simple.
-          </p>
-          <Rows
-            rows={item.modifiers}
-            empty="No modifiers."
-            addLabel="Add modifier"
-            disabled={!statOptions.length}
-            blank={{ stat: statOptions[0]?.value ?? '', amount: '1', min_tier: null }}
-            onChange={(f) => save((cur) => ({ modifiers: f(cur.modifiers) }))}
-            render={(mod, set) => (
-              <>
-                <Select
-                  aria-label="Modifier stat"
-                  className="w-40"
-                  value={mod.stat}
-                  options={
-                    statOptions.some((o) => o.value === mod.stat)
-                      ? statOptions
-                      : [...statOptions, { value: mod.stat, label: `${mod.stat} (missing)` }]
-                  }
-                  onValueChange={(stat) => stat && set({ stat })}
+      <Panel title="Stat modifiers">
+        <p className="text-xs text-muted">
+          Added to the reader's stat (SKILL, ARMOR, …) while the item is in effect, in tests,
+          conditions and combat alike.{' '}
+          {item.slot
+            ? `It must be equipped in the ${item.slot} slot to count.`
+            : 'Any item without a slot counts while carried.'}{' '}
+          Limit a modifier to higher tiers to keep Basic simple.
+        </p>
+        <Rows
+          rows={item.modifiers}
+          empty="No modifiers."
+          addLabel="Add modifier"
+          disabled={!statOptions.length}
+          blank={{ stat: statOptions[0]?.value ?? '', amount: '1', min_tier: null }}
+          onChange={(f) => save((cur) => ({ modifiers: f(cur.modifiers) }))}
+          render={(mod, set) => (
+            <>
+              <Select
+                aria-label="Modifier stat"
+                className="w-40"
+                value={mod.stat}
+                options={
+                  statOptions.some((o) => o.value === mod.stat)
+                    ? statOptions
+                    : [...statOptions, { value: mod.stat, label: `${mod.stat} (missing)` }]
+                }
+                onValueChange={(stat) => stat && set({ stat })}
+              />
+              <div className="w-40">
+                <GbxField
+                  label="Modifier amount"
+                  context="amount"
+                  tier={mod.min_tier}
+                  value={mod.amount}
+                  onCommit={(amount) => amount && set({ amount })}
                 />
-                <div className="w-40">
-                  <GbxField
-                    label="Modifier amount"
-                    context="amount"
-                    tier={mod.min_tier}
-                    value={mod.amount}
-                    onCommit={(amount) => amount && set({ amount })}
-                  />
-                </div>
-                <Select
-                  aria-label="Modifier tier"
-                  className="w-44"
-                  value={mod.min_tier ?? null}
-                  placeholder="Every tier"
-                  options={tierOptions}
-                  onValueChange={(min_tier) => set({ min_tier })}
-                />
-              </>
-            )}
-          />
-        </Panel>
-      )}
+              </div>
+              <Select
+                aria-label="Modifier tier"
+                className="w-44"
+                value={mod.min_tier ?? null}
+                placeholder="Every tier"
+                options={tierOptions}
+                onValueChange={(min_tier) => set({ min_tier })}
+              />
+            </>
+          )}
+        />
+      </Panel>
 
       {(item.category === 'consumable' || item.use_effects.length > 0) && (
         <Panel title="When used">

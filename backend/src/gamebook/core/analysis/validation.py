@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import itertools
 from collections import Counter
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, field
 
 from gamebook.core import gbx
@@ -29,7 +29,14 @@ from gamebook.core.effects import (
 )
 from gamebook.core.gbx.scope import Context, RefKind, Scope, ScopeInputs, scope_for
 from gamebook.core.model import OUTCOME_KEYS, BookSnapshot, Choice, Node
-from gamebook.core.rules.schema import EffectiveTier, RuleSystemDef, TierError, effective_tier
+from gamebook.core.rules.schema import (
+    EffectiveTier,
+    RuleSystemDef,
+    StartingItem,
+    StatBonus,
+    TierError,
+    effective_tier,
+)
 
 # ── scopes ───────────────────────────────────────────────────────────────
 
@@ -224,7 +231,11 @@ class _Collector:
 
 def validate_book(book: BookSnapshot) -> list[Problem]:
     rules = book.rules
-    rule_problems = validate_rule_system(rules) if rules is not None else []
+    rule_problems = (
+        validate_rule_system(rules, items=frozenset(i.key for i in book.items if book.available(i)))
+        if rules is not None
+        else []
+    )
     scopes = _Scopes(book, rules) if rules is not None and rules.tiers else None
     col = _Collector(scopes)
     if rules is None:
@@ -908,7 +919,10 @@ def _check_digest(book: BookSnapshot, col: _Collector) -> None:
 # ── rule system ──────────────────────────────────────────────────────────
 
 
-def validate_rule_system(rules: RuleSystemDef) -> list[Problem]:
+def validate_rule_system(
+    rules: RuleSystemDef, *, items: frozenset[str] | None = None
+) -> list[Problem]:
+    """Check a rule system; ``items`` (a book's item keys) also checks starting gear."""
     col = _Collector(None)
 
     def ctx() -> _Ctx:
@@ -987,6 +1001,38 @@ def validate_rule_system(rules: RuleSystemDef) -> list[Problem]:
             f = f"tiers.{t.key}.tests.{test.key}"
             check(test.roll, Context.TEST_ROLL, f"{p} test '{test.label}' roll", f)
             check(test.success, Context.TEST_SUCCESS, f"{p} test '{test.label}' success", f)
+        player_stats = eff.player_stats()
+
+        def bonuses(
+            bs: list[StatBonus],
+            where: str,
+            field_: str,
+            player_stats: frozenset[str] = player_stats,
+            check: Callable[[str | None, Context, str, str], None] = check,
+        ) -> None:
+            for b in bs:
+                if b.stat not in player_stats:
+                    col.add(
+                        "error",
+                        "unknown_stat",
+                        f"{where}: unknown player stat {b.stat!r}",
+                        ctx(),
+                        field_,
+                    )
+                check(b.amount, Context.STAT_BONUS, f"{where} {b.stat}", field_)
+
+        def gear(entries: list[StartingItem], where: str, field_: str) -> None:
+            for si in entries:
+                if items is not None and si.item not in items:
+                    col.add(
+                        "warning",
+                        "unknown_item",
+                        f"{where}: starting item {si.item!r} isn't in this book",
+                        ctx(),
+                        field_,
+                    )
+
+        gear(t.starting_items, f"{p} starting items", f"tiers.{t.key}.starting_items")
         for cls in t.classes:
             for sk in cls.skills:
                 if sk not in eff.skills:
@@ -996,6 +1042,57 @@ def validate_rule_system(rules: RuleSystemDef) -> list[Problem]:
                         f"{p} class '{cls.label}' grants unknown skill {sk!r}",
                         ctx(),
                     )
+            cf_ = f"tiers.{t.key}.classes.{cls.key}"
+            bonuses(cls.modifiers, f"{p} class '{cls.label}'", cf_)
+            gear(cls.starting_items, f"{p} class '{cls.label}'", cf_)
+        pf = f"tiers.{t.key}.progression"
+        pr = t.progression
+        check(pr.xp_award, Context.XP_AWARD, f"{p} XP award", pf)
+        check(pr.xp_to_next, Context.XP_TO_NEXT, f"{p} XP for next level", pf)
+        bonuses(pr.level_up or [], f"{p} level-up bonus", pf)
+        mp = eff.progression
+        for name, key in (("XP", mp.xp_stat), ("level", mp.level_stat)):
+            if key is not None and key not in player_stats:
+                col.add(
+                    "error",
+                    "unknown_stat",
+                    f"{p}: the {name} stat {key!r} isn't a player stat",
+                    ctx(),
+                    pf,
+                )
+        if (mp.xp_stat or mp.level_stat or mp.xp_award) and not mp.enabled():
+            col.add(
+                "warning",
+                "progression_incomplete",
+                f"{p}: levelling needs an XP stat, a level stat and the XP for the next level",
+                ctx(),
+                pf,
+            )
+        level_def = eff.stats.get(mp.level_stat or "")
+        xp_def = eff.stats.get(mp.xp_stat or "")
+        if (
+            mp.enabled()
+            and t.progression != type(t.progression)()
+            and (
+                (level_def is not None and level_def.max_is_initial)
+                or (xp_def is not None and (xp_def.max_is_initial or xp_def.max is not None))
+            )
+        ):
+            col.add(
+                "warning",
+                "progression_capped",
+                f"{p}: the XP or level stat has a maximum, which can stop levelling up",
+                ctx(),
+                pf,
+            )
+        if mp.enabled() and mp.xp_stat == mp.level_stat:
+            col.add(
+                "error",
+                "progression_stats",
+                f"{p}: XP and level must be different stats",
+                ctx(),
+                pf,
+            )
         combat = t.combat
         cf = f"tiers.{t.key}.combat"
         check(combat.player_attack, Context.COMBAT_ATTACK, f"{p} player attack", cf)

@@ -41,16 +41,82 @@ function blank(op: Op, prev?: EffectIn): EffectIn {
   }
 }
 
+/** A plain whole number (the quick money field only edits those). */
+const WHOLE = /^-?\d+$/
+
+/**
+ * Quick money field: edits the first "change <currency> by a number" effect,
+ * adding or removing it, so authors needn't build one by hand.
+ */
+export function CurrencyQuick({
+  effects,
+  onChange,
+  currency,
+  defaultOnce,
+}: {
+  effects: EffectIn[]
+  onChange: (next: EffectIn[]) => void
+  currency: { key: string; label: string }
+  defaultOnce: boolean
+}) {
+  const at = effects.findIndex(
+    (e) => e.op === 'modify' && (e as { stat?: string }).stat === currency.key,
+  )
+  const cur = at >= 0 ? (effects[at] as EffectIn & { amount: string; once?: boolean }) : null
+  if (cur && !WHOLE.test(cur.amount.trim()))
+    return (
+      <p className="text-xs text-muted">
+        {currency.label}: <code className="font-mono">{cur.amount}</code> (edit it below)
+      </p>
+    )
+  const commit = (n: number | null) => {
+    if (!n) {
+      if (cur) onChange(effects.filter((_, j) => j !== at))
+    } else if (cur) onChange(effects.map((e, j) => (j === at ? { ...cur, amount: String(n) } : e)))
+    else
+      onChange([
+        { op: 'modify', stat: currency.key, amount: String(n), once: defaultOnce } as EffectIn,
+        ...effects,
+      ])
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-sm">
+      <span className="font-medium">{currency.label}</span>
+      <NumberInput
+        aria-label={`${currency.label} gained or lost`}
+        allowEmpty
+        placeholder="0"
+        value={cur ? Number(cur.amount) : null}
+        onCommit={commit}
+        className="w-24"
+      />
+      <span className="text-xs text-muted">gained (negative to pay or lose)</span>
+      {cur && (
+        <Checkbox
+          label="Only the first time"
+          checked={!!cur.once}
+          onCheckedChange={(once) =>
+            onChange(effects.map((e, j) => (j === at ? { ...cur, once } : e)))
+          }
+        />
+      )}
+    </div>
+  )
+}
+
 export function EffectsEditor({
   value,
   onChange,
   tier,
   emptyText = 'No effects.',
+  quickCurrency = false,
 }: {
   value: Effect[]
   onChange: (next: EffectIn[]) => void
   tier?: string | null
   emptyText?: string
+  /** Show a quick field for gaining or paying money (first-time-only by default when true). */
+  quickCurrency?: boolean | 'repeat'
 }) {
   const vocab = useVocabulary()
   const effects = value.map(toInput)
@@ -61,6 +127,14 @@ export function EffectsEditor({
 
   return (
     <div className="space-y-2">
+      {quickCurrency && vocab.currency && (
+        <CurrencyQuick
+          effects={effects}
+          onChange={onChange}
+          currency={vocab.currency}
+          defaultOnce={quickCurrency === true}
+        />
+      )}
       {effects.length === 0 && <p className="text-xs text-muted">{emptyText}</p>}
       {effects.map((e, i) => {
         const r = e as Record<string, unknown>

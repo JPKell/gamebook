@@ -42,7 +42,10 @@ from gamebook.core.engine.env import GameEnv, compiled_bool, compiled_int
 from gamebook.core.engine.events import Action, Event
 from gamebook.core.engine.state import Combatant, CombatState, GameState
 from gamebook.core.model import BookSnapshot, Choice, Encounter, Item, Node
-from gamebook.core.rules.schema import EffectiveTier, effective_tier
+from gamebook.core.rules.schema import EffectiveTier, StartingItem, StatBonus, effective_tier
+
+#: Level-ups handled at once (guards against a formula that makes levels free).
+MAX_LEVEL_UPS = 100
 
 
 class GameError(ValueError):
@@ -228,6 +231,8 @@ class Game:
                 raise GameError(f"Unknown class {chosen!r}")
             self.state.character_class = cls.key
             self.state.skills.update(cls.skills)
+            for b in cls.modifiers:
+                self._bonus(b, f"class {cls.key} bonus")
         self.log.append(
             Event(
                 "character_created",
@@ -237,12 +242,133 @@ class Game:
                 },
             )
         )
+        cls = self.tier.classes.get(self.state.character_class or "")
+        self._starting_items([*self.tier.starting_items, *(cls.starting_items if cls else ())])
         start = self._nodes.get(self.book.start_node_id or "")
         if start is None:
             self._end("stuck", None, "The book has no start node")
         else:
             self._enter(start)
         return self.log[mark:]
+
+    def _starting_items(self, entries: Sequence[StartingItem]) -> None:
+        for si in entries:
+            item = self._items.get(si.item)
+            if item is None:
+                self._error("starting items", gbx.GbxEvalError(f"unknown item {si.item}"))
+                continue
+            got = self._give(item.key, si.qty)
+            self.log.append(
+                Event("effect", {"source": "start", "op": "give", "item": item.key, "qty": got})
+            )
+            if si.equip and item.slot in self.tier.slots and self.state.items.get(item.key, 0) > 0:
+                self.state.equipped[item.slot] = item.key
+                self.log.append(
+                    Event("effect", {"source": "start", "op": "equip", "item": item.key})
+                )
+
+    # ── progression ──────────────────────────────────────────────────────
+
+    def level(self) -> int:
+        """The reader's level (1 when the rules have no levels)."""
+        key = self.tier.progression.level_stat
+        return self.state.stats.get(key, 1) if key and key in self.tier.stats else 1
+
+    def xp_needed(self) -> int | None:
+        """XP the next level costs, for display (None without levels or at the top)."""
+        pr = self.tier.progression
+        if not pr.enabled() or pr.level_stat not in self.tier.stats:
+            return None
+        level = self.state.stats.get(pr.level_stat or "", 0)
+        cap = self.state.max_stats.get(pr.level_stat or "")
+        if (pr.max_level is not None and level >= pr.max_level) or (
+            cap is not None and level >= cap
+        ):
+            return None
+        quiet, self._quiet = self._quiet, True
+        try:
+            env = self._env.with_(variables={"level": Fraction(level)})
+            need = self._int(pr.xp_to_next or "0", "XP for the next level", rng=False, env=env)
+        finally:
+            self._quiet = quiet
+        return need if need > 0 else None
+
+    def _bonus(self, bonus: StatBonus, where: str) -> int:
+        """Raise a player stat (and a starting-value maximum) by a bonus; returns the change."""
+        sd = self.tier.stats.get(bonus.stat)
+        if sd is None or "player" not in sd.applies_to:
+            return 0
+        env = self._env.with_(variables={"level": Fraction(self.level())})
+        amount = self._int(bonus.amount, where, env=env)
+        if sd.max_is_initial and bonus.stat in self.state.max_stats:
+            self.state.max_stats[bonus.stat] += amount
+        before = self.state.stats.get(bonus.stat, 0)
+        return self._set_stat(bonus.stat, before + amount) - before
+
+    def _award_xp(self, enemies: Sequence[Combatant]) -> None:
+        pr = self.tier.progression
+        if not pr.enabled() or not pr.xp_award or pr.xp_stat not in self.tier.stats:
+            return
+        total = 0
+        for e in enemies:
+            env = self._env.with_(
+                variables={"enemy_level": Fraction(e.level), "level": Fraction(self.level())}
+            )
+            total += self._int(pr.xp_award, "XP award", env=env)
+        before = self.state.stats.get(pr.xp_stat, 0)
+        after = self._set_stat(pr.xp_stat, before + total)
+        self.log.append(
+            Event("xp_gained", {"stat": pr.xp_stat, "amount": after - before, "value": after})
+        )
+        self._check_level_up()
+
+    def _check_level_up(self) -> None:
+        pr = self.tier.progression
+        xp_key, level_key = pr.xp_stat, pr.level_stat
+        if (
+            not pr.enabled()
+            or xp_key not in self.tier.stats
+            or level_key not in self.tier.stats
+            or xp_key == level_key
+        ):
+            return
+        assert xp_key is not None
+        assert level_key is not None
+        assert pr.xp_to_next is not None
+        for _ in range(MAX_LEVEL_UPS):
+            level = self.state.stats.get(level_key, 0)
+            cap = self.state.max_stats.get(level_key)
+            if (pr.max_level is not None and level >= pr.max_level) or (
+                cap is not None and level >= cap
+            ):
+                return
+            env = self._env.with_(variables={"level": Fraction(level)})
+            need = self._int(pr.xp_to_next, "XP for the next level", rng=False, env=env)
+            xp = self.state.stats.get(xp_key, 0)
+            if need <= 0 or xp < need:
+                return
+            self._set_stat(xp_key, xp - need)
+            new = self._set_stat(level_key, level + 1)
+            self.log.append(
+                Event(
+                    "level_up",
+                    {"stat": level_key, "level": new, "xp": self.state.stats.get(xp_key, 0)},
+                )
+            )
+            for b in pr.level_up or []:
+                change = self._bonus(b, "level-up bonus")
+                self.log.append(
+                    Event(
+                        "effect",
+                        {
+                            "source": "level_up",
+                            "op": "modify",
+                            "stat": b.stat,
+                            "change": change,
+                            "value": self.state.stats.get(b.stat, 0),
+                        },
+                    )
+                )
 
     # ── effects ──────────────────────────────────────────────────────────
 
@@ -284,6 +410,8 @@ class Game:
         respect_once: bool = True,
         check_defeat: bool = True,
     ) -> None:
+        xp_key = self.tier.progression.xp_stat
+        xp_touched = False
         for i, eff in enumerate(effects):
             if not self.tier_allows(eff.min_tier):
                 continue
@@ -322,6 +450,9 @@ class Game:
                     self.state.skills.add(s)
                     data.update(skill=s)
             self.log.append(Event("effect", data))
+            xp_touched = xp_touched or (xp_key is not None and data.get("stat") == xp_key)
+        if xp_touched:
+            self._check_level_up()
         if check_defeat:
             self._check_defeat()
 
@@ -673,6 +804,8 @@ class Game:
         assert cs is not None
         self.state.combat = None
         self.log.append(Event("combat_end", {"outcome": outcome, "rounds": cs.round}))
+        if outcome == "win":
+            self._award_xp(cs.enemies)
         node = self.node
         assert node is not None
         choice = next(c for c in node.choices if c.id == cs.choice_id)

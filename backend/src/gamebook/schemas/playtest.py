@@ -153,6 +153,15 @@ class Option(Out):
     label: str
 
 
+class PlayProgress(Out):
+    xp_stat: str
+    level_stat: str
+    level: int
+    xp: int
+    #: XP the next level costs; None at the highest level.
+    xp_needed: int | None
+
+
 class PlayOut(Out):
     tier: str
     seed: int
@@ -163,6 +172,9 @@ class PlayOut(Out):
     ended: str | None
     node: PlayNode | None
     stats: list[PlayStat]
+    #: The money stat (the first resource), if any.
+    currency: str | None = None
+    progress: PlayProgress | None = None
     character_class: str | None
     skills: list[Option]
     items: list[PlayItem]

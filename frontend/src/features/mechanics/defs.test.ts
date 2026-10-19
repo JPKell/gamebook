@@ -1,8 +1,10 @@
 import {
+  addLevelling,
   addTier,
   remove,
   removeTier,
   setCombat,
+  setProgression,
   slugKey,
   updateTier,
   upsert,
@@ -54,5 +56,43 @@ describe('rule-system edit helpers', () => {
     expect(tier.combat).toEqual({ damage: '3' })
     setCombat(tier, 'damage', '')
     expect(tier.combat).toEqual({})
+  })
+})
+
+describe('levelling helpers', () => {
+  it('sets up XP and LEVEL once, keeping what the tier already has', () => {
+    const next = updateTier(def(), 'medium', (t) => addLevelling(t, new Set(['SKILL'])))
+    const medium = next.tiers[1]!
+    expect(medium.stats!.map((s) => s.key)).toEqual(['XP', 'LEVEL'])
+    expect(medium.progression).toMatchObject({ xp_stat: 'XP', level_stat: 'LEVEL', max_level: 10 })
+    const again = updateTier(next, 'medium', (t) => addLevelling(t, new Set(['XP', 'LEVEL'])))
+    expect(again.tiers[1]!.stats).toHaveLength(2)
+  })
+
+  it('fills in unset (null) progression fields from the API', () => {
+    const d = def()
+    d.tiers[1]!.progression = {
+      xp_stat: null,
+      level_stat: null,
+      xp_award: null,
+      xp_to_next: '20 * level',
+      max_level: null,
+      level_up: null,
+    }
+    const next = updateTier(d, 'medium', (t) => addLevelling(t, new Set()))
+    expect(next.tiers[1]!.progression).toMatchObject({
+      xp_stat: 'XP',
+      level_stat: 'LEVEL',
+      xp_to_next: '20 * level',
+    })
+  })
+
+  it('clears a progression field so it inherits', () => {
+    const next = updateTier(def(), 'medium', (t) => {
+      setProgression(t, 'xp_to_next', '50 * level')
+      setProgression(t, 'max_level', 5)
+      setProgression(t, 'max_level', null)
+    })
+    expect(next.tiers[1]!.progression).toEqual({ xp_to_next: '50 * level' })
   })
 })

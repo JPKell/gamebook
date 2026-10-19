@@ -125,6 +125,31 @@ def test_play_fight_to_the_end(api: Api, playable: Json) -> None:
     assert any(e["type"] == "combat_round" and "Round 1" in e["text"] for e in out["events"])
 
 
+def test_play_shows_money_and_earns_xp(api: Api, playable: Json) -> None:
+    url = f"/books/{playable['book_id']}/play"
+    basic = api.post(url, {"tier": "basic"}, expect=200)
+    assert basic["currency"] == "GOLD"
+    assert basic["progress"] is None  # basic has no levels
+    inputs: list[dict[str, Any]] = [
+        {"kind": "set", "stats": {"SKILL": 40, "STAMINA": 40}},
+        {"kind": "action", "type": "choose", "target": playable["fight"]},
+    ]
+    out = api.post(url, {"tier": "medium", "inputs": inputs}, expect=200)
+    assert out["progress"] == {
+        "xp_stat": "XP",
+        "level_stat": "LEVEL",
+        "level": 1,
+        "xp": 0,
+        "xp_needed": 100,
+    }
+    while out["combat"]:
+        inputs.append({"kind": "action", "type": "attack"})
+        out = api.post(url, {"tier": "medium", "inputs": inputs}, expect=200)
+    assert out["ended"] == "victory"
+    assert out["progress"]["xp"] == 10  # a level-1 orc for a level-1 reader
+    assert any(e["text"] == "Gained 10 Experience (now 10)" for e in out["events"])
+
+
 def test_play_debug_inputs(api: Api, playable: Json) -> None:
     url = f"/books/{playable['book_id']}/play"
     inputs: list[dict[str, Any]] = [

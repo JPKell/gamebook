@@ -141,6 +141,36 @@ export interface CombatDef {
   flee_cost: Effect[] | null
 }
 
+export interface StatBonus {
+  stat: string
+  amount: string
+}
+
+export interface StartingItem {
+  item: string
+  qty: number
+  equip: boolean
+}
+
+export interface ClassDef {
+  key: string
+  label: string
+  description: string
+  skills: string[]
+  /** Missing in bundles from before levelling (treated as empty). */
+  modifiers?: StatBonus[]
+  starting_items?: StartingItem[]
+}
+
+export interface ProgressionDef {
+  xp_stat: string | null
+  level_stat: string | null
+  xp_award: string | null
+  xp_to_next: string | null
+  max_level: number | null
+  level_up: StatBonus[] | null
+}
+
 export interface TierDef {
   key: string
   label: string
@@ -149,9 +179,11 @@ export interface TierDef {
   stats: StatDef[]
   tests: TestDef[]
   skills: { key: string; label: string; description: string }[]
-  classes: { key: string; label: string; description: string; skills: string[] }[]
+  classes: ClassDef[]
   slots: string[]
   combat: CombatDef
+  progression?: Partial<ProgressionDef>
+  starting_items?: StartingItem[]
   rules_text: string
 }
 

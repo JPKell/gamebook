@@ -965,9 +965,18 @@
       "key": "basic",
       "label": "Basic",
       "parent": null,
+      "progression": {
+       "level_stat": null,
+       "level_up": null,
+       "max_level": null,
+       "xp_award": null,
+       "xp_stat": null,
+       "xp_to_next": null
+      },
       "rules_text": "Roll one die and add 6 for your SKILL, two dice and add 12 for your STAMINA, and one die plus 6 for your LUCK. You start with 10 Gold.\n\n**Fighting.** Each round, roll two dice and add your SKILL; then roll two dice and add your opponent's SKILL. Whoever scores higher wounds the other for 2 STAMINA. A tie means you both miss. Anyone reduced to 0 STAMINA is defeated.\n\n**Testing your Luck.** Roll two dice. If the total is equal to or less than your LUCK you are lucky. Either way, subtract 1 from your LUCK.",
       "skills": [],
       "slots": [],
+      "starting_items": [],
       "stats": [
        {
         "applies_to": [
@@ -1070,17 +1079,35 @@
        "multi_enemy": null,
        "player_attack": null
       },
-      "description": "Adds armour and equipment slots.",
+      "description": "Adds armour, equipment slots, experience and levels.",
       "key": "medium",
       "label": "Medium",
       "parent": "basic",
-      "rules_text": "**Armour.** Every wound is reduced by the target's ARMOUR, but always does at least 1 damage. You may wear one weapon, one suit of body armour and one shield; their bonuses count only while equipped.",
+      "progression": {
+       "level_stat": "LEVEL",
+       "level_up": [
+        {
+         "amount": "2",
+         "stat": "STAMINA"
+        },
+        {
+         "amount": "level % 3 == 0 ? 1 : 0",
+         "stat": "SKILL"
+        }
+       ],
+       "max_level": 10,
+       "xp_award": "max(1, 10 + 5 * (enemy_level - level))",
+       "xp_stat": "XP",
+       "xp_to_next": "100 * level"
+      },
+      "rules_text": "**Armour.** Every wound is reduced by the target's ARMOUR, but always does at least 1 damage. You may wear one weapon, one suit of body armour and one shield; their bonuses count only while equipped.\n\n**Experience.** You begin at LEVEL 1 with 0 XP. Each enemy you defeat in a fight you win earns 10 XP, plus 5 for every level it is above yours (or minus 5 for every level below; always at least 1). When your XP reaches 100 times your LEVEL, subtract that much XP and go up a level: add 2 to your STAMINA and its starting value, and at every third level add 1 to your SKILL and its starting value. The highest level is 10.",
       "skills": [],
       "slots": [
        "weapon",
        "body",
        "shield"
       ],
+      "starting_items": [],
       "stats": [
        {
         "applies_to": [
@@ -1096,6 +1123,34 @@
         "max": null,
         "max_is_initial": false,
         "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "0",
+        "key": "XP",
+        "kind": "stat",
+        "label": "Experience",
+        "max": null,
+        "max_is_initial": false,
+        "min": 0
+       },
+       {
+        "applies_to": [
+         "player"
+        ],
+        "defeat_at": null,
+        "description": "",
+        "initial": "1",
+        "key": "LEVEL",
+        "kind": "stat",
+        "label": "Level",
+        "max": null,
+        "max_is_initial": false,
+        "min": 1
        }
       ],
       "tests": []
@@ -1106,26 +1161,51 @@
         "description": "",
         "key": "ranger",
         "label": "Ranger",
+        "modifiers": [
+         {
+          "amount": "1",
+          "stat": "SKILL"
+         }
+        ],
         "skills": [
          "TRACKING",
          "ARCHERY"
-        ]
+        ],
+        "starting_items": []
        },
        {
         "description": "",
         "key": "rogue",
         "label": "Rogue",
+        "modifiers": [
+         {
+          "amount": "2",
+          "stat": "LUCK"
+         }
+        ],
         "skills": [
          "STEALTH"
-        ]
+        ],
+        "starting_items": []
        },
        {
         "description": "",
         "key": "scholar",
         "label": "Scholar",
+        "modifiers": [
+         {
+          "amount": "1",
+          "stat": "LUCK"
+         },
+         {
+          "amount": "2",
+          "stat": "STAMINA"
+         }
+        ],
         "skills": [
          "LORE"
-        ]
+        ],
+        "starting_items": []
        }
       ],
       "combat": {
@@ -1144,7 +1224,15 @@
       "key": "advanced",
       "label": "Advanced",
       "parent": "medium",
-      "rules_text": "**Your calling.** Choose a class: it grants your starting skills, which open choices other adventurers cannot take.\n\n**Critical hits.** When an attack roll shows double six (a natural 12), its damage is doubled.",
+      "progression": {
+       "level_stat": null,
+       "level_up": null,
+       "max_level": null,
+       "xp_award": null,
+       "xp_stat": null,
+       "xp_to_next": null
+      },
+      "rules_text": "**Your calling.** Choose a class: it grants your starting skills, which open choices other adventurers cannot take, and a bonus to your stats: a Ranger adds 1 to SKILL, a Rogue adds 2 to LUCK and a Scholar adds 1 to LUCK and 2 to STAMINA.\n\n**Critical hits.** When an attack roll shows double six (a natural 12), its damage is doubled.",
       "skills": [
        {
         "description": "",
@@ -1168,6 +1256,7 @@
        }
       ],
       "slots": [],
+      "starting_items": [],
       "stats": [],
       "tests": []
      }
@@ -1272,13 +1361,29 @@
    "type": "roll"
   },
   {
+   "expr": "0",
+   "faces": [],
+   "purpose": "initial XP",
+   "total": 0,
+   "type": "roll"
+  },
+  {
+   "expr": "1",
+   "faces": [],
+   "purpose": "initial LEVEL",
+   "total": 1,
+   "type": "roll"
+  },
+  {
    "class": "ranger",
    "stats": {
     "ARMOR": 0,
     "GOLD": 10,
+    "LEVEL": 1,
     "LUCK": 10,
-    "SKILL": 9,
-    "STAMINA": 14
+    "SKILL": 10,
+    "STAMINA": 14,
+    "XP": 0
    },
    "type": "character_created"
   },
@@ -1594,7 +1699,7 @@
   },
   "max_stats": {
    "LUCK": 10,
-   "SKILL": 9,
+   "SKILL": 10,
    "STAMINA": 14
   },
   "node_id": "end",
@@ -1605,9 +1710,11 @@
   "stats": {
    "ARMOR": 0,
    "GOLD": 9,
+   "LEVEL": 1,
    "LUCK": 10,
-   "SKILL": 9,
-   "STAMINA": 14
+   "SKILL": 10,
+   "STAMINA": 14,
+   "XP": 0
   },
   "steps": 17,
   "tier": "advanced",

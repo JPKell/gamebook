@@ -6,7 +6,7 @@ declares only what it adds or overrides; :func:`effective_tier` merges the chain
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -57,11 +57,30 @@ class SkillDef(_Def):
     description: str = ""
 
 
+class StatBonus(_Def):
+    """Add ``amount`` (gbx, dice allowed) to a player stat — and to its maximum
+    when the maximum is the starting value."""
+
+    stat: str = Field(pattern=KEY_PATTERN)
+    amount: str = "1"
+
+
+class StartingItem(_Def):
+    item: str = Field(pattern=KEY_PATTERN)
+    qty: int = Field(default=1, ge=1, le=999)
+    #: Equip it straight away (when it has a slot this tier uses).
+    equip: bool = False
+
+
 class ClassDef(_Def):
     key: str = Field(pattern=KEY_PATTERN)
     label: str
     description: str = ""
     skills: list[str] = Field(default_factory=list)
+    #: Applied once at character creation, after the stats are rolled.
+    modifiers: list[StatBonus] = Field(default_factory=list)
+    #: Given at character creation, after the tier's own starting items.
+    starting_items: list[StartingItem] = Field(default_factory=list)
 
 
 class CombatDef(_Def):
@@ -82,6 +101,26 @@ class CombatDef(_Def):
     flee_cost: list[Effect] | None = None
 
 
+class ProgressionDef(_Def):
+    """Experience and levels (SPEC §2.4a). Fields left None inherit from the parent tier.
+
+    Winning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``
+    and ``level``, the reader's level) to ``xp_stat``. While XP reaches
+    ``xp_to_next`` (variable ``level``), that much XP is spent, ``level_stat``
+    goes up by one and every ``level_up`` bonus is applied.
+    """
+
+    xp_stat: str | None = None
+    level_stat: str | None = None
+    xp_award: str | None = None
+    xp_to_next: str | None = None
+    max_level: int | None = Field(default=None, ge=1)
+    level_up: list[StatBonus] | None = None
+
+    def enabled(self) -> bool:
+        return bool(self.xp_stat and self.level_stat and self.xp_to_next)
+
+
 class TierDef(_Def):
     key: str = Field(pattern=KEY_PATTERN)
     label: str
@@ -93,6 +132,9 @@ class TierDef(_Def):
     classes: list[ClassDef] = Field(default_factory=list)
     slots: list[str] = Field(default_factory=list)
     combat: CombatDef = Field(default_factory=CombatDef)
+    progression: ProgressionDef = Field(default_factory=ProgressionDef)
+    #: Given to every reader at character creation (accumulates down the tiers).
+    starting_items: list[StartingItem] = Field(default_factory=list)
     #: Author-written rules chapter text for this tier (markdown).
     rules_text: str = ""
 
@@ -124,6 +166,8 @@ class EffectiveTier:
     combat: CombatDef
     #: Which tier introduced each stat (for "inherited" display).
     stat_origin: dict[str, str]
+    progression: ProgressionDef = field(default_factory=ProgressionDef)
+    starting_items: tuple[StartingItem, ...] = ()
 
     def player_stats(self) -> frozenset[str]:
         return frozenset(k for k, s in self.stats.items() if "player" in s.applies_to)
@@ -161,7 +205,13 @@ def effective_tier(system: RuleSystemDef, key: str) -> EffectiveTier:
     slots: list[str] = []
     combat_fields: dict[str, object] = {}
     hooks: list[str] = []
+    progression: dict[str, object] = {}
+    starting: list[StartingItem] = []
     for t in chain:
+        starting.extend(t.starting_items)
+        for name in ProgressionDef.model_fields:
+            if (value := getattr(t.progression, name)) is not None:
+                progression[name] = value
         for s in t.stats:
             stats[s.key] = s
             origin.setdefault(s.key, t.key)
@@ -187,6 +237,8 @@ def effective_tier(system: RuleSystemDef, key: str) -> EffectiveTier:
         slots=tuple(slots),
         combat=CombatDef.model_validate({**combat_fields, "damage_hooks": hooks}),
         stat_origin=origin,
+        progression=ProgressionDef.model_validate(progression),
+        starting_items=tuple(starting),
     )
 
 
@@ -217,8 +269,14 @@ def tier_view(system: RuleSystemDef, key: str) -> dict[str, object]:
 
     slot_origin: dict[str, str] = {}
     combat_origin: dict[str, str] = {}
+    progression_origin: dict[str, str] = {}
     hooks: list[dict[str, str]] = []
+    starting: list[dict[str, object]] = []
     for t in chain:
+        starting += [{**si.model_dump(mode="json"), "origin": t.key} for si in t.starting_items]
+        for name in ProgressionDef.model_fields:
+            if getattr(t.progression, name) is not None:
+                progression_origin[name] = t.key
         for slot in t.slots:
             slot_origin.setdefault(slot, t.key)
         for name in CombatDef.model_fields:
@@ -241,4 +299,7 @@ def tier_view(system: RuleSystemDef, key: str) -> dict[str, object]:
         "combat": eff.combat.model_dump(mode="json"),
         "combat_origin": combat_origin,
         "damage_hooks": hooks,
+        "progression": eff.progression.model_dump(mode="json"),
+        "progression_origin": progression_origin,
+        "starting_items": starting,
     }

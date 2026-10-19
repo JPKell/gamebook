@@ -220,6 +220,14 @@ and watch downstream nodes go stale.
 - TS port of gbx + engine; golden-trace parity suite in CI.
 - Static web/PWA reader app with save slots.
 
+## Phase 13 — Character progression ✅ (2026-10-19, see `docs/handoffs/v2-phase-13-progression.md`)
+
+- Class stat bonuses and starting gear; tier starting gear.
+- Experience from fights, scaled by enemy level against the reader's level; levels with stat bonuses.
+- Stat modifiers on every item category; quick money fields on nodes and choices; money
+  and level shown on adventure sheets.
+- Both engines, print phrasing, the Mechanics designer.
+
 ## Later / deferred
 
 Cross-book carry-over (CharacterSnapshot + import policy), combined vs. per-tier print

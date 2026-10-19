@@ -4,23 +4,30 @@ import { toast } from 'sonner'
 
 import type { components } from '@/api/schema'
 import { GbxField } from '@/components/gbx/GbxField'
+import { useVocabulary } from '@/components/gbx/vocabulary'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { Checkbox, NumberInput, Select, TextArea, TextInput } from '@/components/ui/inputs'
+import { Rows } from '@/features/entities/EnemyEditor'
 import { EffectsEditor } from '@/features/story/inspector/EffectsEditor'
 import { cn } from '@/lib/utils'
 
 import {
+  addLevelling,
   type ClassDef,
   type CombatDef,
   type DefList,
   findTier,
+  type ProgressionDef,
   remove,
   removeTier,
   type RuleSystemDef,
   setCombat,
+  setProgression,
   type SkillDef,
   slugKey,
+  type StartingItem,
+  type StatBonus,
   type StatDef,
   type TestDef,
   type TierDef,
@@ -154,7 +161,15 @@ export function TierEditor({ def, tierKey, view, save, onDeleted }: Props) {
           own={own('classes')}
           tierKey={tierKey}
           labelOf={labelOf}
-          summary={(c) => (c.skills?.length ? `skills: ${c.skills.join(', ')}` : 'no skills')}
+          summary={(c) =>
+            [
+              c.skills?.length ? `skills: ${c.skills.join(', ')}` : 'no skills',
+              ...(c.modifiers ?? []).map((m) => `${m.stat} ${signed(m.amount ?? '1')}`),
+              (c.starting_items ?? []).length ? `${c.starting_items!.length} starting item(s)` : '',
+            ]
+              .filter(Boolean)
+              .join(' · ')
+          }
           onOverride={(c) => edit((t) => upsert(t, 'classes', strip(c) as ClassDef))}
           onRemove={(key) => edit((t) => remove(t, 'classes', key))}
           render={(c) => {
@@ -192,6 +207,31 @@ export function TierEditor({ def, tierKey, view, save, onDeleted }: Props) {
                     )}
                   </div>
                 </fieldset>
+                <fieldset>
+                  <legend className="mb-1 text-xs font-medium text-muted">
+                    Stat bonuses (added once, when the character is created)
+                  </legend>
+                  <BonusRows
+                    rows={cls.modifiers ?? []}
+                    view={view}
+                    tierKey={tierKey}
+                    empty="No stat bonuses."
+                    onChange={(modifiers) =>
+                      edit((t) => upsert(t, 'classes', { ...cls, modifiers }))
+                    }
+                  />
+                </fieldset>
+                <fieldset>
+                  <legend className="mb-1 text-xs font-medium text-muted">
+                    Starting gear (as well as the tier’s)
+                  </legend>
+                  <GearRows
+                    rows={cls.starting_items ?? []}
+                    onChange={(starting_items) =>
+                      edit((t) => upsert(t, 'classes', { ...cls, starting_items }))
+                    }
+                  />
+                </fieldset>
               </div>
             )
           }}
@@ -214,6 +254,43 @@ export function TierEditor({ def, tierKey, view, save, onDeleted }: Props) {
 
       <Section title="Combat" defaultOpen>
         <CombatEditor view={view} tier={tier} tierKey={tierKey} labelOf={labelOf} edit={edit} />
+      </Section>
+
+      <Section title="Experience & levels" defaultOpen>
+        <ProgressionEditor
+          view={view}
+          tier={tier}
+          tierKey={tierKey}
+          labelOf={labelOf}
+          edit={edit}
+        />
+      </Section>
+
+      <Section title="Starting gear" count={view.starting_items.length}>
+        <p className="mb-2 text-xs text-muted">
+          Every reader starts with these items (higher tiers add to the list). Equipped items go
+          straight into their slot.
+        </p>
+        <ul className="mb-2 space-y-1">
+          {view.starting_items
+            .filter((g) => g.origin !== tierKey)
+            .map((g, i) => (
+              <li
+                key={i}
+                className="flex items-center gap-2 rounded-md border border-dashed border-border px-2.5 py-1.5 text-sm text-muted"
+              >
+                <span className="flex-1">
+                  {g.item} ×{g.qty ?? 1}
+                  {g.equip ? ' · equipped' : ''}
+                </span>
+                <Origin label={labelOf(g.origin)} kind="from" />
+              </li>
+            ))}
+        </ul>
+        <GearRows
+          rows={tier.starting_items ?? []}
+          onChange={(starting_items) => edit((t) => void (t.starting_items = starting_items))}
+        />
       </Section>
 
       <Section title="Rules chapter text">
@@ -1006,6 +1083,261 @@ function CombatEditor({
         >
           <Plus className="size-4" /> Add damage rule
         </Button>
+      </div>
+    </div>
+  )
+}
+
+// ── bonuses, gear and levels ──────────────────────────────────────────────
+
+const signed = (amount: string) => (/^\d/.test(amount.trim()) ? `+${amount}` : amount)
+
+function BonusRows({
+  rows,
+  view,
+  tierKey,
+  empty,
+  onChange,
+}: {
+  rows: StatBonus[]
+  view: TierView
+  tierKey: string
+  empty: string
+  onChange: (rows: StatBonus[]) => void
+}) {
+  const options = view.stats
+    .filter((s) => (s.applies_to ?? ['player']).includes('player'))
+    .map((s) => ({ value: s.key, label: s.label }))
+  return (
+    <Rows
+      rows={rows}
+      empty={empty}
+      addLabel="Add stat bonus"
+      disabled={!options.length}
+      blank={{ stat: options[0]?.value ?? '', amount: '1' }}
+      onChange={(f) => onChange(f(rows))}
+      render={(b, set) => (
+        <>
+          <Select
+            aria-label="Bonus stat"
+            className="w-40"
+            value={b.stat}
+            options={
+              options.some((o) => o.value === b.stat)
+                ? options
+                : [...options, { value: b.stat, label: `${b.stat} (missing)` }]
+            }
+            onValueChange={(stat) => stat && set({ stat })}
+          />
+          <GbxField
+            className="min-w-0 flex-1"
+            label="Bonus amount"
+            context="stat_bonus"
+            tier={tierKey}
+            value={b.amount ?? '1'}
+            placeholder="1, -2 or 1d6"
+            onCommit={(amount) => amount && set({ amount })}
+          />
+        </>
+      )}
+    />
+  )
+}
+
+function GearRows({
+  rows,
+  onChange,
+}: {
+  rows: StartingItem[]
+  onChange: (rows: StartingItem[]) => void
+}) {
+  const vocab = useVocabulary()
+  const options = vocab.items.map((i) => ({ value: i.key, label: i.label }))
+  return (
+    <Rows
+      rows={rows}
+      empty="No starting gear."
+      addLabel="Add starting item"
+      disabled={!options.length}
+      blank={{ item: options[0]?.value ?? '', qty: 1, equip: false }}
+      onChange={(f) => onChange(f(rows))}
+      render={(g, set) => (
+        <>
+          <Select
+            aria-label="Starting item"
+            className="min-w-0 flex-1"
+            value={g.item}
+            options={
+              options.some((o) => o.value === g.item)
+                ? options
+                : [...options, { value: g.item, label: `${g.item} (missing)` }]
+            }
+            onValueChange={(item) => item && set({ item })}
+          />
+          <NumberInput
+            aria-label="Quantity"
+            className="w-16"
+            min={1}
+            value={g.qty ?? 1}
+            onCommit={(qty) => set({ qty: Math.max(1, qty ?? 1) })}
+          />
+          <Checkbox
+            label="Equipped"
+            checked={!!g.equip}
+            onCheckedChange={(equip) => set({ equip })}
+          />
+        </>
+      )}
+    />
+  )
+}
+
+function ProgressionEditor({
+  view,
+  tier,
+  tierKey,
+  labelOf,
+  edit,
+}: {
+  view: TierView
+  tier: TierDef
+  tierKey: string
+  labelOf: (k: string) => string
+  edit: (fn: (t: TierDef) => void) => void
+}) {
+  const own = (tier.progression ?? {}) as ProgressionDef
+  const merged = view.progression
+  const origin = (f: string) => view.progression_origin[f]
+  const inherited = (f: keyof ProgressionDef) => own[f] === undefined || own[f] === null
+  const set = <K extends keyof ProgressionDef>(f: K, v: ProgressionDef[K] | null) =>
+    edit((t) => setProgression(t, f, v))
+  const playerStats = view.stats.filter((s) => (s.applies_to ?? ['player']).includes('player'))
+  const statOptions = playerStats.map((s) => ({ value: s.key, label: s.label }))
+  const enabled = !!(merged.xp_stat && merged.level_stat && merged.xp_to_next)
+
+  const badge = (f: keyof ProgressionDef) =>
+    inherited(f) ? (
+      origin(f) ? (
+        <Origin label={labelOf(origin(f)!)} kind="from" />
+      ) : (
+        <span className="text-[11px] text-muted">not set</span>
+      )
+    ) : (
+      <button
+        type="button"
+        className="text-[11px] text-accent hover:underline"
+        onClick={() => set(f, null)}
+        title="Clear to inherit"
+      >
+        set here · inherit instead
+      </button>
+    )
+  const label = (text: string, f: keyof ProgressionDef) => (
+    <div className="flex items-center justify-between">
+      <span className="text-xs font-medium text-muted">{text}</span>
+      {badge(f)}
+    </div>
+  )
+
+  if (!enabled && !merged.xp_stat && !merged.level_stat)
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted">
+          No levelling at this tier. Readers can earn experience from fights and go up levels,
+          gaining stat bonuses.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => edit((t) => addLevelling(t, new Set(view.stats.map((s) => s.key))))}
+        >
+          <Plus className="size-4" /> Set up experience & levels
+        </Button>
+      </div>
+    )
+
+  const levelUp = own.level_up ?? merged.level_up ?? []
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-muted">
+        Winning a fight earns the XP award for each enemy beaten. When XP reaches the amount for the
+        next level, it is spent, the level goes up by one and the level-up bonuses apply. Fields
+        left unset inherit.
+      </p>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="space-y-1">
+          {label('XP stat', 'xp_stat')}
+          <Select
+            aria-label="XP stat"
+            value={own.xp_stat ?? null}
+            placeholder={merged.xp_stat ? `Inherit (${merged.xp_stat})` : 'Choose…'}
+            onValueChange={(v) => set('xp_stat', v)}
+            options={statOptions}
+          />
+        </div>
+        <div className="space-y-1">
+          {label('Level stat', 'level_stat')}
+          <Select
+            aria-label="Level stat"
+            value={own.level_stat ?? null}
+            placeholder={merged.level_stat ? `Inherit (${merged.level_stat})` : 'Choose…'}
+            onValueChange={(v) => set('level_stat', v)}
+            options={statOptions}
+          />
+        </div>
+        <div className="space-y-1">
+          {label('Highest level', 'max_level')}
+          <NumberInput
+            aria-label="Highest level"
+            min={1}
+            allowEmpty
+            placeholder={merged.max_level ? `Inherit (${merged.max_level})` : 'No limit'}
+            value={own.max_level ?? null}
+            onCommit={(v) => set('max_level', v !== null && v >= 1 ? v : null)}
+          />
+        </div>
+      </div>
+      <div className="space-y-1">
+        {label('XP per enemy beaten (use enemy_level and level)', 'xp_award')}
+        <GbxField
+          label="XP award"
+          context="xp_award"
+          tier={tierKey}
+          value={own.xp_award ?? null}
+          placeholder={merged.xp_award ?? 'e.g. max(1, 10 + 5 * (enemy_level - level))'}
+          emptyHint={merged.xp_award ? `Inherited: ${merged.xp_award}` : 'Empty: fights give no XP'}
+          onCommit={(v) => set('xp_award', v)}
+        />
+        <p className="text-[11px] text-muted">
+          Compare the enemy’s level with the reader’s: e.g. <code>10 * enemy_level / level</code>{' '}
+          gives less XP for beating weaker enemies.
+        </p>
+      </div>
+      <div className="space-y-1">
+        {label('XP for the next level (use level)', 'xp_to_next')}
+        <GbxField
+          label="XP for the next level"
+          context="xp_to_next"
+          tier={tierKey}
+          value={own.xp_to_next ?? null}
+          placeholder={merged.xp_to_next ?? 'e.g. 100 * level'}
+          emptyHint={merged.xp_to_next ? `Inherited: ${merged.xp_to_next}` : 'Required'}
+          onCommit={(v) => set('xp_to_next', v)}
+        />
+      </div>
+      <div className="space-y-1">
+        {label('Level-up bonuses (use level, the new level)', 'level_up')}
+        <BonusRows
+          rows={levelUp}
+          view={view}
+          tierKey={tierKey}
+          empty="Going up a level changes no stats."
+          onChange={(rows) => set('level_up', rows)}
+        />
+        <p className="text-[11px] text-muted">
+          A bonus to a stat whose maximum is its starting value (like STAMINA) raises that maximum
+          too.
+        </p>
       </div>
     </div>
   )

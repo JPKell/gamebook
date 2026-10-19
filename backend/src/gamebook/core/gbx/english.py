@@ -7,7 +7,7 @@ Authors can always override the rendering per choice/effect.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 
 from gamebook.core.gbx.ast import (
     Attr,
@@ -56,6 +56,7 @@ _VARIABLE_PHRASE = {
     "natural": "the dice rolled",
     "damage": "the damage",
     "level": "the level",
+    "enemy_level": "the enemy's level",
 }
 
 _OBJECT_POSSESSIVE = {
@@ -84,10 +85,17 @@ def _is_stat(e: Expr, bare: str | None) -> bool:
 
 
 class _English:
-    def __init__(self, namer: Namer, tiers: tuple[str, ...], bare_object: str | None) -> None:
+    def __init__(
+        self,
+        namer: Namer,
+        tiers: tuple[str, ...],
+        bare_object: str | None,
+        phrases: Mapping[str, str] | None = None,
+    ) -> None:
         self.namer = namer
         self.tiers = tiers
         self.bare = bare_object
+        self.phrases = {**_VARIABLE_PHRASE, **(phrases or {})}
 
     def label(self, kind: RefKind, key: str) -> str:
         return self.namer(kind, key)
@@ -189,8 +197,8 @@ class _English:
                 return f"{c}d{s}"
             case Name(name="tier"):
                 return "your tier"
-            case Name(name=n) if n in _VARIABLE_PHRASE:
-                return _VARIABLE_PHRASE[n]
+            case Name(name=n) if n in self.phrases:
+                return self.phrases[n]
             case Name(name=n) if n in self.tiers:
                 return f"the {self.label(RefKind.TIER, n)} tier"
             case Name(name=n):
@@ -257,6 +265,10 @@ def number_to_english(
     *,
     tiers: tuple[str, ...] = (),
     bare_object: str | None = "player",
+    phrases: Mapping[str, str] | None = None,
 ) -> str:
-    """A noun phrase — e.g. "two dice plus your SKILL"."""
-    return _English(namer, tiers, bare_object).num(expr)
+    """A noun phrase — e.g. "two dice plus your SKILL".
+
+    ``phrases`` renames variables (e.g. ``{"level": "your level"}``).
+    """
+    return _English(namer, tiers, bare_object, phrases).num(expr)

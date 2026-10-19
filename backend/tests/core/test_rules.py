@@ -24,7 +24,7 @@ def test_tier_inheritance_merges() -> None:
     advanced = effective_tier(rules, "advanced")
 
     assert set(basic.stats) == {"SKILL", "STAMINA", "LUCK", "GOLD"}
-    assert set(medium.stats) == set(basic.stats) | {"ARMOR"}
+    assert set(medium.stats) == set(basic.stats) | {"ARMOR", "XP", "LEVEL"}
     assert medium.stat_origin["SKILL"] == "basic"
     assert medium.stat_origin["ARMOR"] == "medium"
     assert basic.enemy_stats() == {"SKILL", "STAMINA"}

@@ -1,5 +1,13 @@
 /** Tier inheritance: `effective_tier` from `core/rules/schema.py`. Maps keep definition order. */
-import type { CombatDef, StatDef, TestDef, TierDef } from './model'
+import type {
+  ClassDef,
+  CombatDef,
+  ProgressionDef,
+  StartingItem,
+  StatDef,
+  TestDef,
+  TierDef,
+} from './model'
 
 export interface EffectiveTier {
   key: string
@@ -8,9 +16,25 @@ export interface EffectiveTier {
   stats: Map<string, StatDef>
   tests: Map<string, TestDef>
   skills: Map<string, { key: string; label: string; description: string }>
-  classes: Map<string, { key: string; label: string; description: string; skills: string[] }>
+  classes: Map<string, ClassDef>
   slots: string[]
   combat: CombatDef
+  progression: ProgressionDef
+  startingItems: StartingItem[]
+}
+
+const PROGRESSION_FIELDS = [
+  'xp_stat',
+  'level_stat',
+  'xp_award',
+  'xp_to_next',
+  'max_level',
+  'level_up',
+] as const
+
+/** Levelling is on when it has an XP stat, a level stat and the XP for the next level. */
+export function progressionEnabled(p: ProgressionDef): boolean {
+  return Boolean(p.xp_stat && p.level_stat && p.xp_to_next)
 }
 
 export function tierChain(tiers: TierDef[], key: string): TierDef[] {
@@ -45,10 +69,9 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
   const stats = new Map<string, StatDef>()
   const tests = new Map<string, TestDef>()
   const skills = new Map<string, { key: string; label: string; description: string }>()
-  const classes = new Map<
-    string,
-    { key: string; label: string; description: string; skills: string[] }
-  >()
+  const classes = new Map<string, ClassDef>()
+  const progression: Record<string, unknown> = {}
+  const startingItems: StartingItem[] = []
   const slots: string[] = []
   const combat: Record<string, unknown> = {}
   const hooks: string[] = []
@@ -63,6 +86,11 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
       if (v !== null && v !== undefined) combat[f] = v
     }
     hooks.push(...(t.combat.damage_hooks ?? []))
+    startingItems.push(...(t.starting_items ?? []))
+    for (const f of PROGRESSION_FIELDS) {
+      const v = t.progression?.[f]
+      if (v !== null && v !== undefined) progression[f] = v
+    }
   }
   const top = chain[chain.length - 1]!
   return {
@@ -85,5 +113,15 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
       ...combat,
       damage_hooks: hooks,
     } as CombatDef,
+    progression: {
+      xp_stat: null,
+      level_stat: null,
+      xp_award: null,
+      xp_to_next: null,
+      max_level: null,
+      level_up: null,
+      ...progression,
+    } as ProgressionDef,
+    startingItems,
   }
 }

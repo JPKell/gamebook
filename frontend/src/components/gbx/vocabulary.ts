@@ -23,6 +23,8 @@ export interface Vocabulary {
   items: VocabEntry[]
   flags: VocabEntry[]
   nodes: VocabEntry[]
+  /** The money stat (the first resource), if the rules have one. */
+  currency?: VocabEntry | null
 }
 
 export const EMPTY_VOCAB: Vocabulary = {
@@ -51,10 +53,13 @@ export function rulesVocabulary(rules: RuleSystemOut | undefined) {
   const tests = new Map<string, VocabEntry>()
   const skills = new Map<string, VocabEntry>()
   const classes = new Map<string, VocabEntry>()
+  let currency: VocabEntry | null = null
   for (const t of rules?.definition.tiers ?? []) {
     tiers.push({ key: t.key, label: t.label })
-    for (const s of t.stats ?? [])
+    for (const s of t.stats ?? []) {
       if (!stats.has(s.key)) stats.set(s.key, { key: s.key, label: s.label, detail: t.label })
+      if (!currency && s.kind === 'resource') currency = { key: s.key, label: s.label }
+    }
     for (const s of t.tests ?? [])
       if (!tests.has(s.key)) tests.set(s.key, { key: s.key, label: s.label, detail: t.label })
     for (const s of t.skills ?? [])
@@ -68,6 +73,7 @@ export function rulesVocabulary(rules: RuleSystemOut | undefined) {
     tests: [...tests.values()],
     skills: [...skills.values()],
     classes: [...classes.values()],
+    currency,
   }
 }
 

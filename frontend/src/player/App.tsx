@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Action, Game, GameEvent } from '@/engine/game'
 import { enemyName, namesFor, narrate } from '@/engine/narrate'
-import { effectiveTier } from '@/engine/rules'
+import { effectiveTier, progressionEnabled } from '@/engine/rules'
 
 import {
   AUTOSAVE,
@@ -463,10 +463,35 @@ function Sheet({ game, names }: { game: Game; names: ReturnType<typeof namesFor>
   const items = [...s.items].filter(([, n]) => n > 0).sort(([a], [b]) => (a < b ? -1 : 1))
   const equipped = new Set(s.equipped.values())
   const cls = s.character_class ? game.tier.classes.get(s.character_class)?.label : null
+  const pr = game.tier.progression
+  const levels =
+    progressionEnabled(pr) &&
+    game.tier.stats.has(pr.xp_stat!) &&
+    game.tier.stats.has(pr.level_stat!)
+  const need = levels ? game.xpNeeded() : null
+  const money = game.currency
   return (
     <section aria-label="Adventure sheet" className="card">
       <h2>Adventure sheet</h2>
       {cls && <p className="muted">{cls}</p>}
+      {(money || levels) && (
+        <p className="sheet-headline">
+          {money && (
+            <span>
+              {game.tier.stats.get(money)?.label ?? money}: <strong>{eff[money] ?? 0}</strong>
+            </span>
+          )}
+          {levels && (
+            <span>
+              {game.tier.stats.get(pr.level_stat!)?.label ?? pr.level_stat}{' '}
+              <strong>{s.stats.get(pr.level_stat!) ?? 0}</strong>
+              {' · '}
+              {s.stats.get(pr.xp_stat!) ?? 0}
+              {need !== null ? ` / ${need}` : ''} {game.tier.stats.get(pr.xp_stat!)?.label ?? 'XP'}
+            </span>
+          )}
+        </p>
+      )}
       <dl className="stats">
         {[...game.tier.stats]
           .filter(([, sd]) => sd.applies_to.includes('player'))

@@ -126,6 +126,12 @@ def narrate(event: Event, names: Names) -> str | None:
                 "lose": "You lost the fight",
                 "flee": "You fled",
             }.get(d["outcome"], f"Combat over: {d['outcome']}")
+        case "xp_gained":
+            return (
+                f"Gained {d['amount']} {names.stats.get(d['stat'], d['stat'])} (now {d['value']})"
+            )
+        case "level_up":
+            return f"Level up! {names.stats.get(d['stat'], d['stat'])} {d['level']}"
         case "combat_stalemate":
             return f"Stalemate after {d['rounds']} rounds"
         case "combat_skipped":

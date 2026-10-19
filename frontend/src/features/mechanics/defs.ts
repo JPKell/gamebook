@@ -9,6 +9,9 @@ export type TestDef = S['TestDef']
 export type SkillDef = S['SkillDef']
 export type ClassDef = S['ClassDef']
 export type CombatDef = S['CombatDef']
+export type ProgressionDef = S['ProgressionDef']
+export type StatBonus = S['StatBonus']
+export type StartingItem = S['StartingItem']
 export type DefList = 'stats' | 'tests' | 'skills' | 'classes'
 export type DefOf<L extends DefList> = NonNullable<TierDef[L]>[number]
 
@@ -94,4 +97,35 @@ export function setCombat<K extends keyof CombatDef>(
   if (value === null || value === undefined || value === '') delete combat[field as string]
   else combat[field as string] = value
   tier.combat = combat as CombatDef
+}
+
+export function setProgression<K extends keyof ProgressionDef>(
+  tier: TierDef,
+  field: K,
+  value: ProgressionDef[K] | null,
+) {
+  const p = { ...(tier.progression ?? {}) } as Record<string, unknown>
+  if (value === null || value === undefined || value === '') delete p[field as string]
+  else p[field as string] = value
+  tier.progression = p as ProgressionDef
+}
+
+/** Starter levelling: XP and LEVEL stats (added here when no tier has them) and formulas. */
+export function addLevelling(tier: TierDef, existingStats: Set<string>) {
+  const stats = [...(tier.stats ?? [])]
+  if (!existingStats.has('XP'))
+    stats.push({ key: 'XP', label: 'Experience', applies_to: ['player'], initial: '0' })
+  if (!existingStats.has('LEVEL'))
+    stats.push({ key: 'LEVEL', label: 'Level', applies_to: ['player'], initial: '1', min: 1 })
+  tier.stats = stats
+  tier.progression = {
+    xp_stat: 'XP',
+    level_stat: 'LEVEL',
+    xp_award: 'max(1, 10 + 5 * (enemy_level - level))',
+    xp_to_next: '100 * level',
+    max_level: 10,
+    level_up: [],
+    // Definitions from the API carry every field, unset ones as null: keep only set ones.
+    ...Object.fromEntries(Object.entries(tier.progression ?? {}).filter(([, v]) => v != null)),
+  }
 }

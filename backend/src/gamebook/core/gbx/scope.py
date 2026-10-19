@@ -98,6 +98,9 @@ class Context(StrEnum):
     STAT_INITIAL = "stat_initial"  # character creation — number, dice allowed
     COMBAT_ATTACK = "combat_attack"  # attack strength — number
     COMBAT_DAMAGE = "combat_damage"  # damage hook — number, vars damage/natural
+    XP_AWARD = "xp_award"  # XP per enemy — number, vars enemy_level/level
+    XP_TO_NEXT = "xp_to_next"  # XP for the next level — number of `level`, no dice
+    STAT_BONUS = "stat_bonus"  # class / level-up bonus — number, var level
 
 
 @dataclass(frozen=True, slots=True)
@@ -164,6 +167,28 @@ def scope_for(context: Context, inputs: ScopeInputs) -> Scope:
             return base.with_(
                 objects=combatants,
                 variables={"damage": "number", "natural": "number"},
+                require_integer=True,
+            )
+        case Context.XP_AWARD:
+            return base.with_(
+                objects=player,
+                bare_object="player",
+                variables={"enemy_level": "number", "level": "number"},
+                require_integer=True,
+            )
+        case Context.XP_TO_NEXT:
+            return Scope(
+                expected="number",
+                variables={"level": "number"},
+                tiers=inputs.tiers,
+                allow_dice=False,
+                require_integer=True,
+            )
+        case Context.STAT_BONUS:
+            return base.with_(
+                objects=player,
+                bare_object="player",
+                variables={"level": "number"},
                 require_integer=True,
             )
     raise ValueError(context)

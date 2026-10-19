@@ -4,7 +4,15 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from gamebook.core.rules import ClassDef, CombatDef, SkillDef, StatDef, TestDef
+from gamebook.core.rules import (
+    ClassDef,
+    CombatDef,
+    ProgressionDef,
+    SkillDef,
+    StartingItem,
+    StatDef,
+    TestDef,
+)
 from gamebook.schemas.common import In, Out
 
 
@@ -36,6 +44,11 @@ class SlotView(Out):
     origin: str
 
 
+class StartingItemView(StartingItem, Out):
+    #: Tier that gives it.
+    origin: str
+
+
 class HookView(Out):
     expr: str
     origin: str
@@ -57,6 +70,11 @@ class TierView(Out):
     #: Combat field → tier that set it.
     combat_origin: dict[str, str]
     damage_hooks: list[HookView]
+    progression: ProgressionDef
+    #: Progression field → tier that set it.
+    progression_origin: dict[str, str]
+    #: Every tier's starting items, root first.
+    starting_items: list[StartingItemView]
 
 
 # ── combat lab ───────────────────────────────────────────────────────────

@@ -33,6 +33,7 @@ from gamebook.schemas.playtest import (
     PlayMarker,
     PlayNode,
     PlayOut,
+    PlayProgress,
     PlayStat,
     SetInput,
 )
@@ -110,6 +111,8 @@ def view(
             for k, sd in tier.stats.items()
             if "player" in sd.applies_to
         ],
+        currency=game.currency,
+        progress=_progress(game),
         character_class=s.character_class,
         skills=[Option(key=k, label=names.skills.get(k, k)) for k in sorted(s.skills)],
         items=[
@@ -147,6 +150,25 @@ def view(
         ],
         classes=[Option(key=k, label=c.label) for k, c in tier.classes.items()],
         steps=s.steps,
+    )
+
+
+def _progress(game: Game) -> PlayProgress | None:
+    pr = game.tier.progression
+    if (
+        not pr.enabled()
+        or pr.xp_stat not in game.tier.stats
+        or pr.level_stat not in game.tier.stats
+    ):
+        return None
+    assert pr.xp_stat is not None
+    assert pr.level_stat is not None
+    return PlayProgress(
+        xp_stat=pr.xp_stat,
+        level_stat=pr.level_stat,
+        level=game.state.stats.get(pr.level_stat, 0),
+        xp=game.state.stats.get(pr.xp_stat, 0),
+        xp_needed=game.xp_needed(),
     )
 
 

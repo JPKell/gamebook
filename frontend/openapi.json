@@ -2925,11 +2925,25 @@
             "title": "Label",
             "type": "string"
           },
+          "modifiers": {
+            "items": {
+              "$ref": "#/components/schemas/StatBonus"
+            },
+            "title": "Modifiers",
+            "type": "array"
+          },
           "skills": {
             "items": {
               "type": "string"
             },
             "title": "Skills",
+            "type": "array"
+          },
+          "starting_items": {
+            "items": {
+              "$ref": "#/components/schemas/StartingItem"
+            },
+            "title": "Starting Items",
             "type": "array"
           }
         },
@@ -2958,6 +2972,13 @@
             "title": "Label",
             "type": "string"
           },
+          "modifiers": {
+            "items": {
+              "$ref": "#/components/schemas/StatBonus"
+            },
+            "title": "Modifiers",
+            "type": "array"
+          },
           "origin": {
             "title": "Origin",
             "type": "string"
@@ -2967,6 +2988,13 @@
               "type": "string"
             },
             "title": "Skills",
+            "type": "array"
+          },
+          "starting_items": {
+            "items": {
+              "$ref": "#/components/schemas/StartingItem"
+            },
+            "title": "Starting Items",
             "type": "array"
           }
         },
@@ -3243,7 +3271,10 @@
           "enemy_formula",
           "stat_initial",
           "combat_attack",
-          "combat_damage"
+          "combat_damage",
+          "xp_award",
+          "xp_to_next",
+          "stat_bonus"
         ],
         "title": "Context",
         "type": "string"
@@ -8193,6 +8224,17 @@
               }
             ]
           },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
           "ended": {
             "anyOf": [
               {
@@ -8265,6 +8307,16 @@
               }
             ]
           },
+          "progress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlayProgress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "seed": {
             "title": "Seed",
             "type": "integer"
@@ -8311,6 +8363,40 @@
           "steps"
         ],
         "title": "PlayOut",
+        "type": "object"
+      },
+      "PlayProgress": {
+        "properties": {
+          "level": {
+            "title": "Level",
+            "type": "integer"
+          },
+          "level_stat": {
+            "title": "Level Stat",
+            "type": "string"
+          },
+          "xp": {
+            "title": "Xp",
+            "type": "integer"
+          },
+          "xp_needed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Needed"
+          },
+          "xp_stat": {
+            "title": "Xp Stat",
+            "type": "string"
+          }
+        },
+        "required": ["xp_stat", "level_stat", "level", "xp", "xp_needed"],
+        "title": "PlayProgress",
         "type": "object"
       },
       "PlayStat": {
@@ -8794,6 +8880,84 @@
         },
         "required": ["counts", "problems"],
         "title": "ProblemsOut",
+        "type": "object"
+      },
+      "ProgressionDef": {
+        "additionalProperties": false,
+        "description": "Experience and levels (SPEC \u00a72.5). Fields left None inherit from the parent tier.\n\nWinning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``\nand ``level``, the reader's level) to ``xp_stat``. While XP reaches\n``xp_to_next`` (variable ``level``), that much XP is spent, ``level_stat``\ngoes up by one and every ``level_up`` bonus is applied.",
+        "properties": {
+          "level_stat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Stat"
+          },
+          "level_up": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StatBonus"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Up"
+          },
+          "max_level": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Level"
+          },
+          "xp_award": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Award"
+          },
+          "xp_stat": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp Stat"
+          },
+          "xp_to_next": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xp To Next"
+          }
+        },
+        "title": "ProgressionDef",
         "type": "object"
       },
       "ProseCreate": {
@@ -10440,6 +10604,79 @@
         "title": "SlotView",
         "type": "object"
       },
+      "StartingItem": {
+        "additionalProperties": false,
+        "properties": {
+          "equip": {
+            "default": false,
+            "title": "Equip",
+            "type": "boolean"
+          },
+          "item": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+            "title": "Item",
+            "type": "string"
+          },
+          "qty": {
+            "default": 1,
+            "maximum": 999.0,
+            "minimum": 1.0,
+            "title": "Qty",
+            "type": "integer"
+          }
+        },
+        "required": ["item"],
+        "title": "StartingItem",
+        "type": "object"
+      },
+      "StartingItemView": {
+        "additionalProperties": false,
+        "properties": {
+          "equip": {
+            "default": false,
+            "title": "Equip",
+            "type": "boolean"
+          },
+          "item": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+            "title": "Item",
+            "type": "string"
+          },
+          "origin": {
+            "title": "Origin",
+            "type": "string"
+          },
+          "qty": {
+            "default": 1,
+            "maximum": 999.0,
+            "minimum": 1.0,
+            "title": "Qty",
+            "type": "integer"
+          }
+        },
+        "required": ["item", "origin"],
+        "title": "StartingItemView",
+        "type": "object"
+      },
+      "StatBonus": {
+        "additionalProperties": false,
+        "description": "Add ``amount`` (gbx, dice allowed) to a player stat \u2014 and to its maximum\nwhen the maximum is the starting value.",
+        "properties": {
+          "amount": {
+            "default": "1",
+            "title": "Amount",
+            "type": "string"
+          },
+          "stat": {
+            "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+            "title": "Stat",
+            "type": "string"
+          }
+        },
+        "required": ["stat"],
+        "title": "StatBonus",
+        "type": "object"
+      },
       "StatDef": {
         "additionalProperties": false,
         "properties": {
@@ -11591,6 +11828,9 @@
             ],
             "title": "Parent"
           },
+          "progression": {
+            "$ref": "#/components/schemas/ProgressionDef"
+          },
           "rules_text": {
             "default": "",
             "title": "Rules Text",
@@ -11608,6 +11848,13 @@
               "type": "string"
             },
             "title": "Slots",
+            "type": "array"
+          },
+          "starting_items": {
+            "items": {
+              "$ref": "#/components/schemas/StartingItem"
+            },
+            "title": "Starting Items",
             "type": "array"
           },
           "stats": {
@@ -11721,6 +11968,16 @@
             ],
             "title": "Parent"
           },
+          "progression": {
+            "$ref": "#/components/schemas/ProgressionDef"
+          },
+          "progression_origin": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Progression Origin",
+            "type": "object"
+          },
           "skills": {
             "items": {
               "$ref": "#/components/schemas/SkillView"
@@ -11733,6 +11990,13 @@
               "$ref": "#/components/schemas/SlotView"
             },
             "title": "Slots",
+            "type": "array"
+          },
+          "starting_items": {
+            "items": {
+              "$ref": "#/components/schemas/StartingItemView"
+            },
+            "title": "Starting Items",
             "type": "array"
           },
           "stats": {
@@ -11763,7 +12027,10 @@
           "slots",
           "combat",
           "combat_origin",
-          "damage_hooks"
+          "damage_hooks",
+          "progression",
+          "progression_origin",
+          "starting_items"
         ],
         "title": "TierView",
         "type": "object"

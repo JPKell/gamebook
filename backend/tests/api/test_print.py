@@ -97,6 +97,29 @@ def test_proof_phrases_the_mechanics_for_the_edition(
     assert any(w["code"] == "no_prose" for w in pre["warnings"])
 
 
+def test_proof_explains_levels_class_bonuses_and_gear(
+    api: Api,
+    series: Json,
+    playable: Json,
+) -> None:
+    bid = playable["book_id"]
+    text = api.c.get(f"/api/books/{bid}/print/preview", params={"tier": "medium"}).text
+    assert "<strong>Experience.</strong> Whenever you win a fight, add" in text
+    assert "the enemy&#39;s level" in text
+    assert 'ORC <span class="level">(level 1)</span>' in text
+    basic = api.c.get(f"/api/books/{bid}/print/preview", params={"tier": "basic"}).text
+    assert "Experience." not in basic
+    assert "(level 1)" not in basic
+
+    rs = api.get(f"/series/{series['id']}/rule-systems")[0]
+    definition = rs["definition"]
+    definition["tiers"][0]["starting_items"] = [{"item": "rope", "qty": 2}]
+    api.patch(f"/rule-systems/{rs['id']}", {"definition": definition})
+    text = api.c.get(f"/api/books/{bid}/print/preview", params={"tier": "advanced"}).text
+    assert "Add 1 to your Skill and to your maximum Skill" in text  # the Ranger
+    assert "You start with: 2 x Rope." in text
+
+
 def test_verify_bot_proves_the_print_edition(
     api: Api,
     playable: Json,

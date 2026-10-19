@@ -384,6 +384,31 @@ function Actions({
   )
 }
 
+/** Money and level at a glance, above the full stat list. */
+function Headline({ view }: { view: PlayOut }) {
+  const stat = (key: string | null | undefined) => view.stats.find((s) => s.key === key)
+  const money = stat(view.currency)
+  const p = view.progress
+  if (!money && !p) return null
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 rounded-md border-l-2 border-accent bg-bg px-2.5 py-1.5 tabular-nums">
+      {money && (
+        <span>
+          {money.label}: <strong>{money.effective}</strong>
+        </span>
+      )}
+      {p && (
+        <span>
+          {stat(p.level_stat)?.label ?? p.level_stat} <strong>{p.level}</strong>
+          {' · '}
+          {p.xp}
+          {p.xp_needed != null && ` / ${p.xp_needed}`} {stat(p.xp_stat)?.label ?? 'XP'}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export function Sheet({ view }: { view: PlayOut }) {
   return (
     <section
@@ -391,6 +416,7 @@ export function Sheet({ view }: { view: PlayOut }) {
       className="space-y-3 rounded-xl border border-border bg-surface p-4 text-sm"
     >
       <h3 className="font-semibold">Adventure sheet</h3>
+      <Headline view={view} />
       <dl className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
         {view.stats.map((s) => (
           <div key={s.key} className="contents">

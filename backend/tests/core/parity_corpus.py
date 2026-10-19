@@ -18,7 +18,13 @@ from typing import Any
 from gamebook.core.engine.bundle import to_bundle
 from gamebook.core.engine.game import Game
 from gamebook.core.model import BookSnapshot
-from gamebook.core.rules.schema import effective_tier
+from gamebook.core.rules.schema import (
+    ProgressionDef,
+    RuleSystemDef,
+    StartingItem,
+    StatBonus,
+    effective_tier,
+)
 from gamebook.core.sim.batch import bot_rng
 from gamebook.core.sim.bots import BOT_NAMES, make_bot
 
@@ -69,7 +75,58 @@ def edge_book() -> BookSnapshot:
                 n, choices=(replace(first, condition="has(rope) and GOLD >"), *n.choices[1:])
             )
         nodes.append(n)
-    return replace(b, nodes=tuple(nodes))
+    return replace(b, nodes=tuple(nodes), rules=edge_rules(b.rules))
+
+
+def edge_rules(rules: RuleSystemDef | None) -> RuleSystemDef:
+    """Cheap levels (so bots level up), starting gear and broken progression formulas."""
+    assert rules is not None
+    tiers = []
+    for t in rules.tiers:
+        if t.key == "basic":
+            t = t.model_copy(
+                update={
+                    "starting_items": [
+                        StartingItem(item="potion"),
+                        StartingItem(item="ghost"),  # unknown: an error event
+                        StartingItem(item="sword", equip=True),  # no slots at basic
+                    ]
+                }
+            )
+        if t.key == "medium":
+            t = t.model_copy(
+                update={
+                    "starting_items": [StartingItem(item="sword", equip=True)],
+                    "progression": t.progression.model_copy(
+                        update={
+                            "xp_to_next": "3 * level - 1",
+                            "level_up": [
+                                StatBonus(stat="LUCK", amount="1d2"),
+                                StatBonus(stat="STAMINA", amount="level"),
+                                StatBonus(stat="GOLD", amount="10 / 0"),
+                                StatBonus(stat="NOPE", amount="1"),
+                            ],
+                        }
+                    ),
+                }
+            )
+        if t.key == "advanced":
+            t = t.model_copy(
+                update={
+                    "progression": ProgressionDef(xp_award="enemy_level * 4 - level + 1d3"),
+                    "classes": [
+                        c.model_copy(
+                            update={
+                                "modifiers": [*c.modifiers, StatBonus(stat="GOLD", amount="2d6")],
+                                "starting_items": [StartingItem(item="potion", qty=2)],
+                            }
+                        )
+                        for c in t.classes
+                    ],
+                }
+            )
+        tiers.append(t)
+    return RuleSystemDef(tiers=tiers)
 
 
 def case(

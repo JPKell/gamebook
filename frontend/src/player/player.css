@@ -355,6 +355,17 @@ figcaption {
   max-height: 100%;
 }
 
+.sheet-headline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid var(--accent);
+  background: var(--paper);
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));

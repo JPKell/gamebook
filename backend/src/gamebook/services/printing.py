@@ -12,7 +12,7 @@ import io
 import random
 import uuid
 import zipfile
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -30,7 +30,7 @@ from gamebook.core.model import BookSnapshot
 from gamebook.core.printbook import compile as pc
 from gamebook.core.printbook import numbering
 from gamebook.core.printbook.verify import VerifyReport, verify
-from gamebook.core.rules.schema import effective_tier
+from gamebook.core.rules.schema import StartingItem, StatBonus, effective_tier
 from gamebook.db.models import Appendix, ArtPlacement, Asset, Book, Job, Series
 from gamebook.jobs import JobContext
 from gamebook.render import print as render
@@ -200,11 +200,41 @@ def _creation(c: Compiled) -> Markup:
 
     from gamebook.core import gbx
 
-    def english(src: str) -> str:
+    def english(src: str, phrases: dict[str, str] | None = None) -> str:
         try:
-            return gbx.number_to_english(gbx.parse(src), namer, tiers=c.snap.rules.tier_keys())  # type: ignore[union-attr]
+            return gbx.number_to_english(
+                gbx.parse(src),
+                namer,
+                tiers=c.snap.rules.tier_keys(),  # type: ignore[union-attr]
+                phrases=phrases,
+            )
         except Exception:
             return src
+
+    item_names = {i.key: i.name for i in c.snap.items}
+    slots = {i.key: i.slot for i in c.snap.items}
+
+    def gear(entries: Sequence[StartingItem]) -> list[str]:
+        return [
+            (f"{g.qty} x " if g.qty > 1 else "")
+            + item_names.get(g.item, g.item)
+            + (" (equipped)" if g.equip and slots.get(g.item) in t.slots else "")
+            for g in entries
+        ]
+
+    def bonus(b: StatBonus, phrases: dict[str, str] | None = None) -> str:
+        sd = t.stats.get(b.stat)
+        label = sd.label if sd else b.stat
+        # The engine raises a starting-value maximum along with the stat.
+        also = f" and to your maximum {label}" if sd and sd.max_is_initial else ""
+        amount = b.amount.strip()
+        if amount.lstrip("-").isdigit():
+            n = int(amount)
+            if n < 0:
+                also = also.replace(" and to ", " and from ")
+                return f"subtract {-n} from your {label}{also}"
+            return f"add {n} to your {label}{also}"
+        return f"add {english(amount, phrases)} to your {label}{also}"
 
     stats = [
         {"label": s.label, "initial": english(s.initial), "has_max": s.max_is_initial}
@@ -216,9 +246,25 @@ def _creation(c: Compiled) -> Markup:
             "label": cl.label,
             "description": cl.description,
             "skills": [names[RefKind.SKILL].get(k, k) for k in cl.skills],
+            "bonuses": [bonus(b) for b in cl.modifiers],
+            "gear": gear(cl.starting_items),
         }
         for cl in t.classes.values()
     ]
+    pr = t.progression
+    your_level = {"level": "your level"}
+    levels = (
+        {
+            "xp": t.stats[pr.xp_stat].label,
+            "level": t.stats[pr.level_stat].label,
+            "award": english(pr.xp_award, your_level) if pr.xp_award else None,
+            "next": english(pr.xp_to_next or "0", your_level),
+            "max": pr.max_level,
+            "bonuses": [bonus(b, {"level": "your new level"}) for b in pr.level_up or []],
+        }
+        if pr.enabled() and pr.xp_stat in t.stats and pr.level_stat in t.stats
+        else None
+    )
     currency = next((s.label for s in t.stats.values() if s.kind == "resource"), None)
     html = (
         _env()
@@ -228,6 +274,8 @@ def _creation(c: Compiled) -> Markup:
             classes=classes,
             skills=[s.label for s in t.skills.values()],
             currency=currency,
+            gear=gear(t.starting_items),
+            levels=levels,
         )
     )
     return Markup(html)

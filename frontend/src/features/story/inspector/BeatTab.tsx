@@ -93,6 +93,7 @@ export function BeatTab({ graph, node }: { graph: BookGraph; node: NodeOut }) {
             value={node.on_enter}
             onChange={(on_enter) => patch({ on_enter })}
             emptyText="Nothing happens automatically on arrival."
+            quickCurrency
           />
         )}
       </Field>

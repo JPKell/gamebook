@@ -65,7 +65,7 @@ test('pre-flight, verify, build a PDF and read the proof', async ({ page }) => {
 
   const proof = page.frameLocator('iframe[title="Print proof"]')
   await expect(proof.getByText('An orc blocks the bridge.')).toBeVisible()
-  await expect(proof.getByText('ORC', { exact: true })).toBeVisible()
+  await expect(proof.getByRole('cell', { name: /^ORC/ })).toBeVisible()
   await expect(proof.getByText(/If you win, turn to/)).toBeVisible()
 
   const verify = page.getByRole('region', { name: 'Verify the printed book' })
