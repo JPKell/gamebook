@@ -1,0 +1,19 @@
+/* E-readers: let the reader's settings win; keep layout simple. */
+body { font-family: serif; line-height: 1.45; }
+h1 { text-align: center; } h2.num { text-align: center; margin: 1.2em 0 0.4em; }
+.titlepage { text-align: center; page-break-after: always; }
+.matter, .artpage, h1.act { page-break-before: always; }
+.art { margin: 0.6em auto; text-align: center; } .art img { max-width: 100%; height: auto !important; }
+.art.wrap.align-left { float: left; margin: 0 0.8em 0.4em 0; max-width: 45%; }
+.art.wrap.align-right { float: right; margin: 0 0 0.4em 0.8em; max-width: 45%; }
+.art figcaption { font-size: 0.8em; text-align: center; }
+.art .placeholder { display: none; }
+.sec::after { content: ""; display: block; clear: both; }
+.draft { font-style: italic; } .draft-note { font-size: 0.75em; text-align: center; }
+.ticks, .ending { text-align: center; } .ending { font-weight: bold; }
+.hint { font-size: 0.85em; } .lead { font-style: italic; }
+ul.route, ul.outcomes, .found ul { list-style: none; padding-left: 1em; }
+a.turn { font-weight: bold; }
+table { border-collapse: collapse; } th, td { border: 1px solid #999; padding: 0.1em 0.4em; }
+{% include "appendix.css" %}
+table.fight, .shop table { width: auto; }

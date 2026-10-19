@@ -36,7 +36,9 @@ describe('AppShell', () => {
       expect(within(nav).getByRole('link', { name: s.label })).toBeInTheDocument()
     }
     await user.click(within(nav).getByRole('link', { name: 'Export' }))
-    expect(await screen.findByRole('heading', { name: 'Export' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Open a book to export it' }),
+    ).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/export')
     expect(within(nav).getByRole('link', { name: 'Export' })).toHaveAttribute(
       'aria-current',

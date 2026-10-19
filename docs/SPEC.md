@@ -906,6 +906,64 @@ screens.
 - PDF via HTML/CSS templates (WeasyPrint); EPUB with internal links (ebooklib); both share
   templates.
 
+As built (Phase 11, ADR 0012):
+- **Editions:** one per tier, which settles the open question below. The edition's tier
+  sets the stats, tests, combat, tier-limited choices, the rules chapter and every
+  appendix.
+- **Numbering** (`core/printbook/numbering.py`):
+  - Each act gets a consecutive block of numbers. Sections are shuffled within it using
+    the book's `print_seed`.
+  - Pins are honoured inside their act's block; the start section is 1 unless something
+    else is pinned to 1.
+  - The map (`book.print_numbers`) keeps every number that still fits, so adding a
+    section doesn't renumber the rest.
+  - **Reshuffle** picks a new seed and clears the map.
+  - Section keys are `n:<node>` (the entry), `v:<variant>` and `p:<node>` (the plain
+    fallback).
+- **Compiler** (`core/printbook/compile.py`):
+  - **Text variants:** a node with them gets a *router* section (conditions in the
+    engine's priority order, evaluated on arrival before on-entry effects), then one
+    section per variant. Each variant section repeats the mechanics.
+  - **Tick boxes:** `visits()` gives the node one tick box per visit its conditions
+    need. Once-only gains and found items in revisitable nodes (nodes on a cycle) get a
+    box and "first box" phrasing.
+  - **Choices:** gated choices read "If …:"; rolls print their bands; tests print the
+    roll, the success rule and after-effects; fights print stat blocks at the encounter
+    level for the edition, or the roll table (non-fight results count as a win); flee
+    prints its cost.
+  - **Machine-checkable output:** every section carries `links` (choice, outcome →
+    number) and `routes` (variant → number).
+- **Verifier** (`core/printbook/verify.py`):
+  - Bots play the engine. Every outcome must be printed in the reader's current section
+    with the engine's destination number, every router must route to the engine's
+    variant, and authored endings must print an ending.
+  - Structural checks: numbers are 1..N, and every "turn to" points at a section that
+    exists.
+  - Static checks against the engine's own rules (`Game.tier_allows`): routers list the
+    variants in the engine's order, sections print exactly the choices and effects the
+    engine applies in this edition, endings match, and the begin page names the start's
+    number.
+- **Layout:**
+  - **Front matter:** cover, endpaper, frontispiece (verso), title page, then character
+    creation. The rules chapter and adventure sheet come next, unless the book has
+    enabled appendices of those kinds.
+  - **Body:** "turn to 1", then the sections in number order, each act starting on a
+    recto with its opener, then back matter (the enabled appendices) and the back cover.
+  - **Art in sections:** placed by position (before or after the text, after paragraph
+    N, own or facing page) and size; wrap floats with a gutter; a full-page bleed uses a
+    zero-margin page.
+  - **PDF:** WeasyPrint with mirrored margins, bleed and crop marks, loading files only
+    from the asset store. Page anchors give keep-with and facing-page warnings.
+- **EPUB 3:** written directly with no extra library. It contains front matter, sections
+  in chunks of 40 files, back matter, a nav, and digital art scaled to 1600 px. Pages are
+  XHTML (via tinyhtml5).
+- **API:**
+  - `GET /books/{id}/print/preflight?tier` and `GET /books/{id}/print/preview?tier`
+    (the proof, served with CSP).
+  - `POST /books/{id}/print/reshuffle`, `POST /books/{id}/print/verify`.
+  - `POST /books/{id}/print/exports {tier, format}` runs a job; `GET /print/exports/{job}`
+    downloads the result. The 20 newest exports are kept.
+
 ---
 
 ## 7. Validation Rules (initial set)
@@ -939,7 +997,7 @@ screens.
 1. **Cross-book carry-over** — design leaves room: book endings can emit a
    `CharacterSnapshot`; a future book declares an import policy (what carries over, defaults
    for new readers). No work until decided.
-2. **Print editions** — one per tier vs. combined.
+2. ~~**Print editions** — one per tier vs. combined.~~ Decided in Phase 11: one edition per tier (ADR 0012).
 3. **Standalone player distribution** — static web/PWA first; mobile wrapper later?
 4. **Rule-system versioning granularity** — snapshot on every playtest batch (planned) vs.
    explicit published versions.

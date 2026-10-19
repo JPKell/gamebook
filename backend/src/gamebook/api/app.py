@@ -25,6 +25,7 @@ from gamebook.api.routers import (
     nodes,
     outline,
     playtest,
+    printing,
     series,
     tools,
     writing,
@@ -87,6 +88,7 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
     for module in (
         health,
         art,
+        printing,
         series,
         books,
         nodes,

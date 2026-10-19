@@ -1,0 +1,27 @@
+/* The proofing preview: one long page per section, page geometry suggested. */
+:root { color-scheme: light; }
+body { margin: 0; background: #ece8df; font: 15px/1.5 Georgia, serif; color: #1d1b18; }
+.titlepage, .matter, .begin, .artpage, h1.act, .sec { background: #fffdf8; max-width: {{ s.text_width }}mm; margin: 12px auto; padding: 14px 18px; box-shadow: 0 1px 3px rgb(0 0 0 / 0.12); }
+.titlepage { text-align: center; padding: 40px 18px; } h1 { text-align: center; }
+.sec h2.num { text-align: center; margin: 0 0 6px; font-size: 22px; }
+.sec:target { outline: 3px solid #c5832b; }
+.sec.router { border-left: 4px solid #c5c0b4; }
+.art { margin: 8px auto; } .art img { display: block; max-width: 100%; object-fit: cover; }
+.art.align-left { margin-left: 0; } .art.align-right { margin-right: 0; }
+.art.wrap.align-left { float: left; margin: 2px var(--gutter) 6px 0; }
+.art.wrap.align-right { float: right; margin: 2px 0 6px var(--gutter); }
+.artpage .art img { max-height: 70vh; object-fit: contain; width: auto; margin: 0 auto; }
+.art figcaption { font-size: 12px; text-align: center; color: #555; }
+.art .placeholder { border: 2px dashed #b9b2a3; color: #776f62; font-size: 12px; display: flex; align-items: center; justify-content: center; padding: 6px; }
+.sec::after { content: ""; display: block; clear: both; }
+.draft { color: #555; font-style: italic; } .draft-note { font-size: 11px; color: #999; text-align: center; }
+.ticks, .ending { text-align: center; } .ending { font-weight: bold; }
+.hint { font-size: 12px; color: #555; } .lead { font-style: italic; }
+ul.route, ul.outcomes, .found ul { margin: 0 0 4px 18px; padding: 0; list-style: none; }
+a.turn { font-weight: bold; color: #8a4b0f; }
+.missing { color: #b00; font-weight: bold; }
+table { border-collapse: collapse; margin: 4px 0; font-size: 13px; }
+th, td { border: 1px solid #c9c2b4; padding: 2px 6px; } td.num, th.num { text-align: center; }
+.choice p { margin: 4px 0; }
+{% include "appendix.css" %}
+table.fight, .shop table { width: auto; }

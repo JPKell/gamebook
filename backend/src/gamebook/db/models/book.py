@@ -26,6 +26,9 @@ class Book(IdMixin, TimestampMixin, Base):
     style_overrides: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     #: Trim, margins and bleed in mm (``core.art.PageSetup``); print sizes derive from it.
     print_setup: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    #: Print section numbering: the shuffle seed and the stable ``section key → number`` map.
+    print_seed: Mapped[int] = mapped_column(Integer, default=1)
+    print_numbers: Mapped[dict[str, int]] = mapped_column(JSON, default=dict)
     start_node_id: Mapped[str | None] = mapped_column(
         ForeignKey("node.id", ondelete="SET NULL", use_alter=True)
     )

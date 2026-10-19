@@ -1,0 +1,36 @@
+{%- from "print/macros.html" import section, figure with context -%}
+{%- if xhtml %}<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" lang="en" xml:lang="en">
+{%- else %}<!doctype html>
+<html lang="en">
+{%- endif %}
+<head>
+<meta charset="utf-8"{{ "/" if xhtml else "" }}>
+<title>{{ title }}</title>
+{% if css_href %}<link rel="stylesheet" href="{{ css_href }}"{{ "/" if xhtml else "" }}>{% else %}<style>{{ css }}</style>{% endif %}
+</head>
+<body class="mode-{{ mode }}">
+{% for part in parts %}
+  {% if part.kind == "art" %}
+    <div class="artpage{% if part.art.bleed %} full{% endif %} side-{{ part.art.page_side }}">{{ figure(part.art) }}</div>
+  {% elif part.kind == "title" %}
+    <div class="titlepage">
+      {% if part.art %}{{ figure(part.art) }}{% endif %}
+      <h1>{{ title }}</h1>
+      {% if series_title %}<p class="series">{{ series_title }}</p>{% endif %}
+      <p class="edition">{{ tier_label }} edition</p>
+    </div>
+  {% elif part.kind == "html" %}
+    <div class="matter {{ part.cls }}">{{ part.html }}</div>
+  {% elif part.kind == "begin" %}
+    <div class="begin"><p>Now turn to section <a class="turn" href="{{ href(part.n) }}">{{ part.n }}</a> and begin your adventure.</p></div>
+  {% elif part.kind == "act" %}
+    {% if part.art %}<div class="artpage{% if part.art.bleed %} full{% endif %} side-recto opener">{{ figure(part.art) }}</div>{% endif %}
+    <h1 class="act" id="act-{{ part.index }}">{{ part.title }}</h1>
+  {% elif part.kind == "section" %}
+    {{ section(part.section) }}
+  {% endif %}
+{% endfor %}
+</body>
+</html>

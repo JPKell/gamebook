@@ -1,0 +1,24 @@
+/* Appendix components: shared by previews, the codex, print and EPUB. */
+:root { --ink: #1d1b18; --muted: #6b655c; --rule: #d8d2c6; --paper: #fffdf8; }
+.muted { color: var(--muted); }
+.note { color: var(--muted); font-style: italic; text-align: center; }
+.entry { break-inside: avoid; border-top: 1px solid var(--rule); padding: .8rem 0; display: flow-root; }
+.entry:first-of-type { border-top: 0; }
+.entry h2 { margin-top: 0; }
+.portrait { float: right; width: 30%; max-width: 9rem; margin: 0 0 .5rem 1rem; border: 1px solid var(--rule); }
+table { border-collapse: collapse; width: 100%; margin: .4rem 0; font-size: .95em; }
+th, td { border: 1px solid var(--rule); padding: .25rem .45rem; text-align: left; }
+th { font-weight: 600; background: #f3efe6; }
+td.num, th.num { text-align: center; width: 4.5rem; }
+.box { display: inline-block; min-width: 3.2rem; height: 1.7rem; border: 1px solid var(--ink); vertical-align: middle; }
+.lines li { border-bottom: 1px solid var(--rule); height: 1.8rem; list-style: none; }
+.lines { padding: 0; margin: .3rem 0; }
+.checks { columns: 2; padding: 0; list-style: none; }
+.checks li::before { content: "\2610\00a0"; }
+.tag { font-size: .8em; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.map { position: relative; margin: .5rem 0; }
+.map img { width: 100%; display: block; border: 1px solid var(--rule); }
+.pin { position: absolute; transform: translate(-50%, -50%); background: var(--ink); color: var(--paper);
+       border-radius: 999px; font: 600 .7rem/1 system-ui, sans-serif; padding: .2rem .35rem; }
+.mention { font-style: italic; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 1rem 0; }

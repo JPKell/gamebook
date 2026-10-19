@@ -9,6 +9,8 @@ import {
   ArtPage,
   EnemiesIndex,
   EnemiesPage,
+  ExportIndex,
+  ExportPage,
   ItemsIndex,
   ItemsPage,
   LibraryPage,
@@ -29,6 +31,7 @@ import { SECTIONS } from './sections'
 
 const BUILT = new Set([
   'art',
+  'export',
   'library',
   'story',
   'mechanics',
@@ -163,6 +166,22 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <ArtPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'export',
+        element: (
+          <Page>
+            <ExportIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'export/:bookId',
+        element: (
+          <Page>
+            <ExportPage />
           </Page>
         ),
       },

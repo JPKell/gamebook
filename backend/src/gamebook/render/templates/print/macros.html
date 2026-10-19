@@ -1,0 +1,80 @@
+{# Print/EPUB building blocks. Every link is an internal "#sN" anchor. #}
+{% macro n(num) %}{% if num is none %}<span class="missing">?</span>{% else %}<a class="turn" href="{{ href(num) }}">{{ num }}</a>{% endif %}{% endmacro %}
+
+{% macro figure(a, cls="") %}
+<figure class="art size-{{ a.size }} align-{{ a.align }}{% if a.wrap %} wrap{% endif %}{% if a.bleed %} bleed{% endif %} {{ cls }}" id="{{ a.anchor }}"
+  style="{% if a.size != 'full_page' %}width: {{ a.width_mm }}mm;{% endif %}{% if a.wrap %} --gutter: {{ a.gutter_mm }}mm;{% endif %}">
+  {% if a.url %}
+  <img src="{{ a.url }}" alt="{{ a.alt }}" style="{% if a.size != 'full_page' %}height: {{ a.height_mm }}mm;{% endif %} object-position: {{ (a.focal_x * 100)|round(1) }}% {{ (a.focal_y * 100)|round(1) }}%;"{{ "/" if xhtml else "" }}>
+  {% else %}
+  <div class="placeholder" style="height: {{ a.height_mm }}mm">{{ a.brief or "Artwork to come" }}</div>
+  {% endif %}
+  {% if a.caption %}<figcaption>{{ a.caption }}</figcaption>{% endif %}
+</figure>
+{% endmacro %}
+
+{% macro block(b) %}
+{% if b.kind == "route" %}
+  <ul class="route">{% for l in b.data.lines %}<li>{{ l.text }} {{ n(l.n) }}.</li>{% endfor %}</ul>
+{% elif b.kind == "effects" %}
+  <div class="effects">{% if b.data.lead %}<p class="lead">{{ b.data.lead }}</p>{% endif %}{% for l in b.data.lines %}<p>{{ l }}</p>{% endfor %}</div>
+{% elif b.kind == "ending" %}
+  <p class="ending {{ b.data.kind }}">{{ b.data.text }}</p>
+{% elif b.kind == "found" %}
+  <div class="found"><p class="lead">You may take:</p><ul>{% for i in b.data.items %}<li>{% if i.box %}<span class="tick">&#9744;</span> {% endif %}{{ i.name }}{% if i.qty > 1 %} (&#215;{{ i.qty }}){% endif %}</li>{% endfor %}</ul>
+  {% if b.data.items|selectattr("box")|list %}<p class="hint">Tick the box when you take it: you can only take it once.</p>{% endif %}</div>
+{% elif b.kind == "shop" %}
+  <div class="shop"><p class="lead">For sale ({{ b.data.currency }}):</p>
+  <table>{% for r in b.data.rows %}<tr><td>{{ r.name }}</td><td class="num">{{ r.price }}</td><td>{% if r.stock == 0 %}Sold out{% elif r.stock %}{% for _ in range(r.stock) %}<span class="tick">&#9744;</span>{% endfor %}{% endif %}</td></tr>{% endfor %}</table>
+  {% if b.data.rows|selectattr("stock")|list %}<p class="hint">Tick a box for each one bought; when the boxes are full, it's sold out.</p>{% endif %}
+  {% if b.data.sell_rate %}<p class="hint">You can sell items here for {{ b.data.sell_rate }}% of their value.</p>{% endif %}</div>
+{% elif b.kind == "choice" %}
+  {% set d = b.data %}
+  <div class="choice kind-{{ d.kind }}">
+    {% if d.fight %}{{ fight(d.fight) }}{% endif %}
+    {% if d.test %}<p><strong>{{ d.test.label }}:</strong> roll {{ d.test.roll }}; you succeed if {{ d.test.success }}.{% for a in d.test.after %} {{ a }}{% endfor %}</p>{% endif %}
+    {% if d.kind == "goto" %}
+    <p>{% if d.condition %}If {{ d.condition }}: {% endif %}<span class="label">{{ d.label }}</span>{% if d.effects %} &#8212; {{ d.effects|join(" ") }}{% endif %}{% if d.first_effects %} <span class="first">(The first time only, tick <span class="tick">&#9744;</span> and: {{ d.first_effects|join(" ") }})</span>{% endif %} &#8212; {{ d.outcomes[0].text }} {{ n(d.outcomes[0].n) }}.</p>
+    {% else %}
+    <p>{% if d.condition %}If {{ d.condition }}: {% endif %}<span class="label">{{ d.label }}</span>{% if d.kind == "roll" %}: roll {{ d.dice }}{% endif %}.{% if d.effects %} {{ d.effects|join(" ") }}{% endif %}{% if d.first_effects %} <span class="first">(The first time only, tick <span class="tick">&#9744;</span> and: {{ d.first_effects|join(" ") }})</span>{% endif %}</p>
+    <ul class="outcomes">{% for o in d.outcomes %}<li>{{ o.text }}{% if o.n is not none %} {{ n(o.n) }}.{% endif %}</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+{% endif %}
+{% endmacro %}
+
+{% macro fight(f) %}
+{% if f.enemies %}<table class="fight">
+  <tr><th></th>{% for l in f.labels %}<th class="num">{{ l }}</th>{% endfor %}</tr>
+  {% for e in f.enemies %}<tr><td>{{ e.name|upper }}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+</table>{% endif %}
+{% if not f.enemies and not f.table %}<p class="hint">There is nothing to fight here: count it as a win.</p>{% endif %}
+{% if f.together and f.enemies|length > 1 %}<p class="hint">Fight them all at once.</p>{% endif %}
+{% if f.table %}
+<p>Roll {{ f.table.dice }} on the {{ f.table.name }} table:</p>
+<table class="fight">
+  <tr><th></th><th></th>{% for l in f.labels %}<th class="num">{{ l }}</th>{% endfor %}</tr>
+  {% for r in f.table.rows %}
+    {% if r.kind == "enemies" %}
+      {% for e in r.enemies %}<tr><td>{% if loop.first %}{{ r.span }}{% endif %}</td><td>{{ e.name|upper }}{% if e.count > 1 %} (&#215;{{ e.count }}){% endif %}</td>{% for v in e.stats %}<td class="num">{{ v }}</td>{% endfor %}</tr>{% endfor %}
+    {% else %}<tr><td>{{ r.span }}</td><td colspan="{{ f.labels|length + 1 }}">{{ r.text }} (no fight: count it as a win)</td></tr>{% endif %}
+  {% endfor %}
+</table>
+{% endif %}
+{% endmacro %}
+
+{% macro section(s) %}
+{% for a in s.art_own if a.page_side != "after" %}<div class="artpage{% if a.bleed %} full{% endif %} side-{{ a.page_side }}">{{ figure(a) }}</div>{% endfor %}
+<section class="sec{% if s.kind == 'router' %} router{% endif %}" id="{{ anchor(s.number) }}">
+  <h2 class="num">{{ s.number }}</h2>
+  {% if s.ticks %}<p class="ticks">{% for _ in range(s.ticks) %}<span class="tick">&#9744;</span>{% endfor %} <span class="hint">{{ s.tick_note }}</span></p>{% endif %}
+  {% for a in s.art_before %}{{ figure(a) }}{% endfor %}
+  {% if s.draft and s.paragraphs %}<p class="draft-note">[Draft: the author's notes, not final text]</p>{% endif %}
+  {% for p in s.paragraphs %}
+    <p class="text{% if s.draft %} draft{% endif %}">{{ p }}</p>
+    {% for a in s.art_after_para.get(loop.index, []) %}{{ figure(a) }}{% endfor %}
+  {% endfor %}
+  {% for a in s.art_after %}{{ figure(a) }}{% endfor %}
+  {% for b in s.blocks %}{{ block(b) }}{% endfor %}
+</section>
+{% endmacro %}

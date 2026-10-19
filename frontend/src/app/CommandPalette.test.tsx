@@ -13,7 +13,9 @@ describe('CommandPalette', () => {
     const input = await screen.findByPlaceholderText('Type a command or search…')
     await user.type(input, 'export')
     await user.keyboard('{Enter}')
-    expect(await screen.findByRole('heading', { name: 'Export' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: 'Open a book to export it' }),
+    ).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/export')
     expect(screen.queryByPlaceholderText('Type a command or search…')).not.toBeInTheDocument()
   })

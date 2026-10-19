@@ -15,6 +15,7 @@ dependencies = [
     "httpx>=0.28",
     "jinja2>=3.1",
     "pillow>=11",
+    "weasyprint>=63",
 ]
 
 [dependency-groups]
@@ -67,6 +68,10 @@ no_implicit_optional = true
 [[tool.mypy.overrides]]
 module = "gamebook.core.*"
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["weasyprint", "tinyhtml5"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

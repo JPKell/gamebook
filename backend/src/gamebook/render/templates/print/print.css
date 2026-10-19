@@ -1,0 +1,58 @@
+/* Printed pages (WeasyPrint). Sizes come from the book's page setup. */
+@page {
+  size: {{ s.trim_width_mm }}mm {{ s.trim_height_mm }}mm;
+  bleed: {{ s.bleed_mm }}mm;
+  marks: {{ "crop" if marks else "none" }};
+  margin: {{ s.margin_top_mm }}mm {{ s.margin_outer_mm }}mm {{ s.margin_bottom_mm }}mm {{ s.margin_inner_mm }}mm;
+  @bottom-center { content: counter(page); font: 9pt Georgia, serif; color: #555; }
+}
+@page :left { margin-left: {{ s.margin_outer_mm }}mm; margin-right: {{ s.margin_inner_mm }}mm; }
+@page :right { margin-left: {{ s.margin_inner_mm }}mm; margin-right: {{ s.margin_outer_mm }}mm; }
+@page full { margin: 0; @bottom-center { content: none; } }
+@page :first { @bottom-center { content: none; } }
+html { font: 10.5pt/1.42 Georgia, "Iowan Old Style", "Palatino Linotype", serif; color: #111; }
+body { margin: 0; }
+h1 { font-size: 20pt; text-align: center; margin: 0 0 6mm; }
+h1.act { break-before: right; margin-top: 40mm; font-size: 24pt; }
+.titlepage { break-after: page; text-align: center; padding-top: 30mm; }
+.titlepage .series, .titlepage .edition { color: #555; }
+.matter { break-before: page; }
+.matter .appendix { max-width: none; padding: 0; }
+.matter .appendix h1 { font-size: 18pt; }
+.matter .lines li { height: 5.5mm; }
+.matter .sheet table th, .matter .sheet table td { padding: 0.8mm 1.5mm; }
+.begin { break-before: page; break-after: page; text-align: center; padding-top: 60mm; font-style: italic; }
+.artpage { break-before: page; break-after: page; text-align: center; }
+.artpage.side-recto { break-before: right; }
+.artpage.side-verso { break-before: left; }
+.artpage.full { page: full; }
+.artpage.full .art img { width: {{ s.trim_width_mm + 2 * s.bleed_mm }}mm; height: {{ s.trim_height_mm + 2 * s.bleed_mm }}mm; margin: -{{ s.bleed_mm }}mm; object-fit: cover; display: block; }
+.artpage:not(.full) .art img { max-width: {{ s.text_width }}mm; max-height: {{ s.text_height - 10 }}mm; object-fit: contain; }
+.artpage.full figcaption { display: none; }
+.sec { margin: 0 0 5mm; }
+.sec h2.num { font-size: 15pt; text-align: center; margin: 4mm 0 2mm; break-after: avoid; }
+.sec p { margin: 0 0 2mm; text-align: justify; hyphens: auto; }
+.sec p.draft { color: #444; font-style: italic; }
+.draft-note { font-size: 8pt; color: #888; text-align: center !important; }
+.art { margin: 2mm auto 3mm; break-inside: avoid; }
+.art img { display: block; object-fit: cover; width: 100%; }
+.art.align-left { margin-left: 0; } .art.align-right { margin-right: 0; }
+.art.wrap.align-left { float: left; margin: 1mm var(--gutter) 2mm 0; }
+.art.wrap.align-right { float: right; margin: 1mm 0 2mm var(--gutter); }
+.art figcaption { font-size: 8pt; text-align: center; color: #444; margin-top: 1mm; }
+.art .placeholder { border: 0.4mm dashed #999; color: #777; font-size: 8pt; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2mm; }
+.sec::after { content: ""; display: block; clear: both; }
+.tick { font-size: 11pt; }
+.ticks { text-align: center; } .hint { font-size: 8.5pt; color: #444; }
+.effects { margin: 2mm 0; } .effects p { margin: 0 0 1mm; } .lead { font-style: italic; }
+.ending { text-align: center; font-weight: bold; margin: 4mm 0; }
+.choice { margin: 1.5mm 0; break-inside: avoid; } .choice p { margin: 0 0 1mm; text-align: left; }
+.choice .label { font-style: italic; }
+ul.route, ul.outcomes, .found ul { margin: 0 0 1mm 5mm; padding: 0; list-style: none; }
+a.turn { color: inherit; text-decoration: none; font-weight: bold; }
+.missing { color: #b00; font-weight: bold; }
+table { border-collapse: collapse; margin: 1mm 0 2mm; font-size: 9pt; }
+th, td { border: 0.2mm solid #999; padding: 0.6mm 1.5mm; }
+td.num, th.num { text-align: center; }
+table.fight, .shop table { width: auto; break-inside: avoid; }
+{% include "appendix.css" %}

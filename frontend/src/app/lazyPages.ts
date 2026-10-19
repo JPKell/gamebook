@@ -40,6 +40,12 @@ export const ArtIndex = lazy(() =>
 export const ArtPage = lazy(() =>
   import('@/features/art/ArtPage').then((m) => ({ default: m.ArtPage })),
 )
+export const ExportIndex = lazy(() =>
+  import('@/features/export/ExportPage').then((m) => ({ default: m.ExportIndex })),
+)
+export const ExportPage = lazy(() =>
+  import('@/features/export/ExportPage').then((m) => ({ default: m.ExportPage })),
+)
 export const LoreIndex = lazy(() =>
   import('@/features/lore/LorePage').then((m) => ({ default: m.LoreIndex })),
 )

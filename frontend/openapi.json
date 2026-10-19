@@ -4077,6 +4077,30 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "ExportIn": {
+        "additionalProperties": false,
+        "properties": {
+          "format": {
+            "enum": ["pdf", "epub"],
+            "title": "Format",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          }
+        },
+        "required": ["format"],
+        "title": "ExportIn",
+        "type": "object"
+      },
       "ExtractLoreIn": {
         "additionalProperties": false,
         "properties": {
@@ -8327,6 +8351,103 @@
         "title": "PlayStat",
         "type": "object"
       },
+      "PreflightOut": {
+        "properties": {
+          "art": {
+            "items": {
+              "$ref": "#/components/schemas/PrintArtProblem"
+            },
+            "title": "Art",
+            "type": "array"
+          },
+          "drafts": {
+            "title": "Drafts",
+            "type": "integer"
+          },
+          "numbers": {
+            "items": {
+              "$ref": "#/components/schemas/SectionNumber"
+            },
+            "title": "Numbers",
+            "type": "array"
+          },
+          "routers": {
+            "title": "Routers",
+            "type": "integer"
+          },
+          "sections": {
+            "title": "Sections",
+            "type": "integer"
+          },
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          },
+          "tick_boxes": {
+            "title": "Tick Boxes",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "tier_label": {
+            "title": "Tier Label",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/PrintWarningOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "tier",
+          "tier_label",
+          "seed",
+          "sections",
+          "routers",
+          "tick_boxes",
+          "drafts",
+          "warnings",
+          "art",
+          "numbers"
+        ],
+        "title": "PreflightOut",
+        "type": "object"
+      },
+      "PrintArtProblem": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          }
+        },
+        "required": ["code", "severity", "message"],
+        "title": "PrintArtProblem",
+        "type": "object"
+      },
       "PrintLayout": {
         "description": "Per-placement print controls (all optional; defaults suit a node illustration).",
         "properties": {
@@ -8504,6 +8625,43 @@
           "needed_px"
         ],
         "title": "PrintSizeOut",
+        "type": "object"
+      },
+      "PrintWarningOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number"
+          }
+        },
+        "required": ["code", "message"],
+        "title": "PrintWarningOut",
         "type": "object"
       },
       "ProblemCounts": {
@@ -9336,6 +9494,37 @@
         "title": "Reorder",
         "type": "object"
       },
+      "ReshuffleIn": {
+        "additionalProperties": false,
+        "properties": {
+          "seed": {
+            "anyOf": [
+              {
+                "maximum": 2147483647.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed"
+          }
+        },
+        "title": "ReshuffleIn",
+        "type": "object"
+      },
+      "ReshuffleOut": {
+        "properties": {
+          "seed": {
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": ["seed"],
+        "title": "ReshuffleOut",
+        "type": "object"
+      },
       "ResumeIn": {
         "additionalProperties": false,
         "properties": {
@@ -9651,6 +9840,29 @@
         },
         "required": ["total", "runs"],
         "title": "RunPage",
+        "type": "object"
+      },
+      "SectionNumber": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "node_id": {
+            "title": "Node Id",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["number", "node_id", "title", "kind"],
+        "title": "SectionNumber",
         "type": "object"
       },
       "SeriesCreate": {
@@ -11762,6 +11974,88 @@
           }
         },
         "title": "VariantUpdate",
+        "type": "object"
+      },
+      "VerifyIn": {
+        "additionalProperties": false,
+        "properties": {
+          "runs": {
+            "default": 200,
+            "maximum": 2000.0,
+            "minimum": 1.0,
+            "title": "Runs",
+            "type": "integer"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          }
+        },
+        "title": "VerifyIn",
+        "type": "object"
+      },
+      "VerifyOut": {
+        "properties": {
+          "arrivals": {
+            "title": "Arrivals",
+            "type": "integer"
+          },
+          "moves": {
+            "title": "Moves",
+            "type": "integer"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "problems": {
+            "title": "Problems",
+            "type": "integer"
+          },
+          "runs": {
+            "title": "Runs",
+            "type": "integer"
+          },
+          "samples": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "structure": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Structure",
+            "type": "array"
+          },
+          "unvisited": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Unvisited",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok",
+          "runs",
+          "moves",
+          "arrivals",
+          "problems",
+          "samples",
+          "unvisited",
+          "structure"
+        ],
+        "title": "VerifyOut",
         "type": "object"
       },
       "WhereUsed": {
@@ -14823,6 +15117,323 @@
         },
         "summary": "Play Book",
         "tags": ["playtest"]
+      }
+    },
+    "/api/books/{book_id}/print/exports": {
+      "post": {
+        "description": "Build the PDF or EPUB in the background; download it when the job is done.",
+        "operationId": "start_print_export",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Start Print Export",
+        "tags": ["print"]
+      }
+    },
+    "/api/books/{book_id}/print/preflight": {
+      "get": {
+        "description": "Section count, numbering, print warnings and art problems for one tier's edition.",
+        "operationId": "print_preflight",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tier"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Print Preflight",
+        "tags": ["print"]
+      }
+    },
+    "/api/books/{book_id}/print/preview": {
+      "get": {
+        "description": "The proof: the whole edition as one HTML page (for an iframe).",
+        "operationId": "print_preview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tier"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Print Preview",
+        "tags": ["print"]
+      }
+    },
+    "/api/books/{book_id}/print/reshuffle": {
+      "post": {
+        "description": "Renumber every section (pinned ones stay). Earlier exports' numbers won't match.",
+        "operationId": "reshuffle_sections",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReshuffleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReshuffleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Reshuffle Sections",
+        "tags": ["print"]
+      }
+    },
+    "/api/books/{book_id}/print/verify": {
+      "post": {
+        "description": "Bots play the engine; every move must have its printed instruction and number.",
+        "operationId": "verify_print",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Verify Print",
+        "tags": ["print"]
       }
     },
     "/api/books/{book_id}/problems": {
@@ -18402,6 +19013,59 @@
         },
         "summary": "List Bots",
         "tags": ["playtest"]
+      }
+    },
+    "/api/print/exports/{job_id}": {
+      "get": {
+        "operationId": "download_print_export",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "inline",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Inline",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Download Print Export",
+        "tags": ["print"]
       }
     },
     "/api/prose/{prose_id}/approve": {

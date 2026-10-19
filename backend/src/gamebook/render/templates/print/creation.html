@@ -1,0 +1,13 @@
+<section class="appendix creation">
+  <h1>Your Character</h1>
+  {% if stats %}
+  <p>Before you set out, work out your character's attributes and note them on your Adventure Sheet:</p>
+  <ul>{% for s in stats %}<li><strong>{{ s.label }}</strong>: {{ s.initial }}{% if s.has_max %}. This is also your maximum {{ s.label }}{% endif %}.</li>{% endfor %}</ul>
+  {% endif %}
+  {% if classes %}
+  <p>Choose one of these to be:</p>
+  <ul>{% for c in classes %}<li><strong>{{ c.label }}</strong>{% if c.description %}: {{ c.description }}{% endif %}{% if c.skills %} (skills: {{ c.skills|join(", ") }}){% endif %}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if skills %}<p>Skills you may have: {{ skills|join(", ") }}.</p>{% endif %}
+  {% if currency %}<p>You start with the {{ currency }} shown above. Spend it in shops along the way.</p>{% endif %}
+</section>

@@ -200,7 +200,7 @@ and watch downstream nodes go stale.
 4. Preview the Medium-tier bestiary and the adventure sheet.
 5. Export the shot list of art still needed.
 
-## Phase 11 — Print & EPUB
+## Phase 11 — Print & EPUB ✅ (2026-10-18, see `docs/handoffs/v2-phase-11-print.md`)
 
 - Section numbering (seeded shuffle, pins, stable map, reshuffle).
 - Print compiler: variants → split sections, visits → tick boxes/codewords, gated choice

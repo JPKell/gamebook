@@ -497,6 +497,11 @@ def _book_files(
                 "synopsis": b.synopsis,
                 "style_overrides": b.style_overrides,
                 "print_setup": dict(sorted((b.print_setup or {}).items())),
+                # Print numbering travels with the book (not with undo: see restore_book).
+                "print_seed": b.print_seed if include_prose and b.print_seed != 1 else None,
+                "print_numbers": dict(sorted((b.print_numbers or {}).items()))
+                if include_prose
+                else None,
                 "start": node_keys.get(b.start_node_id or ""),
                 "art": _art_dump(book_art),
             }
@@ -963,6 +968,8 @@ def _import_series(
             synopsis=data.get("synopsis", ""),
             style_overrides=data.get("style_overrides", {}),
             print_setup=data.get("print_setup", {}),
+            print_seed=int(data.get("print_seed", 1)),
+            print_numbers={str(k): int(v) for k, v in (data.get("print_numbers") or {}).items()},
         )
         session.add(book)
         books.append((book, bfiles))

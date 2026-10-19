@@ -197,7 +197,9 @@ def _images(
     )
     out: dict[str, dict[str, str]] = {}
     for eid, _role, aid, alt in rows:
-        out.setdefault(eid, {"url": asset_url(aid), "alt": alt})
+        url = asset_url(aid)
+        if url:  # empty: the file is missing (e.g. an EPUB built without it)
+            out.setdefault(eid, {"url": url, "alt": alt})
     return out
 
 
@@ -563,7 +565,7 @@ def _maps(c: _Ctx) -> dict[str, Any]:
             {
                 "title": m.title,
                 "image": {"url": c.asset_url(m.asset_id), "alt": alts.get(m.asset_id, "")}
-                if m.asset_id
+                if m.asset_id and c.asset_url(m.asset_id)
                 else None,
                 "markers": [
                     {
@@ -623,6 +625,33 @@ def default_asset_url(asset_id: str) -> str:
     return f"/api/assets/{asset_id}/file"
 
 
+def render_kind(
+    session: Session,
+    book: Book,
+    kind: str,
+    title: str,
+    options: AppendixOptions,
+    *,
+    snap: BookSnapshot,
+    codex: CodexIn | None = None,
+    asset_url: Callable[[str], str] = default_asset_url,
+) -> str:
+    """One appendix of any kind as an HTML fragment (also used by print's front matter)."""
+    opts = options
+    if codex is not None:
+        # The reader's tier for every page; what they've met decides the bestiary and
+        # items, so those show everything met wherever it was (other kinds keep the
+        # author's spoiler policy).
+        update: dict[str, Any] = {"tier": codex.tier, "blank_entries": False}
+        if kind in UNLOCKED_BY_PLAY:
+            update["spoilers"] = "all"
+        opts = opts.model_copy(update=update)
+    tier, tiers = _tier(snap, opts.tier)
+    nodes = _scope(snap, tier.key if tier else None, opts.spoilers)
+    ctx = _Ctx(session, book, snap, tier, tiers, opts, nodes, asset_url, codex)
+    return render.fragment(kind, title, _BUILDERS[kind](ctx), codex=codex is not None)
+
+
 def render_appendix(
     session: Session,
     appendix_id: str,
@@ -635,20 +664,11 @@ def render_appendix(
     a = require(session, Appendix, appendix_id)
     book = require(session, Book, a.book_id)
     opts = AppendixOptions.model_validate(a.options or {})
-    if codex is not None:
-        # The reader's tier for every page; what they've met decides the bestiary and
-        # items, so those show everything met wherever it was (other kinds keep the
-        # author's spoiler policy).
-        update: dict[str, Any] = {"tier": codex.tier, "blank_entries": False}
-        if a.kind in UNLOCKED_BY_PLAY:
-            update["spoilers"] = "all"
-        opts = opts.model_copy(update=update)
     snap = snap or snapshot.book_snapshot(session, book.id)
-    tier, tiers = _tier(snap, opts.tier)
-    nodes = _scope(snap, tier.key if tier else None, opts.spoilers)
-    ctx = _Ctx(session, book, snap, tier, tiers, opts, nodes, asset_url, codex)
-    data = _BUILDERS[a.kind](ctx)
-    return a.title, render.fragment(a.kind, a.title, data, codex=codex is not None)
+    html = render_kind(
+        session, book, a.kind, a.title, opts, snap=snap, codex=codex, asset_url=asset_url
+    )
+    return a.title, html
 
 
 def render_document(session: Session, appendix_id: str) -> tuple[str, str, str]:

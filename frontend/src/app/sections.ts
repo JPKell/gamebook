@@ -118,12 +118,8 @@ export const SECTIONS: Section[] = [
     path: '/export',
     icon: FileOutput,
     phase: 11,
-    summary: 'Git tree, print/PDF, EPUB and the digital player bundle.',
-    upcoming: [
-      'Seeded, pinnable section numbering',
-      'Per-tier print editions',
-      'Artwork laid out to your print sizes, appendices as back matter',
-    ],
+    summary: 'Print/PDF and EPUB editions per tier, the proof, and the git export.',
+    upcoming: [],
   },
   {
     id: 'settings',

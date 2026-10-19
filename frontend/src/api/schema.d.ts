@@ -752,6 +752,106 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/print/exports': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Start Print Export
+     * @description Build the PDF or EPUB in the background; download it when the job is done.
+     */
+    post: operations['start_print_export']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/print/preflight': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Print Preflight
+     * @description Section count, numbering, print warnings and art problems for one tier's edition.
+     */
+    get: operations['print_preflight']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/print/preview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Print Preview
+     * @description The proof: the whole edition as one HTML page (for an iframe).
+     */
+    get: operations['print_preview']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/print/reshuffle': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Reshuffle Sections
+     * @description Renumber every section (pinned ones stay). Earlier exports' numbers won't match.
+     */
+    post: operations['reshuffle_sections']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/print/verify': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Verify Print
+     * @description Bots play the engine; every move must have its printed instruction and number.
+     */
+    post: operations['verify_print']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}/problems': {
     parameters: {
       query?: never
@@ -1589,6 +1689,23 @@ export interface paths {
     }
     /** List Bots */
     get: operations['list_bots']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/print/exports/{job_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Download Print Export */
+    get: operations['download_print_export']
     put?: never
     post?: never
     delete?: never
@@ -3641,6 +3758,16 @@ export interface components {
         [key: string]: unknown
       } | null
     }
+    /** ExportIn */
+    ExportIn: {
+      /**
+       * Format
+       * @enum {string}
+       */
+      format: 'pdf' | 'epub'
+      /** Tier */
+      tier?: string | null
+    }
     /** ExtractLoreIn */
     ExtractLoreIn: {
       /** Act Id */
@@ -5087,6 +5214,40 @@ export interface components {
       /** Value */
       value: number
     }
+    /** PreflightOut */
+    PreflightOut: {
+      /** Art */
+      art: components['schemas']['PrintArtProblem'][]
+      /** Drafts */
+      drafts: number
+      /** Numbers */
+      numbers: components['schemas']['SectionNumber'][]
+      /** Routers */
+      routers: number
+      /** Sections */
+      sections: number
+      /** Seed */
+      seed: number
+      /** Tick Boxes */
+      tick_boxes: number
+      /** Tier */
+      tier: string
+      /** Tier Label */
+      tier_label: string
+      /** Warnings */
+      warnings: components['schemas']['PrintWarningOut'][]
+    }
+    /** PrintArtProblem */
+    PrintArtProblem: {
+      /** Code */
+      code: string
+      /** Message */
+      message: string
+      /** Node Id */
+      node_id?: string | null
+      /** Severity */
+      severity: string
+    }
     /**
      * PrintLayout
      * @description Per-placement print controls (all optional; defaults suit a node illustration).
@@ -5180,6 +5341,17 @@ export interface components {
       status: string
       /** Width Mm */
       width_mm: number
+    }
+    /** PrintWarningOut */
+    PrintWarningOut: {
+      /** Code */
+      code: string
+      /** Message */
+      message: string
+      /** Node Id */
+      node_id?: string | null
+      /** Number */
+      number?: number | null
     }
     /** ProblemCounts */
     ProblemCounts: {
@@ -5473,6 +5645,16 @@ export interface components {
       /** Ids */
       ids: string[]
     }
+    /** ReshuffleIn */
+    ReshuffleIn: {
+      /** Seed */
+      seed?: number | null
+    }
+    /** ReshuffleOut */
+    ReshuffleOut: {
+      /** Seed */
+      seed: number
+    }
     /** ResumeIn */
     ResumeIn: {
       /** Budget Usd */
@@ -5580,6 +5762,17 @@ export interface components {
       runs: components['schemas']['RunOut'][]
       /** Total */
       total: number
+    }
+    /** SectionNumber */
+    SectionNumber: {
+      /** Kind */
+      kind: string
+      /** Node Id */
+      node_id: string
+      /** Number */
+      number: number
+      /** Title */
+      title: string
     }
     /** SeriesCreate */
     SeriesCreate: {
@@ -6408,6 +6601,35 @@ export interface components {
       label?: string | null
       /** Priority */
       priority?: number | null
+    }
+    /** VerifyIn */
+    VerifyIn: {
+      /**
+       * Runs
+       * @default 200
+       */
+      runs?: number
+      /** Tier */
+      tier?: string | null
+    }
+    /** VerifyOut */
+    VerifyOut: {
+      /** Arrivals */
+      arrivals: number
+      /** Moves */
+      moves: number
+      /** Ok */
+      ok: boolean
+      /** Problems */
+      problems: number
+      /** Runs */
+      runs: number
+      /** Samples */
+      samples: string[]
+      /** Structure */
+      structure: string[]
+      /** Unvisited */
+      unvisited: number[]
     }
     /** WhereUsed */
     WhereUsed: {
@@ -8614,6 +8836,222 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PlayOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  start_print_export: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExportIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  print_preflight: {
+    parameters: {
+      query?: {
+        tier?: string | null
+      }
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PreflightOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  print_preview: {
+    parameters: {
+      query?: {
+        tier?: string | null
+      }
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/html': string
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/html': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reshuffle_sections: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReshuffleIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReshuffleOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  verify_print: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VerifyIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VerifyOut']
         }
       }
       /** @description Validation Error */
@@ -11307,6 +11745,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['BotOut'][]
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  download_print_export: {
+    parameters: {
+      query?: {
+        inline?: boolean
+      }
+      header?: never
+      path: {
+        job_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
       /** @description Internal Server Error */
