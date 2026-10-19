@@ -53,6 +53,8 @@ class GameState:
     flags: set[str] = field(default_factory=set)
     skills: set[str] = field(default_factory=set)
     character_class: str | None = None
+    #: Classes the reader must pick from before anything else (a choose-class effect).
+    class_pending: list[str] | None = None
     node_id: str | None = None
     variant_id: str | None = None
     visits: dict[str, int] = field(default_factory=dict)  # node key -> count
@@ -74,6 +76,7 @@ class GameState:
             "flags": sorted(self.flags),
             "skills": sorted(self.skills),
             "class": self.character_class,
+            "class_pending": self.class_pending,
             "node_id": self.node_id,
             "variant_id": self.variant_id,
             "visits": dict(sorted(self.visits.items())),

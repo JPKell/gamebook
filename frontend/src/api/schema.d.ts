@@ -2415,7 +2415,17 @@ export interface components {
        * Type
        * @enum {string}
        */
-      type: 'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
+      type:
+        | 'choose'
+        | 'take'
+        | 'buy'
+        | 'sell'
+        | 'use'
+        | 'equip'
+        | 'unequip'
+        | 'attack'
+        | 'flee'
+        | 'choose_class'
     }
     /** AppendixIn */
     AppendixIn: {
@@ -3197,6 +3207,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /** Encounter Id */
       encounter_id?: string | null
@@ -3249,6 +3260,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /** Encounter Id */
       encounter_id: string | null
@@ -3298,6 +3310,7 @@ export interface components {
             | components['schemas']['SetFlag']
             | components['schemas']['ClearFlag']
             | components['schemas']['LearnSkill']
+            | components['schemas']['ChooseClass']
           )[]
         | null
       /** Encounter Id */
@@ -3320,6 +3333,28 @@ export interface components {
       test?: string | null
       /** Unmet Display */
       unmet_display?: ('hide' | 'show_disabled') | null
+    }
+    /**
+     * ChooseClass
+     * @description The reader picks a class now (from ``classes``, or any class when empty).
+     */
+    ChooseClass: {
+      /**
+       * Classes
+       * @default []
+       */
+      classes?: string[]
+      /** Min Tier */
+      min_tier?: string | null
+      /** Once */
+      once?: boolean | null
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      op: 'choose_class'
+      /** Print Text */
+      print_text?: string | null
     }
     /** ClassDef */
     ClassDef: {
@@ -3427,6 +3462,7 @@ export interface components {
             | components['schemas']['SetFlag']
             | components['schemas']['ClearFlag']
             | components['schemas']['LearnSkill']
+            | components['schemas']['ChooseClass']
           )[]
         | null
       /** Multi Enemy */
@@ -4014,6 +4050,7 @@ export interface components {
             | components['schemas']['SetFlag']
             | components['schemas']['ClearFlag']
             | components['schemas']['LearnSkill']
+            | components['schemas']['ChooseClass']
           )[]
         | null
       /** Uses */
@@ -4072,6 +4109,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /** Uses */
       uses: number | null
@@ -4121,6 +4159,7 @@ export interface components {
             | components['schemas']['SetFlag']
             | components['schemas']['ClearFlag']
             | components['schemas']['LearnSkill']
+            | components['schemas']['ChooseClass']
           )[]
         | null
       /** Uses */
@@ -4713,6 +4752,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /** Section Pin */
       section_pin: number | null
@@ -4788,6 +4828,7 @@ export interface components {
             | components['schemas']['SetFlag']
             | components['schemas']['ClearFlag']
             | components['schemas']['LearnSkill']
+            | components['schemas']['ChooseClass']
           )[]
         | null
       /** Section Pin */
@@ -5178,6 +5219,11 @@ export interface components {
       art?: components['schemas']['PlayArt'][]
       /** Character Class */
       character_class: string | null
+      /**
+       * Class In Story
+       * @default false
+       */
+      class_in_story?: boolean
       /** Classes */
       classes: components['schemas']['Option'][]
       codex?: components['schemas']['PlayCodex']
@@ -5421,7 +5467,7 @@ export interface components {
     }
     /**
      * ProgressionDef
-     * @description Experience and levels (SPEC §2.5). Fields left None inherit from the parent tier.
+     * @description Experience and levels (SPEC §2.4a). Fields left None inherit from the parent tier.
      *
      *     Winning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``
      *     and ``level``, the reader's level) to ``xp_stat``. While XP reaches
@@ -6505,6 +6551,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /**
        * Description
@@ -6535,6 +6582,7 @@ export interface components {
         | components['schemas']['SetFlag']
         | components['schemas']['ClearFlag']
         | components['schemas']['LearnSkill']
+        | components['schemas']['ChooseClass']
       )[]
       /**
        * Description
@@ -6559,6 +6607,8 @@ export interface components {
     }
     /** TierDef */
     TierDef: {
+      /** Class Choice */
+      class_choice?: ('start' | 'story') | null
       /** Classes */
       classes?: components['schemas']['ClassDef'][]
       combat?: components['schemas']['CombatDef']
@@ -6607,6 +6657,13 @@ export interface components {
     TierView: {
       /** Chain */
       chain: string[]
+      /**
+       * Class Choice
+       * @enum {string}
+       */
+      class_choice: 'start' | 'story'
+      /** Class Choice Origin */
+      class_choice_origin: string | null
       /** Classes */
       classes: components['schemas']['ClassView'][]
       combat: components['schemas']['CombatDef']

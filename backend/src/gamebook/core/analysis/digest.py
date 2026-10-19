@@ -28,6 +28,7 @@ from typing import Literal
 
 from gamebook.core import gbx
 from gamebook.core.effects import (
+    ChooseClass,
     ClearFlag,
     Effect,
     GiveItem,
@@ -139,6 +140,9 @@ def _apply(
     for e in effects:
         if not tier.allows(e.min_tier):
             continue
+        if isinstance(e, ChooseClass):
+            state = _choose_class(state, e, tier)
+            continue
         gain, loss = _gain(e), _loss(e)
         if gain is not None:
             if repeatable and gain in removable and fires_once(e):
@@ -149,6 +153,22 @@ def _apply(
             # Taking one item may leave others; clearing a flag always removes it.
             state = state.lose([loss], surely=loss[0] == "flag")
     return state
+
+
+def _class_skills(eff: EffectiveTier, keys: Iterable[str]) -> list[Facts]:
+    return [frozenset(("skill", s) for s in eff.classes[k].skills) for k in keys]
+
+
+def _choose_class(state: State, e: ChooseClass, tier: _TierCtx) -> State:
+    """The offered classes' skills become possible (not certain: a reader who already
+    has a class picks nothing)."""
+    eff = tier.eff
+    if eff is None or eff.class_choice != "story":
+        return state
+    sets = _class_skills(eff, [k for k in eff.classes if not e.classes or k in e.classes])
+    if not sets:
+        return state
+    return state.maybe(frozenset.union(*sets))
 
 
 # ── conditions (three-valued) ────────────────────────────────────────────
@@ -379,9 +399,9 @@ def _initial(b: _Book) -> State:
         ("flag", f) for f in b.book.series_flags_set - b.flags_set_here
     )
     eff = b.tier.eff
-    if eff is None or not eff.classes:
+    if eff is None or not eff.classes or eff.class_choice != "start":
         return State(frozenset(), from_elsewhere)
-    sets: list[Facts] = [frozenset(("skill", s) for s in c.skills) for c in eff.classes.values()]
+    sets = _class_skills(eff, eff.classes)
     return State(frozenset.intersection(*sets), frozenset.union(*sets) | from_elsewhere)
 
 

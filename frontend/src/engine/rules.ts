@@ -21,6 +21,8 @@ export interface EffectiveTier {
   combat: CombatDef
   progression: ProgressionDef
   startingItems: StartingItem[]
+  /** When the reader picks a class: at creation, or through a choose-class effect. */
+  classChoice: 'start' | 'story'
 }
 
 const PROGRESSION_FIELDS = [
@@ -72,6 +74,7 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
   const classes = new Map<string, ClassDef>()
   const progression: Record<string, unknown> = {}
   const startingItems: StartingItem[] = []
+  let classChoice: 'start' | 'story' = 'start'
   const slots: string[] = []
   const combat: Record<string, unknown> = {}
   const hooks: string[] = []
@@ -87,6 +90,7 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
     }
     hooks.push(...(t.combat.damage_hooks ?? []))
     startingItems.push(...(t.starting_items ?? []))
+    classChoice = t.class_choice ?? classChoice
     for (const f of PROGRESSION_FIELDS) {
       const v = t.progression?.[f]
       if (v !== null && v !== undefined) progression[f] = v
@@ -123,5 +127,6 @@ export function effectiveTier(tiers: TierDef[], key: string): EffectiveTier {
       ...progression,
     } as ProgressionDef,
     startingItems,
+    classChoice,
   }
 }

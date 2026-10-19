@@ -133,7 +133,10 @@ function TitleScreen({
   const [tier, setTier] = useState(book.tiers[0]?.key ?? '')
   const classes = useMemo(() => {
     const rules = book.bundle.book.rules
-    return rules && tier ? [...effectiveTier(rules.tiers, tier).classes.values()] : []
+    if (!rules || !tier) return []
+    const eff = effectiveTier(rules.tiers, tier)
+    // At "story" tiers the reader picks a class later, in the adventure.
+    return eff.classChoice === 'start' ? [...eff.classes.values()] : []
   }, [book, tier])
   const [cls, setCls] = useState<string | null>(null)
   const chosen = classes.find((c) => c.key === cls) ?? classes[0] ?? null
@@ -269,7 +272,8 @@ function PlayScreen({
   const draft = !text && node ? book.notes[node.id] : undefined
   const actions = game.actions()
   const choices = actions.filter(
-    (a) => a.type === 'choose' || a.type === 'attack' || a.type === 'flee',
+    (a) =>
+      a.type === 'choose' || a.type === 'attack' || a.type === 'flee' || a.type === 'choose_class',
   )
   const extras = actions.filter((a) => !choices.includes(a))
   const act = (a: Action) => onMove({ type: a.type, target: a.target })
@@ -384,6 +388,12 @@ function PlayScreen({
                 >
                   {a.label || 'Continue'}
                   {a.reason && <span className="muted small"> ({a.reason})</span>}
+                  {a.type === 'choose_class' && game.tier.classes.get(a.target!)?.description && (
+                    <span className="muted small">
+                      {' '}
+                      — {game.tier.classes.get(a.target!)!.description}
+                    </span>
+                  )}
                 </button>
               ))}
               {extras.length > 0 && (

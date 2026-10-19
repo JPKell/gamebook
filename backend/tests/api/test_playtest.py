@@ -150,6 +150,44 @@ def test_play_shows_money_and_earns_xp(api: Api, playable: Json) -> None:
     assert any(e["text"] == "Gained 10 Experience (now 10)" for e in out["events"])
 
 
+def test_play_class_picked_in_the_story(api: Api, series: Json, playable: Json) -> None:
+    rs = api.get(f"/series/{series['id']}/rule-systems")[0]
+    definition = rs["definition"]
+    definition["tiers"][2]["class_choice"] = "story"
+    api.patch(f"/rule-systems/{rs['id']}", {"definition": definition})
+    view = api.get(f"/rule-systems/{rs['id']}/tiers/advanced")
+    assert (view["class_choice"], view["class_choice_origin"]) == ("story", "advanced")
+    assert api.get(f"/rule-systems/{rs['id']}/tiers/medium")["class_choice"] == "start"
+
+    api.patch(
+        f"/nodes/{playable['start']}",
+        {"on_enter": [{"op": "choose_class", "classes": ["rogue", "scholar"]}]},
+    )
+    url = f"/books/{playable['book_id']}/play"
+    out = api.post(url, {"tier": "advanced", "character_class": "ranger"}, expect=200)
+    assert out["class_in_story"] is True
+    assert out["character_class"] is None
+    assert [(a["type"], a["label"]) for a in out["actions"]] == [
+        ("choose_class", "Become a Rogue"),
+        ("choose_class", "Become a Scholar"),
+    ]
+    inputs: list[dict[str, Any]] = [
+        {"kind": "action", "type": "choose_class", "target": "scholar"},
+    ]
+    out = api.post(url, {"tier": "advanced", "inputs": inputs}, expect=200)
+    assert out["applied"] == 1, out["error"]
+    assert out["character_class"] == "scholar"
+    assert [s["label"] for s in out["skills"]] == ["Lore"]
+    assert any(e["text"] == "You are now a Scholar" for e in out["events"])
+    assert "Fight" in [a["label"] for a in out["actions"]]
+
+    text = api.c.get(
+        f"/api/books/{playable['book_id']}/print/preview", params={"tier": "advanced"}
+    ).text
+    assert "Later in your adventure you will be asked to choose one of these" in text
+    assert "Choose your class now: Rogue or Scholar (see Your Character)." in text
+
+
 def test_play_debug_inputs(api: Api, playable: Json) -> None:
     url = f"/books/{playable['book_id']}/play"
     inputs: list[dict[str, Any]] = [

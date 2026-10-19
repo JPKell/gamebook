@@ -133,6 +133,9 @@ class TierDef(_Def):
     slots: list[str] = Field(default_factory=list)
     combat: CombatDef = Field(default_factory=CombatDef)
     progression: ProgressionDef = Field(default_factory=ProgressionDef)
+    #: When the reader picks a class: at character creation, or later through a
+    #: "choose class" effect in the story. None inherits (default: start).
+    class_choice: Literal["start", "story"] | None = None
     #: Given to every reader at character creation (accumulates down the tiers).
     starting_items: list[StartingItem] = Field(default_factory=list)
     #: Author-written rules chapter text for this tier (markdown).
@@ -168,6 +171,7 @@ class EffectiveTier:
     stat_origin: dict[str, str]
     progression: ProgressionDef = field(default_factory=ProgressionDef)
     starting_items: tuple[StartingItem, ...] = ()
+    class_choice: str = "start"
 
     def player_stats(self) -> frozenset[str]:
         return frozenset(k for k, s in self.stats.items() if "player" in s.applies_to)
@@ -207,8 +211,10 @@ def effective_tier(system: RuleSystemDef, key: str) -> EffectiveTier:
     hooks: list[str] = []
     progression: dict[str, object] = {}
     starting: list[StartingItem] = []
+    class_choice = "start"
     for t in chain:
         starting.extend(t.starting_items)
+        class_choice = t.class_choice or class_choice
         for name in ProgressionDef.model_fields:
             if (value := getattr(t.progression, name)) is not None:
                 progression[name] = value
@@ -239,6 +245,7 @@ def effective_tier(system: RuleSystemDef, key: str) -> EffectiveTier:
         stat_origin=origin,
         progression=ProgressionDef.model_validate(progression),
         starting_items=tuple(starting),
+        class_choice=class_choice,
     )
 
 
@@ -302,4 +309,8 @@ def tier_view(system: RuleSystemDef, key: str) -> dict[str, object]:
         "progression": eff.progression.model_dump(mode="json"),
         "progression_origin": progression_origin,
         "starting_items": starting,
+        "class_choice": eff.class_choice,
+        "class_choice_origin": next(
+            (t.key for t in reversed(chain) if t.class_choice is not None), None
+        ),
     }

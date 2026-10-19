@@ -75,6 +75,9 @@ class TierView(Out):
     progression_origin: dict[str, str]
     #: Every tier's starting items, root first.
     starting_items: list[StartingItemView]
+    #: When readers pick a class: "start" (creation) or "story" (a choose-class effect).
+    class_choice: Literal["start", "story"]
+    class_choice_origin: str | None
 
 
 # ── combat lab ───────────────────────────────────────────────────────────

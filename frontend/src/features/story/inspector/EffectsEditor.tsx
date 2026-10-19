@@ -19,6 +19,7 @@ const OPS: { value: Op; label: string }[] = [
   { value: 'set_flag', label: 'Give codeword' },
   { value: 'clear_flag', label: 'Remove codeword' },
   { value: 'learn', label: 'Learn skill' },
+  { value: 'choose_class', label: 'Choose class' },
 ]
 
 function blank(op: Op, prev?: EffectIn): EffectIn {
@@ -38,6 +39,8 @@ function blank(op: Op, prev?: EffectIn): EffectIn {
       return { op, flag: '', ...keep } as EffectIn
     case 'learn':
       return { op, skill: '', ...keep } as EffectIn
+    case 'choose_class':
+      return { op, classes: [], ...keep } as EffectIn
   }
 }
 
@@ -101,6 +104,43 @@ export function CurrencyQuick({
         />
       )}
     </div>
+  )
+}
+
+/** Which classes a choose-class effect offers (none ticked: all of them). */
+function ClassOffer({
+  offered,
+  onChange,
+}: {
+  offered: string[]
+  onChange: (classes: string[]) => void
+}) {
+  const vocab = useVocabulary()
+  if (!vocab.classes.length)
+    return (
+      <p className="text-xs text-muted">
+        The rules define no classes yet (Mechanics → a tier → Classes).
+      </p>
+    )
+  return (
+    <fieldset className="space-y-1">
+      <legend className="text-xs text-muted">
+        The reader must pick one of these before going on (none ticked: any class). Readers who
+        already have a class skip this.
+      </legend>
+      <div className="flex flex-wrap gap-3">
+        {vocab.classes.map((c) => (
+          <Checkbox
+            key={c.key}
+            label={c.label}
+            checked={offered.includes(c.key)}
+            onCheckedChange={(on) =>
+              onChange(on ? [...offered, c.key] : offered.filter((k) => k !== c.key))
+            }
+          />
+        ))}
+      </div>
+    </fieldset>
   )
 }
 
@@ -238,12 +278,20 @@ export function EffectsEditor({
                 }
               />
             )}
+            {e.op === 'choose_class' && (
+              <ClassOffer
+                offered={(r.classes as string[] | undefined) ?? []}
+                onChange={(classes) => set(i, { classes } as Partial<EffectIn>)}
+              />
+            )}
             <div className="flex flex-wrap items-center gap-3 text-xs">
               <Checkbox
                 label="Only the first time"
                 checked={
                   r.once === undefined
-                    ? ['give', 'equip', 'set_flag', 'learn'].includes(e.op as string)
+                    ? ['give', 'equip', 'set_flag', 'learn', 'choose_class'].includes(
+                        e.op as string,
+                      )
                     : !!r.once
                 }
                 onCheckedChange={(once) => set(i, { once } as Partial<EffectIn>)}

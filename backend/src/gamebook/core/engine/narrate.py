@@ -30,6 +30,7 @@ class Names:
     tests: dict[str, str] = field(default_factory=dict)
     skills: dict[str, str] = field(default_factory=dict)
     enemies: dict[str, str] = field(default_factory=dict)
+    classes: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def for_game(cls, game: Game) -> Names:
@@ -42,6 +43,7 @@ class Names:
             tests={k: t.label for k, t in tier.tests.items()},
             skills={k: s.label for k, s in tier.skills.items()},
             enemies={e.key: e.name for e in book.enemies},
+            classes={k: c.label for k, c in tier.classes.items()},
         )
 
     def enemy(self, key: str) -> str:
@@ -96,7 +98,11 @@ def narrate(event: Event, names: Names) -> str | None:
                     return f"Codeword removed: {d['flag']}"
                 case "learn":
                     return f"Learned {names.skills.get(d['skill'], d['skill'])}"
+                case "choose_class":
+                    return "Choose your class" if d.get("classes") else None
             return None
+        case "class_chosen":
+            return f"You are now a {names.classes.get(d['class'], d['class'])}"
         case "test":
             label = names.tests.get(d["test"], d["test"])
             return f"{label}: {'success' if d['success'] else 'failure'} (rolled {d['roll']})"

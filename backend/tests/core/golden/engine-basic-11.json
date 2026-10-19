@@ -1243,6 +1243,7 @@
    "rules": {
     "tiers": [
      {
+      "class_choice": null,
       "classes": [],
       "combat": {
        "damage": "2",
@@ -1368,6 +1369,7 @@
       ]
      },
      {
+      "class_choice": null,
       "classes": [],
       "combat": {
        "damage": null,
@@ -1458,6 +1460,7 @@
       "tests": []
      },
      {
+      "class_choice": null,
       "classes": [
        {
         "description": "",
@@ -5330,6 +5333,7 @@
  ],
  "final_state": {
   "class": null,
+  "class_pending": null,
   "combat": {
    "choice_id": "wall",
    "enemies": [

@@ -107,7 +107,7 @@ export function Player({
             />
           )}
         </Field>
-        {view && view.classes.length > 0 && (
+        {view && view.classes.length > 0 && !view.class_in_story && (
           <Field label="Class">
             {(id) => (
               <Select
@@ -343,8 +343,9 @@ function Actions({
         <Shuffle className="size-4" /> Play again
       </Button>
     )
-  const choices = view.actions.filter((a) => ['choose', 'attack', 'flee'].includes(a.type))
-  const other = view.actions.filter((a) => !['choose', 'attack', 'flee'].includes(a.type))
+  const primary = ['choose', 'attack', 'flee', 'choose_class']
+  const choices = view.actions.filter((a) => primary.includes(a.type))
+  const other = view.actions.filter((a) => !primary.includes(a.type))
   return (
     <section aria-label="Choices" className="space-y-3">
       <ol className="space-y-2">

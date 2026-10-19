@@ -16,6 +16,7 @@ export interface Names {
   tests: Record<string, string>
   skills: Record<string, string>
   enemies: Record<string, string>
+  classes: Record<string, string>
 }
 
 export function namesFor(game: Game): Names {
@@ -27,6 +28,7 @@ export function namesFor(game: Game): Names {
     tests: Object.fromEntries([...tier.tests].map(([k, t]) => [k, t.label])),
     skills: Object.fromEntries([...tier.skills].map(([k, s]) => [k, s.label])),
     enemies: Object.fromEntries(book.enemies.map((e) => [e.key, e.name])),
+    classes: Object.fromEntries([...tier.classes].map(([k, c]) => [k, c.label])),
   }
 }
 
@@ -80,8 +82,12 @@ export function narrate(e: GameEvent, names: Names): string | null {
           return `Codeword removed: ${String(d.flag)}`
         case 'learn':
           return `Learned ${names.skills[String(d.skill)] ?? String(d.skill)}`
+        case 'choose_class':
+          return (d.classes as string[] | undefined)?.length ? 'Choose your class' : null
       }
       return null
+    case 'class_chosen':
+      return `You are now a ${names.classes[String(d.class)] ?? String(d.class)}`
     case 'test':
       return `${names.tests[String(d.test)] ?? String(d.test)}: ${d.success ? 'success' : 'failure'} (rolled ${String(d.roll)})`
     case 'table':

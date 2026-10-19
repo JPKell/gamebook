@@ -27,7 +27,7 @@ from gamebook.core.model import BookSnapshot
 
 #: Events that mean a step drew dice (so other seeds may differ).
 _RANDOM = frozenset({"roll", "combat_round", "table", "test"})
-_MOVES = frozenset({"choose", "take", "buy", "sell", "equip", "use"})
+_MOVES = frozenset({"choose", "take", "buy", "sell", "equip", "use", "choose_class"})
 #: Visit counts above this look the same to the walker.
 VISIT_CAP = 4
 _VISITS = re.compile(r"\bvisits\(\s*([A-Za-z][A-Za-z0-9_]*)\s*\)")
@@ -67,6 +67,7 @@ def _signature(g: Game, money_cap: int, watched: frozenset[str]) -> tuple[object
         tuple(sorted(s.flags)),
         tuple(sorted(s.skills)),
         s.character_class,
+        tuple(s.class_pending or ()),
     )
 
 
@@ -118,7 +119,9 @@ def walk(
         if out.states >= max_states:
             out.truncated = True
             break
-        if g.state.combat is not None:
+        if g.state.class_pending:
+            moves = g.available()
+        elif g.state.combat is not None:
             moves = [a for a in g.available() if a.type in ("attack", "flee")]
         else:
             moves = [a for a in g.available() if a.type in _MOVES]

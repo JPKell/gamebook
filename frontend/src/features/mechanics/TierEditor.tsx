@@ -156,6 +156,41 @@ export function TierEditor({ def, tierKey, view, save, onDeleted }: Props) {
       </Section>
 
       <Section title="Classes" count={view.classes.length}>
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-xs font-medium text-muted">Readers choose their class</span>
+          <Select
+            aria-label="When readers choose their class"
+            className="w-72"
+            value={tier.class_choice ?? null}
+            placeholder={`Inherit (${view.class_choice === 'story' ? 'in the story' : 'at the start'})`}
+            onValueChange={(v) =>
+              edit((t) => void (t.class_choice = (v as TierDef['class_choice']) ?? null))
+            }
+            options={[
+              { value: 'start', label: 'At the start' },
+              { value: 'story', label: 'In the story (a “Choose class” effect)' },
+            ]}
+          />
+          {tier.class_choice ? (
+            <button
+              type="button"
+              className="text-[11px] text-accent hover:underline"
+              onClick={() => edit((t) => void (t.class_choice = null))}
+            >
+              set here · inherit instead
+            </button>
+          ) : (
+            view.class_choice_origin && (
+              <Origin label={labelOf(view.class_choice_origin)} kind="from" />
+            )
+          )}
+        </div>
+        {view.class_choice === 'story' && (
+          <p className="mb-3 text-xs text-muted">
+            Add a “Choose class” effect to a node’s On entry or to a choice. Until it fires the
+            reader has no class, its skills or its bonuses.
+          </p>
+        )}
         <KeyedList
           rows={view.classes}
           own={own('classes')}

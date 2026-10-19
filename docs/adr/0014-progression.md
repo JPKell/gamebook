@@ -35,6 +35,14 @@ The engine has to stay deterministic and printable, and identical in Python and 
   books while rules belong to the series). An unknown item at runtime is a content-error
   event.
 
+- **Mid-story class choice is an effect plus a pending state.** Picking needs the reader,
+  so a `choose_class` effect only sets `class_pending`. Until the reader picks, the
+  available actions are the class picks and nothing else (combat waits too). An effect
+  can't stop to ask, but every surface already lists actions, and bots, the coverage
+  walker, saves and replays all work in actions. The tier's `class_choice: story` turns
+  off the pick at creation; a class sent at creation is then ignored, so old saves still
+  open.
+
 ## Consequences
 - The default template gains XP and LEVEL at Medium and class bonuses at Advanced.
   Existing series keep their stored rule systems, and the designer's "Set up experience

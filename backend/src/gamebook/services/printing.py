@@ -276,6 +276,7 @@ def _creation(c: Compiled) -> Markup:
             currency=currency,
             gear=gear(t.starting_items),
             levels=levels,
+            class_later=t.class_choice == "story",
         )
     )
     return Markup(html)

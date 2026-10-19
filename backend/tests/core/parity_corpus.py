@@ -69,6 +69,17 @@ def edge_book() -> BookSnapshot:
                     ),
                 ),
             )
+        if n.key == "hall":
+            # Classes are picked in the story at Advanced (see edge_rules).
+            n = replace(
+                n,
+                on_enter=(
+                    *n.on_enter,
+                    *effects({"op": "choose_class", "classes": ["rogue", "scholar", "ghost"]}),
+                ),
+            )
+        if n.key == "market":
+            n = replace(n, on_enter=(*n.on_enter, *effects({"op": "choose_class"})))
         if n.key == "start" and n.choices:
             first = n.choices[0]
             n = replace(
@@ -114,6 +125,7 @@ def edge_rules(rules: RuleSystemDef | None) -> RuleSystemDef:
             t = t.model_copy(
                 update={
                     "progression": ProgressionDef(xp_award="enemy_level * 4 - level + 1d3"),
+                    "class_choice": "story",
                     "classes": [
                         c.model_copy(
                             update={

@@ -19,6 +19,7 @@ from fractions import Fraction
 
 from gamebook.core import gbx
 from gamebook.core.effects import (
+    ChooseClass,
     ClearFlag,
     Effect,
     EquipItem,
@@ -224,7 +225,8 @@ class Game:
                 self.state.max_stats[key] = value
             elif sd.max is not None:
                 self.state.max_stats[key] = sd.max
-        if self.tier.classes:
+        # At "story" tiers the class is picked later, by a choose-class effect.
+        if self.tier.classes and self.tier.class_choice == "start":
             chosen = character_class or next(iter(self.tier.classes))
             cls = self.tier.classes.get(chosen)
             if cls is None:
@@ -449,6 +451,16 @@ class Game:
                 case LearnSkill(skill=s):
                     self.state.skills.add(s)
                     data.update(skill=s)
+                case ChooseClass(classes=wanted):
+                    # Only a reader without a class picks one; otherwise nothing happens.
+                    options = (
+                        [k for k in self.tier.classes if not wanted or k in wanted]
+                        if self.state.character_class is None
+                        else []
+                    )
+                    if options:
+                        self.state.class_pending = options
+                    data.update(classes=options)
             self.log.append(Event("effect", data))
             xp_touched = xp_touched or (xp_key is not None and data.get("stat") == xp_key)
         if xp_touched:
@@ -558,6 +570,11 @@ class Game:
         if s.ended or self.node is None:
             return []
         out: list[Action] = []
+        if s.class_pending:
+            return [
+                Action("choose_class", k, f"Become a {self.tier.classes[k].label}")
+                for k in s.class_pending
+            ]
         if s.combat is not None:
             out.append(Action("attack", None, "Attack"))
             if s.combat.flee_allowed:
@@ -660,6 +677,8 @@ class Game:
                 assert item.slot is not None
                 self.state.equipped[item.slot] = item.key
                 self.log.append(Event("equipped", {"item": item.key, "slot": item.slot}))
+            case "choose_class":
+                self._pick_class(action.target or "")
             case "unequip":
                 key = self.state.equipped.pop(action.target or "")
                 self.log.append(Event("unequipped", {"item": key, "slot": action.target}))
@@ -709,6 +728,17 @@ class Game:
         self._apply(test.after, f"test:{test.key}", respect_once=False)
         if not self.state.ended:
             self._go(choice, "success" if success else "failure")
+
+    def _pick_class(self, key: str) -> None:
+        cls = self.tier.classes[key]
+        self.state.class_pending = None
+        self.state.character_class = cls.key
+        self.state.skills.update(cls.skills)
+        for b in cls.modifiers:
+            self._bonus(b, f"class {cls.key} bonus")
+        self.log.append(Event("class_chosen", {"class": cls.key}))
+        self._starting_items(cls.starting_items)
+        self._check_defeat()
 
     # ── combat ───────────────────────────────────────────────────────────
 

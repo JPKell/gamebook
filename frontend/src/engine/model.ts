@@ -1,11 +1,21 @@
 /** The game bundle's book, as `core/engine/bundle.py` writes it (format "gamebook-bundle"). */
 
 export interface Effect {
-  op: 'modify' | 'set' | 'give' | 'take' | 'equip' | 'set_flag' | 'clear_flag' | 'learn'
+  op:
+    | 'modify'
+    | 'set'
+    | 'give'
+    | 'take'
+    | 'equip'
+    | 'set_flag'
+    | 'clear_flag'
+    | 'learn'
+    | 'choose_class'
   once?: boolean | null
   min_tier?: string | null
   print_text?: string | null
   stat?: string
+  classes?: string[]
   amount?: string
   value?: string
   item?: string
@@ -184,6 +194,7 @@ export interface TierDef {
   combat: CombatDef
   progression?: Partial<ProgressionDef>
   starting_items?: StartingItem[]
+  class_choice?: 'start' | 'story' | null
   rules_text: string
 }
 

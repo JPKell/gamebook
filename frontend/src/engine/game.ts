@@ -23,7 +23,16 @@ import { Q } from './rational'
 import { type EffectiveTier, effectiveTier, progressionEnabled } from './rules'
 
 export type ActionType =
-  'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
+  | 'choose'
+  | 'take'
+  | 'buy'
+  | 'sell'
+  | 'use'
+  | 'equip'
+  | 'unequip'
+  | 'attack'
+  | 'flee'
+  | 'choose_class'
 
 export interface Action {
   type: ActionType
@@ -44,7 +53,7 @@ export class GameError extends Error {}
 const MAX_LEVEL_UPS = 100
 
 const MAX_ROUNDS = 200
-const GAIN_OPS = new Set(['give', 'equip', 'set_flag', 'learn'])
+const GAIN_OPS = new Set(['give', 'equip', 'set_flag', 'learn', 'choose_class'])
 export const firesOnce = (e: Effect) =>
   (e.once ?? null) !== null ? Boolean(e.once) : GAIN_OPS.has(e.op)
 
@@ -72,6 +81,8 @@ export interface GameState {
   flags: Set<string>
   skills: Set<string>
   character_class: string | null
+  /** Classes the reader must pick from before anything else (a choose-class effect). */
+  class_pending: string[] | null
   node_id: string | null
   variant_id: string | null
   visits: Map<string, number>
@@ -101,6 +112,7 @@ export function stateToDict(s: GameState): Record<string, unknown> {
     flags: [...s.flags].sort(),
     skills: [...s.skills].sort(),
     class: s.character_class,
+    class_pending: s.class_pending,
     node_id: s.node_id,
     variant_id: s.variant_id,
     visits: sortedObj(s.visits),
@@ -357,6 +369,7 @@ export class Game {
       flags: new Set(),
       skills: new Set(),
       character_class: null,
+      class_pending: null,
       node_id: null,
       variant_id: null,
       visits: new Map(),
@@ -520,7 +533,8 @@ export class Game {
       if (sd.max_is_initial) this.state.max_stats.set(key, value)
       else if (sd.max !== null && sd.max !== undefined) this.state.max_stats.set(key, sd.max)
     }
-    if (this.tier.classes.size) {
+    // At "story" tiers the class is picked later, by a choose-class effect.
+    if (this.tier.classes.size && this.tier.classChoice === 'start') {
       const chosen = creation.character_class || [...this.tier.classes.keys()][0]!
       const cls = this.tier.classes.get(chosen)
       if (!cls) throw new GameError(`Unknown class '${chosen}'`)
@@ -560,6 +574,17 @@ export class Game {
         this.log.push({ type: 'effect', source: 'start', op: 'equip', item: item.key })
       }
     }
+  }
+
+  private pickClass(key: string): void {
+    const cls = this.tier.classes.get(key)!
+    this.state.class_pending = null
+    this.state.character_class = cls.key
+    for (const s of cls.skills) this.state.skills.add(s)
+    for (const b of cls.modifiers ?? []) this.bonus(b, `class ${cls.key} bonus`)
+    this.log.push({ type: 'class_chosen', class: cls.key })
+    this.startingItems(cls.starting_items ?? [])
+    this.checkDefeat()
   }
 
   // ── progression ──
@@ -750,6 +775,17 @@ export class Game {
           this.state.skills.add(eff.skill!)
           data.skill = eff.skill
           break
+        case 'choose_class': {
+          // Only a reader without a class picks one; otherwise nothing happens.
+          const wanted = eff.classes ?? []
+          const options =
+            this.state.character_class === null
+              ? [...this.tier.classes.keys()].filter((k) => !wanted.length || wanted.includes(k))
+              : []
+          if (options.length) this.state.class_pending = options
+          data.classes = options
+          break
+        }
       }
       this.log.push(data)
       xpTouched ||= xpKey !== null && data.stat === xpKey
@@ -871,6 +907,10 @@ export class Game {
       reason,
     })
     const out: Action[] = []
+    if (s.class_pending?.length)
+      return s.class_pending.map((k) =>
+        act('choose_class', k, `Become a ${this.tier.classes.get(k)!.label}`),
+      )
     if (s.combat) {
       out.push(act('attack', null, 'Attack'))
       if (s.combat.flee_allowed) out.push(act('flee', null, 'Flee'))
@@ -1002,6 +1042,9 @@ export class Game {
         this.log.push({ type: 'equipped', item: item.key, slot: item.slot })
         break
       }
+      case 'choose_class':
+        this.pickClass(target ?? '')
+        break
       case 'unequip': {
         const key = this.state.equipped.get(target ?? '')!
         this.state.equipped.delete(target ?? '')

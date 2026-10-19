@@ -5,7 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-ActionType = Literal["choose", "take", "buy", "sell", "use", "equip", "unequip", "attack", "flee"]
+ActionType = Literal[
+    "choose", "take", "buy", "sell", "use", "equip", "unequip", "attack", "flee", "choose_class"
+]
 
 
 @dataclass(frozen=True)

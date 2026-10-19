@@ -59,6 +59,25 @@ Built from author feedback:
   - an Experience paragraph phrased from the formulas
 - **Fight tables:** show enemy levels when fights give XP.
 
+### Choosing a class mid-story (follow-up)
+- **Tier setting:** `class_choice: start | story`, which inherits. The designer sets it under Classes.
+- **New effect:** "Choose class", optionally limited to some classes; once by default. It can go on node On entry or on a choice.
+- **Engine (both):**
+  - The effect sets `class_pending` (in the state JSON).
+  - While a class is pending, actions are only `choose_class <key>`.
+  - Picking grants the class's skills, bonuses and starting gear, and logs `class_chosen`.
+  - A reader with a class is never asked again.
+  - At story tiers, a creation `character_class` is ignored.
+- **Elsewhere:**
+  - Narration ("You are now a Ranger").
+  - Players: no class picker at the start for story tiers; the class buttons show with the choices, and the web player adds class descriptions.
+  - `PlayOut.class_in_story`.
+  - Print ("Later in your adventure…", "Choose your class now: …").
+  - Validation: unknown class; a tier with no classes; an effect at a tier that picks at the start.
+  - The digest makes the offered classes' skills possible.
+  - The walker explores the class picks.
+- **Tests:** the parity corpus's edge book picks classes at Advanced; 4 engine tests and 1 API test.
+
 ## Bug pass (independent review)
 - **Fixed:**
   - "Set up experience & levels" did nothing for definitions loaded from the API, because their null fields overwrote the defaults. The button now keeps only fields that are set; a test covers it.

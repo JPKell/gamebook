@@ -149,6 +149,7 @@ def view(
             for i, e in enumerate(game.log)
         ],
         classes=[Option(key=k, label=c.label) for k, c in tier.classes.items()],
+        class_in_story=tier.class_choice == "story",
         steps=s.steps,
     )
 

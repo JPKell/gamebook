@@ -269,6 +269,18 @@ progression:            # each field left unset inherits from the parent tier
 starting_items: [ {item: potion, qty: 2} ]
 ```
 
+**Choosing a class in the story.** A tier's `class_choice` is `start` (the default) or
+`story`; it inherits like the other settings. At `story` tiers no class is picked at
+creation. Instead:
+- A `choose_class` effect (optional `classes` subset; once by default) sets
+  `class_pending`. It can go on node arrival, a choice, a test or an item.
+- While a class is pending, the only actions are `choose_class <key>` ("Become a …").
+- Picking applies the class's skills, bonuses and gear, and logs `class_chosen`.
+- A reader who already has a class is never asked again.
+
+Print says "Later in your adventure you will be asked to choose one of these" and turns the
+effect into "Choose your class now: …".
+
 **Experience.** Winning a fight (not fleeing) evaluates `xp_award` once per enemy in it,
 with `enemy_level` and `level` (the reader's level stat). The total goes to `xp_stat`
 (`xp_gained` event). Levelling is on when `xp_stat`, `level_stat` and `xp_to_next` are set.

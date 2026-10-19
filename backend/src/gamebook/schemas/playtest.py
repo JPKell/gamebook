@@ -183,6 +183,8 @@ class PlayOut(Out):
     actions: list[PlayAction]
     events: list[PlayEvent]
     classes: list[Option]
+    #: Classes are picked in the story (a choose-class effect), not at the start.
+    class_in_story: bool = False
     steps: int
     #: Replays of LLM runs: the player's note for the choice made at this step.
     next_note: dict[str, Any] | None = None

@@ -5,7 +5,7 @@
   <ul>{% for s in stats %}<li><strong>{{ s.label }}</strong>: {{ s.initial }}{% if s.has_max %}. This is also your maximum {{ s.label }}{% endif %}.</li>{% endfor %}</ul>
   {% endif %}
   {% if classes %}
-  <p>Choose one of these to be:</p>
+  {% if class_later %}<p>Later in your adventure you will be asked to choose one of these:</p>{% else %}<p>Choose one of these to be:</p>{% endif %}
   <ul>{% for c in classes %}<li><strong>{{ c.label }}</strong>{% if c.description %}: {{ c.description.rstrip(".") }}{% endif %}{% if c.skills %} (skills: {{ c.skills|join(", ") }}){% endif %}{% if c.bonuses %}{% set b = c.bonuses|join(", ") %}. {{ b[:1]|upper }}{{ b[1:] }}{% endif %}{% if c.gear %}. You also start with {{ c.gear|join(", ") }}{% endif %}</li>{% endfor %}</ul>
   {% endif %}
   {% if skills %}<p>Skills you may have: {{ skills|join(", ") }}.</p>{% endif %}

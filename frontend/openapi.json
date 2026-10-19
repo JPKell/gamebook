@@ -231,7 +231,18 @@
             "title": "Target"
           },
           "type": {
-            "enum": ["choose", "take", "buy", "sell", "use", "equip", "unequip", "attack", "flee"],
+            "enum": [
+              "choose",
+              "take",
+              "buy",
+              "sell",
+              "use",
+              "equip",
+              "unequip",
+              "attack",
+              "flee",
+              "choose_class"
+            ],
             "title": "Type",
             "type": "string"
           }
@@ -2405,6 +2416,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -2440,6 +2452,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -2569,6 +2584,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -2604,6 +2620,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -2743,6 +2762,7 @@
                 "items": {
                   "discriminator": {
                     "mapping": {
+                      "choose_class": "#/components/schemas/ChooseClass",
                       "clear_flag": "#/components/schemas/ClearFlag",
                       "equip": "#/components/schemas/EquipItem",
                       "give": "#/components/schemas/GiveItem",
@@ -2778,6 +2798,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/LearnSkill"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ChooseClass"
                     }
                   ]
                 },
@@ -2906,6 +2929,61 @@
           }
         },
         "title": "ChoiceUpdate",
+        "type": "object"
+      },
+      "ChooseClass": {
+        "additionalProperties": false,
+        "description": "The reader picks a class now (from ``classes``, or any class when empty).",
+        "properties": {
+          "classes": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Classes",
+            "type": "array"
+          },
+          "min_tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Tier"
+          },
+          "once": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Once"
+          },
+          "op": {
+            "const": "choose_class",
+            "default": "choose_class",
+            "title": "Op",
+            "type": "string"
+          },
+          "print_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Print Text"
+          }
+        },
+        "title": "ChooseClass",
         "type": "object"
       },
       "ClassDef": {
@@ -3169,6 +3247,7 @@
                 "items": {
                   "discriminator": {
                     "mapping": {
+                      "choose_class": "#/components/schemas/ChooseClass",
                       "clear_flag": "#/components/schemas/ClearFlag",
                       "equip": "#/components/schemas/EquipItem",
                       "give": "#/components/schemas/GiveItem",
@@ -3204,6 +3283,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/LearnSkill"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ChooseClass"
                     }
                   ]
                 },
@@ -4772,6 +4854,7 @@
                 "items": {
                   "discriminator": {
                     "mapping": {
+                      "choose_class": "#/components/schemas/ChooseClass",
                       "clear_flag": "#/components/schemas/ClearFlag",
                       "equip": "#/components/schemas/EquipItem",
                       "give": "#/components/schemas/GiveItem",
@@ -4807,6 +4890,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/LearnSkill"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ChooseClass"
                     }
                   ]
                 },
@@ -4955,6 +5041,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -4990,6 +5077,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -5169,6 +5259,7 @@
                 "items": {
                   "discriminator": {
                     "mapping": {
+                      "choose_class": "#/components/schemas/ChooseClass",
                       "clear_flag": "#/components/schemas/ClearFlag",
                       "equip": "#/components/schemas/EquipItem",
                       "give": "#/components/schemas/GiveItem",
@@ -5204,6 +5295,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/LearnSkill"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ChooseClass"
                     }
                   ]
                 },
@@ -6867,6 +6961,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -6902,6 +6997,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -7184,6 +7282,7 @@
                 "items": {
                   "discriminator": {
                     "mapping": {
+                      "choose_class": "#/components/schemas/ChooseClass",
                       "clear_flag": "#/components/schemas/ClearFlag",
                       "equip": "#/components/schemas/EquipItem",
                       "give": "#/components/schemas/GiveItem",
@@ -7219,6 +7318,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/LearnSkill"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ChooseClass"
                     }
                   ]
                 },
@@ -8204,6 +8306,11 @@
             ],
             "title": "Character Class"
           },
+          "class_in_story": {
+            "default": false,
+            "title": "Class In Story",
+            "type": "boolean"
+          },
           "classes": {
             "items": {
               "$ref": "#/components/schemas/Option"
@@ -8884,7 +8991,7 @@
       },
       "ProgressionDef": {
         "additionalProperties": false,
-        "description": "Experience and levels (SPEC \u00a72.5). Fields left None inherit from the parent tier.\n\nWinning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``\nand ``level``, the reader's level) to ``xp_stat``. While XP reaches\n``xp_to_next`` (variable ``level``), that much XP is spent, ``level_stat``\ngoes up by one and every ``level_up`` bonus is applied.",
+        "description": "Experience and levels (SPEC \u00a72.4a). Fields left None inherit from the parent tier.\n\nWinning a fight awards ``xp_award`` per enemy defeated (variables ``enemy_level``\nand ``level``, the reader's level) to ``xp_stat``. While XP reaches\n``xp_to_next`` (variable ``level``), that much XP is spent, ``level_stat``\ngoes up by one and every ``level_up`` bonus is applied.",
         "properties": {
           "level_stat": {
             "anyOf": [
@@ -11637,6 +11744,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -11672,6 +11780,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -11713,6 +11824,7 @@
             "items": {
               "discriminator": {
                 "mapping": {
+                  "choose_class": "#/components/schemas/ChooseClass",
                   "clear_flag": "#/components/schemas/ClearFlag",
                   "equip": "#/components/schemas/EquipItem",
                   "give": "#/components/schemas/GiveItem",
@@ -11748,6 +11860,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/LearnSkill"
+                },
+                {
+                  "$ref": "#/components/schemas/ChooseClass"
                 }
               ]
             },
@@ -11793,6 +11908,18 @@
       "TierDef": {
         "additionalProperties": false,
         "properties": {
+          "class_choice": {
+            "anyOf": [
+              {
+                "enum": ["start", "story"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Choice"
+          },
           "classes": {
             "items": {
               "$ref": "#/components/schemas/ClassDef"
@@ -11921,6 +12048,22 @@
             "title": "Chain",
             "type": "array"
           },
+          "class_choice": {
+            "enum": ["start", "story"],
+            "title": "Class Choice",
+            "type": "string"
+          },
+          "class_choice_origin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Class Choice Origin"
+          },
           "classes": {
             "items": {
               "$ref": "#/components/schemas/ClassView"
@@ -12030,7 +12173,9 @@
           "damage_hooks",
           "progression",
           "progression_origin",
-          "starting_items"
+          "starting_items",
+          "class_choice",
+          "class_choice_origin"
         ],
         "title": "TierView",
         "type": "object"

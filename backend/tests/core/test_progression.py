@@ -7,7 +7,7 @@ from dataclasses import replace
 import pytest
 
 from gamebook.core.analysis import validate_book, validate_rule_system
-from gamebook.core.effects import ModifyStat
+from gamebook.core.effects import ChooseClass, ModifyStat
 from gamebook.core.engine import Action, Game
 from gamebook.core.engine.narrate import Names, narrate
 from gamebook.core.model import BookSnapshot
@@ -21,6 +21,7 @@ from gamebook.core.rules import (
     tier_view,
 )
 
+from .builders import effects
 from .engine_book import engine_book
 
 FIXED = {"SKILL": 9, "STAMINA": 18, "LUCK": 9, "GOLD": 10, "ARMOR": 0, "XP": 0, "LEVEL": 1}
@@ -281,3 +282,116 @@ def test_capped_level_stat_is_warned_and_shows_no_next_level() -> None:
     assert g.xp_needed() is None
     g._apply([_modify("XP", "500")], "test")
     assert g.state.stats["LEVEL"] == 1
+
+
+# ── choosing a class in the story ───────────────────────────────────────
+
+
+def story_book(*, on_hall: list[dict[str, object]] | None = None) -> BookSnapshot:
+    """Advanced picks classes in the story; entering the hall asks for one."""
+    rules = default_rule_system()
+    rules.tiers[2].class_choice = "story"
+    rules.tiers[2].classes[0].starting_items = [StartingItem(item="rope")]
+    b = book_with(rules)
+    hall = on_hall if on_hall is not None else [{"op": "choose_class"}]
+    return replace(
+        b,
+        nodes=tuple(
+            replace(n, on_enter=(*n.on_enter, *effects(*hall))) if n.key == "hall" else n
+            for n in b.nodes
+        ),
+    )
+
+
+def test_class_is_picked_in_the_story() -> None:
+    g, events = start(story_book(), "advanced", character_class="ranger")
+    assert g.state.character_class is None  # ignored: this tier picks in the story
+    assert g.state.skills == set()
+    assert next(e for e in events if e["type"] == "character_created")["class"] is None
+
+    entered = do(g, "choose", "start->hall")
+    assert g.state.class_pending == ["ranger", "rogue", "scholar"]
+    assert g.node is not None
+    effect: dict[str, object] = {
+        "type": "effect",
+        "source": f"enter:{g.node.id}",
+        "op": "choose_class",
+        "classes": ["ranger", "rogue", "scholar"],
+    }
+    assert effect in entered
+    # Nothing else can be done until a class is picked.
+    assert [(a.type, a.target, a.label) for a in g.available()] == [
+        ("choose_class", "ranger", "Become a Ranger"),
+        ("choose_class", "rogue", "Become a Rogue"),
+        ("choose_class", "scholar", "Become a Scholar"),
+    ]
+    picked = do(g, "choose_class", "ranger")
+    assert g.state.class_pending is None
+    assert g.state.character_class == "ranger"
+    assert g.state.skills == {"TRACKING", "ARCHERY"}
+    assert g.state.stats["SKILL"] == 10
+    assert g.state.items["rope"] == 1
+    assert {"type": "class_chosen", "class": "ranger"} in picked
+    names = Names.for_game(g)
+    assert [narrate(e, names) for e in g.log if e.type == "class_chosen"] == [
+        "You are now a Ranger"
+    ]
+    assert "fight" in {a.target for a in g.available()}  # the hall's choices are back
+    assert g.holds("class(ranger)")
+
+
+def test_class_choice_offers_a_subset_and_happens_once() -> None:
+    g, _ = start(
+        story_book(on_hall=[{"op": "choose_class", "classes": ["rogue", "wizard"], "once": False}]),
+        "advanced",
+    )
+    do(g, "choose", "start->hall")
+    assert g.state.class_pending == ["rogue"]  # unknown classes are left out
+    do(g, "choose_class", "rogue")
+    # Coming back: the reader already has a class, so nothing is asked.
+    g._apply([ChooseClass()], "test")
+    assert g.state.class_pending is None
+    assert g.state.character_class == "rogue"
+
+
+def test_choose_class_does_nothing_where_classes_are_picked_at_the_start() -> None:
+    g, _ = start(story_book(), "medium")  # medium has no classes
+    do(g, "choose", "start->hall")
+    assert g.state.class_pending is None
+    rules = default_rule_system()  # advanced: picked at the start
+    g, _ = start(book_with(rules), "advanced", character_class="rogue")
+    g._apply([ChooseClass()], "test")
+    assert g.state.class_pending is None
+    assert g.state.character_class == "rogue"
+
+
+def test_choosing_a_class_from_a_choice_and_in_validation() -> None:
+    b = story_book(on_hall=[])
+    start_node = next(n for n in b.nodes if n.key == "start")
+    first = start_node.choices[1]  # into the hall
+    b = replace(
+        b,
+        nodes=tuple(
+            replace(
+                n,
+                choices=(
+                    n.choices[0],
+                    replace(first, effects=effects({"op": "choose_class", "min_tier": "advanced"})),
+                    *n.choices[2:],
+                ),
+            )
+            if n.key == "start"
+            else n
+            for n in b.nodes
+        ),
+    )
+    g, _ = start(b, "advanced")
+    do(g, "choose", first.id)
+    assert g.node is not None
+    assert g.node.key == "hall"  # the choice still goes where it leads
+    assert [a.type for a in g.available()] == ["choose_class"] * 3
+    assert not [p for p in validate_book(b) if p.code in ("no_classes", "class_at_start")]
+
+    bad = story_book(on_hall=[{"op": "choose_class", "classes": ["wizard"]}])
+    codes = {p.code for p in validate_book(bad)}
+    assert {"unknown_class", "no_classes"} <= codes  # and Basic has no classes at all

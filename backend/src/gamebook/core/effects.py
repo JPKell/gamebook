@@ -66,12 +66,27 @@ class LearnSkill(_EffectBase):
     skill: str
 
 
+class ChooseClass(_EffectBase):
+    """The reader picks a class now (from ``classes``, or any class when empty)."""
+
+    op: Literal["choose_class"] = "choose_class"
+    classes: tuple[str, ...] = ()
+
+
 Effect = Annotated[
-    ModifyStat | SetStat | GiveItem | TakeItem | EquipItem | SetFlag | ClearFlag | LearnSkill,
+    ModifyStat
+    | SetStat
+    | GiveItem
+    | TakeItem
+    | EquipItem
+    | SetFlag
+    | ClearFlag
+    | LearnSkill
+    | ChooseClass,
     Field(discriminator="op"),
 ]
 
-GAIN_OPS = frozenset({"give", "equip", "set_flag", "learn"})
+GAIN_OPS = frozenset({"give", "equip", "set_flag", "learn", "choose_class"})
 
 
 def fires_once(effect: Effect) -> bool:
@@ -97,6 +112,8 @@ def effect_refs(effect: Effect, amount_scope: Scope) -> list[tuple[RefKind, str,
             out.append((RefKind.FLAG, f, "effect.clear_flag"))
         case LearnSkill(skill=s):
             out.append((RefKind.SKILL, s, role))
+        case ChooseClass(classes=cs):
+            out.extend((RefKind.CLASS, c, role) for c in cs)
     if effect.min_tier:
         out.append((RefKind.TIER, effect.min_tier, role))
     return out
@@ -121,6 +138,8 @@ def rename_in_effect(effect: Effect, scope: Scope, kind: RefKind, old: str, new:
     f = field_for.get(kind)
     if f and data.get(f) == old:
         data[f] = new
+    if kind == RefKind.CLASS and "classes" in data:
+        data["classes"] = tuple(new if c == old else c for c in data["classes"])
     for expr_field in ("amount", "value"):
         if expr_field in data:
             data[expr_field] = gbx.rename_in_source(data[expr_field], scope, kind, old, new)
@@ -168,4 +187,10 @@ def effect_to_english(effect: Effect, namer: Namer = default_namer) -> str:
             return f"Cross out the codeword {namer(RefKind.FLAG, f)}."
         case LearnSkill(skill=s):
             return f"You learn the skill of {namer(RefKind.SKILL, s)}."
+        case ChooseClass(classes=cs):
+            if not cs:
+                return "Choose your class now (see Your Character) and note it on your Adventure Sheet."
+            names = [namer(RefKind.CLASS, c) for c in cs]
+            listed = names[0] if len(names) == 1 else ", ".join(names[:-1]) + " or " + names[-1]
+            return f"Choose your class now: {listed} (see Your Character)."
     raise TypeError(effect)

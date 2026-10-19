@@ -17,6 +17,7 @@ from gamebook.core.analysis.digest import compute as compute_digest
 from gamebook.core.analysis.graph import reachable, reverse, successors
 from gamebook.core.analysis.problems import SEVERITY_ORDER, Problem
 from gamebook.core.effects import (
+    ChooseClass,
     ClearFlag,
     Effect,
     EquipItem,
@@ -206,6 +207,33 @@ class _Collector:
                             else ("error", f"{label}: unknown skill {k!r}")
                         )
                         self.add(sev, "unknown_skill", msg, ctx, f)
+                case ChooseClass(classes=wanted):
+                    eff_def = sc.effective.get(eff_tier or sc.base)
+                    known = eff_def.classes if eff_def else {}
+                    for k in wanted:
+                        if k not in known:
+                            self.add(
+                                "error", "unknown_class", f"{label}: unknown class {k!r}", ctx, f
+                            )
+                    if eff_def is not None and not known:
+                        self.add(
+                            "warning",
+                            "no_classes",
+                            f"{label}: the {eff_def.label} tier has no classes to choose from; "
+                            "set a minimum tier",
+                            ctx,
+                            f,
+                        )
+                    elif eff_def is not None and eff_def.class_choice == "start":
+                        self.add(
+                            "warning",
+                            "class_at_start",
+                            f"{label}: at the {eff_def.label} tier readers already chose a class "
+                            "at the start, so this does nothing (set the tier's class choice "
+                            "to 'in the story')",
+                            ctx,
+                            f,
+                        )
 
     def _stat(
         self, stat: str, scope: Scope, tier: str | None, label: str, ctx: _Ctx, f: str
