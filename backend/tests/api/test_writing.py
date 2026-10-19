@@ -401,3 +401,13 @@ def test_secret_headers_are_masked(api: Api) -> None:
     api.post(
         "/llm/providers", {"name": "X", "base_url": "http://x", "api_key_env": "HOME"}, expect=422
     )
+    # A key pasted where the variable name goes is explained, and never echoed back.
+    secret = "lc_MadeUpSecretValue123"
+    res = api.c.patch(f"/api/llm/providers/{p['id']}", json={"api_key_env": secret})
+    assert res.status_code == 422
+    assert secret not in res.text
+    assert "not the key itself" in res.text
+    assert (
+        api.patch(f"/llm/providers/{p['id']}", {"api_key_env": " GB_OK_KEY "})["api_key_env"]
+        == "GB_OK_KEY"
+    )

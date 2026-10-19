@@ -22,6 +22,26 @@ from pydantic_settings import (
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
 
 
+#: The repository root (``backend/src/gamebook/config.py`` → ``../../..``).
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def load_env_files() -> list[Path]:
+    """Load ``.env`` (working directory, then the repository root) into the environment.
+
+    LLM providers name the variable holding their key (``LLM_API_KEY``); keys never go in
+    the database. Variables already set in the environment win. Returns the files read.
+    """
+    from dotenv import load_dotenv
+
+    loaded = []
+    for path in dict.fromkeys([Path.cwd() / ".env", REPO_ROOT / ".env"]):
+        if path.is_file():
+            load_dotenv(path, override=False)
+            loaded.append(path)
+    return loaded
+
+
 def _config_file() -> Path:
     return Path(os.environ.get("GAMEBOOK_CONFIG", "config.yaml"))
 

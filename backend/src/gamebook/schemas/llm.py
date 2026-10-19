@@ -1,5 +1,6 @@
 """LLM providers, prompt templates, the call log and writing settings."""
 
+import re
 from datetime import datetime
 from typing import Any, Literal
 
@@ -9,6 +10,25 @@ from gamebook.schemas.common import In, Out
 
 ProviderKind = Literal["openai", "fake"]
 KEY_ENV_PATTERN = r"^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$"
+_KEY_ENV_RE = re.compile(KEY_ENV_PATTERN)
+
+
+def _check_key_env(v: str | None) -> str | None:
+    """A variable *name* like LLM_API_KEY — never the key itself."""
+    if v is None:
+        return v
+    v = v.strip()
+    if not v:
+        return None
+    if not _KEY_ENV_RE.match(v):
+        raise ValueError(
+            "Enter the name of an environment variable that holds the key, ending in _KEY "
+            "or _TOKEN (e.g. LLM_API_KEY), not the key itself. Put the key in the server's "
+            ".env file as LLM_API_KEY=… and restart."
+        )
+    return v
+
+
 Role = Literal[
     "writer",
     "critic",
@@ -36,12 +56,14 @@ class ProviderIn(In):
     base_url: str = Field(default="", max_length=500)
     #: Only variables named like keys or tokens, so a provider can't be pointed at
     #: arbitrary server secrets.
-    api_key_env: str | None = Field(default=None, pattern=KEY_ENV_PATTERN)
+    api_key_env: str | None = Field(default=None, max_length=100)
     models: list[ModelInfo] = Field(default_factory=list, max_length=200)
     max_concurrency: int = Field(default=2, ge=1, le=32)
     timeout_s: float = Field(default=120.0, ge=5, le=1800)
     headers: dict[str, str] = Field(default_factory=dict)
     enabled: bool = True
+
+    _key_env = field_validator("api_key_env")(_check_key_env)
 
     @field_validator("base_url")
     @classmethod
@@ -54,12 +76,14 @@ class ProviderIn(In):
 class ProviderUpdate(In):
     name: str | None = Field(default=None, min_length=1, max_length=200)
     base_url: str | None = Field(default=None, max_length=500)
-    api_key_env: str | None = Field(default=None, pattern=KEY_ENV_PATTERN)
+    api_key_env: str | None = Field(default=None, max_length=100)
     models: list[ModelInfo] | None = Field(default=None, max_length=200)
     max_concurrency: int | None = Field(default=None, ge=1, le=32)
     timeout_s: float | None = Field(default=None, ge=5, le=1800)
     headers: dict[str, str] | None = None
     enabled: bool | None = None
+
+    _key_env = field_validator("api_key_env")(_check_key_env)
 
 
 class ProviderOut(Out):

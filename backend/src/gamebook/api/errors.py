@@ -19,6 +19,9 @@ from gamebook.services.errors import ServiceError
 
 log = logging.getLogger(__name__)
 
+#: Request fields where someone may paste a secret by mistake (not echoed in errors).
+_SECRET_FIELDS = frozenset({"api_key_env", "headers"})
+
 
 class ErrorResponse(BaseModel):
     detail: str
@@ -49,6 +52,10 @@ def install_error_handlers(app: FastAPI) -> None:
     async def validation_error(_: Request, exc: RequestValidationError) -> JSONResponse:
         # jsonable_encoder: errors from model validators carry exception objects in ctx.
         errors = jsonable_encoder(exc.errors())
+        for e in errors:
+            # Never echo what was typed where a secret might have been pasted.
+            if any(part in _SECRET_FIELDS for part in e.get("loc", ())):
+                e.pop("input", None)
         return _error(422, "Request validation failed", "validation_error", errors=errors)
 
     @app.exception_handler(Exception)

@@ -5,6 +5,8 @@ import json
 import sys
 from pathlib import Path
 
+from gamebook.config import load_env_files
+
 
 def cmd_serve(args: argparse.Namespace) -> None:
     import uvicorn
@@ -124,6 +126,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> None:
+    load_env_files()
     args = build_parser().parse_args(argv)
     args.func(args)
 

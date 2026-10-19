@@ -105,7 +105,11 @@ function Providers() {
   )
 }
 
+/** A variable *name* holding the key (the server's rule: keys never go in the database). */
+const KEY_ENV = /^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$/
+
 function ProviderCard({ provider: p }: { provider: Provider }) {
+  const [keyError, setKeyError] = useState<string | null>(null)
   const update = useUpdateProvider()
   const remove = useDeleteProvider()
   const test = useTestProvider()
@@ -176,21 +180,34 @@ function ProviderCard({ provider: p }: { provider: Provider }) {
               )}
             </Field>
             <Field
-              label="API key variable"
+              label="API key variable (name, not the key)"
+              error={keyError}
               hint={
                 p.api_key_env
                   ? p.api_key_present
-                    ? 'Set on the server'
-                    : 'Not set on the server'
-                  : 'No key needed'
+                    ? `${p.api_key_env} is set on the server`
+                    : `${p.api_key_env} is not set on the server: add ${p.api_key_env}=your-key to the .env file next to the app and restart it`
+                  : 'Leave empty if the server needs no key. Otherwise put the key in .env as LLM_API_KEY=… and enter LLM_API_KEY here.'
               }
             >
               {(id) => (
                 <TextInput
                   id={id}
                   value={p.api_key_env ?? ''}
-                  placeholder="e.g. OPENAI_API_KEY"
-                  onCommit={(v) => save({ api_key_env: v.trim() || null })}
+                  placeholder="e.g. LLM_API_KEY"
+                  autoComplete="off"
+                  onCommit={(v) => {
+                    const name = v.trim()
+                    if (name && !KEY_ENV.test(name)) {
+                      // Most likely the key itself was pasted: don't send it anywhere.
+                      setKeyError(
+                        'That looks like a key, not a variable name. Keys are never stored in the app: put it in the .env file as LLM_API_KEY=… and enter LLM_API_KEY here.',
+                      )
+                      return
+                    }
+                    setKeyError(null)
+                    save({ api_key_env: name || null })
+                  }}
                 />
               )}
             </Field>
