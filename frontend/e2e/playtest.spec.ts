@@ -159,3 +159,43 @@ test('coverage walk finds unreachable content', async ({ page }) => {
   await expect(result).toContainText('3 of 4', { timeout: 30_000 })
   await expect(result.getByRole('link', { name: 'Forgotten Crypt' })).toBeVisible()
 })
+
+test('LLM players play a batch and say where the book confused them', async ({ page }) => {
+  const { bookId, start } = await playableBook(page)
+  // No text at the start: the offline player says it's confused there.
+  await page.request.patch(`/api/nodes/${start}`, { data: { beat_notes: '' } })
+  await page.request.post('/api/llm/providers', {
+    data: {
+      name: `Offline ${rand()}`,
+      kind: 'fake',
+      models: [{ id: 'offline', input_per_mtok: 1000, output_per_mtok: 1000 }],
+    },
+  })
+  await page.goto(`/playtest/${bookId}`)
+  const form = page.getByRole('region', { name: 'New batch' })
+  await form.getByRole('radio', { name: 'LLM players' }).click()
+  await expect(form.getByLabel('Runs')).toHaveValue('10')
+  await form.getByLabel('Runs').fill('3')
+  await form.getByLabel('Runs').press('Enter')
+  await form.getByLabel('Persona').selectOption('reckless')
+  await form.getByLabel('Label').fill('Readers')
+  await form.getByLabel('Label').press('Enter')
+  await form.getByRole('button', { name: /Run 3 games/ }).click()
+
+  await expect(page.getByRole('heading', { name: 'Readers', exact: true })).toBeVisible({
+    timeout: 30_000,
+  })
+  const confusion = page.getByRole('region', { name: 'Where players got confused' })
+  await expect(confusion).toContainText('Start')
+  await expect(confusion).toContainText("There's no text here")
+  await expect(confusion).toContainText('$')
+  await expect(page.getByRole('region', { name: 'Runs', exact: true })).toContainText('Confused')
+
+  await confusion.getByRole('button', { name: /^Replay run 1 \(step 1\)/ }).click()
+  const replay = page.getByRole('region', { name: 'Replay of run 1' })
+  // Opens at the step the player found confusing.
+  await expect(replay.getByText(/Step 0 \//)).toBeVisible()
+  const note = replay.getByRole('region', { name: "Player's reasoning" })
+  await expect(note).toContainText('Next, the player chose: Fight the orc')
+  await expect(note).toContainText('Confused:')
+})

@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from gamebook import __version__
 from gamebook.api.errors import ErrorResponse, install_error_handlers
 from gamebook.api.routers import (
+    assist,
     books,
     entities,
     health,
@@ -94,6 +95,7 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
         playtest,
         llm,
         writing,
+        assist,
         tools,
     ):
         app.include_router(module.router, prefix=API_PREFIX)

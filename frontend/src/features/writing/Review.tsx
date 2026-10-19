@@ -23,6 +23,7 @@ import {
   useWriteProse,
 } from './api'
 import { diffWords } from './diff'
+import { Findings } from './Findings'
 
 const words = (t: string) => (t.trim() ? t.trim().split(/\s+/).length : 0)
 
@@ -87,7 +88,15 @@ export function Review({ bookId, row }: { bookId: string; row: QueueRow }) {
             <HandWrite bookId={bookId} variantId={row.variant_id} />
           )}
         </div>
-        <Critique runId={current?.pipeline_run_id ?? null} />
+        <div className="space-y-4">
+          <Critique runId={current?.pipeline_run_id ?? null} />
+          <Findings
+            bookId={bookId}
+            nodeId={row.node_id}
+            variantId={row.variant_id}
+            hasProse={versions.length > 0}
+          />
+        </div>
       </div>
     </div>
   )

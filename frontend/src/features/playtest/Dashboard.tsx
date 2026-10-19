@@ -8,7 +8,7 @@ import { Select } from '@/components/ui/inputs'
 import { cn } from '@/lib/utils'
 
 import { type BatchDetail, useRuns } from './api'
-import { METRICS, OUTCOME_LABELS, pct, type Summary } from './summary'
+import { METRICS, OUTCOME_LABELS, pct, type Summary, usd } from './summary'
 
 type Names = BatchDetail['names']
 
@@ -39,7 +39,7 @@ export function Dashboard({
   onReplay,
 }: {
   batch: BatchDetail
-  onReplay: (index: number) => void
+  onReplay: (index: number, step?: number) => void
 }) {
   const s = batch.summary as unknown as Summary | null
   if (!s) return null
@@ -95,6 +95,52 @@ export function Dashboard({
           <Flame className="size-3.5" aria-hidden /> Show heat on the canvas
         </Link>
       </div>
+
+      {s.llm && (
+        <Card title="Where players got confused">
+          <p className="text-sm text-muted">
+            {s.llm.confused_steps} of {s.llm.steps} steps flagged as confusing ·{' '}
+            {usd(batch.cost_usd ?? s.llm.cost_usd)} spent
+            {s.llm.stopped_runs > 0 && ` · ${s.llm.stopped_runs} run(s) stopped early`}
+            {(s.llm.failed_runs ?? 0) > 0 &&
+              ` · ${s.llm.failed_runs} run(s) ended by a model error (resume replays them)`}
+          </p>
+          {s.llm.confusion.length === 0 ? (
+            <p className="text-sm">No confusion reported.</p>
+          ) : (
+            <ul className="space-y-3">
+              {s.llm.confusion.map((c) => (
+                <li key={c.node_id ?? ''} className="space-y-1 text-sm">
+                  <div className="flex items-baseline gap-2">
+                    {c.node_id ? (
+                      <NodeLink id={c.node_id} />
+                    ) : (
+                      <span>Before the first section</span>
+                    )}
+                    <span className="text-xs text-muted tabular-nums">
+                      {c.count} step{c.count === 1 ? '' : 's'}
+                    </span>
+                  </div>
+                  <ul className="space-y-0.5 border-l-2 border-warning/40 pl-3 text-muted">
+                    {c.notes.map((n) => (
+                      <li key={`${n.run}:${n.step}`}>
+                        <button
+                          type="button"
+                          className="text-left hover:text-text"
+                          onClick={() => onReplay(n.run, n.step)}
+                          aria-label={`Replay run ${n.run + 1} (step ${n.step + 1}): ${n.text}`}
+                        >
+                          “{n.text}” <span className="text-xs">(run #{n.run + 1})</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Outcomes">
@@ -266,12 +312,13 @@ function RunBrowser({
   onReplay,
 }: {
   batch: BatchDetail
-  onReplay: (index: number) => void
+  onReplay: (index: number, step?: number) => void
 }) {
   const s = batch.summary as unknown as Summary
   const [outcome, setOutcome] = useState<string | null>(null)
   const [offset, setOffset] = useState(0)
   const runs = useRuns(batch.id, outcome, offset)
+  const llm = batch.player.kind === 'llm'
   const total = runs.data?.total ?? 0
   return (
     <Card title="Runs">
@@ -317,6 +364,8 @@ function RunBrowser({
             <th className="text-left font-medium">Outcome</th>
             <th className="text-left font-medium">Ended at</th>
             <th className="text-right font-medium">Steps</th>
+            {llm && <th className="text-right font-medium">Confused</th>}
+            {llm && <th className="text-right font-medium">Cost</th>}
             <th />
           </tr>
         </thead>
@@ -337,6 +386,8 @@ function RunBrowser({
                 {r.last_node_id ? nodeName(batch.names, r.last_node_id) : '—'}
               </td>
               <td className="text-right tabular-nums">{r.steps}</td>
+              {llm && <td className="text-right tabular-nums">{r.confused_steps}</td>}
+              {llm && <td className="text-right tabular-nums">{usd(r.cost_usd ?? 0)}</td>}
               <td className="text-right">
                 <Button
                   size="sm"

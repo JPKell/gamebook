@@ -120,6 +120,10 @@ def test_templates_are_versioned(api: Api, setup: Json) -> None:
         "critic",
         "editor",
         "summarizer",
+        "consistency",
+        "suggester",
+        "lore_extractor",
+        "player",
     }
     writer = next(t for t in tpls if t["role"] == "writer")
     v2 = api.post("/llm/templates/writer", {"system": "Be brief.", "user": "{{ ctx.node.title }}"})

@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, SkipBack, SkipForward, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, CircleHelp, SkipBack, SkipForward, X } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -7,19 +7,22 @@ import { type BatchDetail, useReplay } from './api'
 import { Scene, Sheet } from './Player'
 import { OUTCOME_LABELS } from './summary'
 
-/** Step through a stored bot run (replayed on the bundle the batch played). */
+/** Step through a stored run (replayed on the bundle the batch played). */
 export function Replay({
   batch,
   index,
+  initialStep = null,
   onClose,
 }: {
   batch: BatchDetail
   index: number
+  /** Open at this step (e.g. where the player got confused) instead of the end. */
+  initialStep?: number | null
   onClose: () => void
 }) {
   const full = useReplay(batch.id, index, null)
   const total = full.data?.steps ?? 0
-  const [step, setStep] = useState<number | null>(null)
+  const [step, setStep] = useState<number | null>(initialStep)
   const at = step ?? total
   // Scrubbing the slider asks for the latest position only, not every tick.
   const view = useReplay(batch.id, index, useDeferredValue(step))
@@ -97,7 +100,7 @@ export function Replay({
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="space-y-3">
             <Scene view={data} bookId={batch.book_id} turn={at - 1} />
-            {at < total && (
+            {at < total && !data.next_note && (
               <p className="text-sm text-muted">
                 Next, the bot chose:{' '}
                 <span className="font-medium text-text">
@@ -105,9 +108,40 @@ export function Replay({
                 </span>
               </p>
             )}
+            {data.next_note && <PlayerNote note={data.next_note as unknown as Note} />}
           </div>
           <Sheet view={data} />
         </div>
+      )}
+    </section>
+  )
+}
+
+interface Note {
+  option: string
+  reasoning: string
+  confused: boolean
+  confusion: string
+}
+
+/** What an LLM player thought at this step, and what it chose. */
+function PlayerNote({ note }: { note: Note }) {
+  return (
+    <section
+      aria-label="Player's reasoning"
+      className="space-y-1 rounded-lg border border-border bg-surface-2/50 p-3 text-sm"
+    >
+      <p className="text-muted">
+        Next, the player chose: <span className="font-medium text-text">{note.option}</span>
+      </p>
+      {note.reasoning && <p className="italic">“{note.reasoning}”</p>}
+      {note.confused && (
+        <p className="flex items-start gap-1.5 text-warning">
+          <CircleHelp className="mt-0.5 size-4 shrink-0" aria-hidden />
+          <span>
+            <span className="font-medium">Confused:</span> {note.confusion || 'no details given'}
+          </span>
+        </p>
       )}
     </section>
   )

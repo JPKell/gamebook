@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { BookOpen, Library, PenLine, Settings2, Sparkles } from 'lucide-react'
+import { BookOpen, Library, PenLine, ScanSearch, Settings2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router'
 
@@ -10,6 +10,7 @@ import { Dialog } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty'
 import { Field } from '@/components/ui/field'
 import { NumberInput, Select } from '@/components/ui/inputs'
+import { useCheckConsistency } from '@/features/assist/api'
 import { isActive, useJobStream } from '@/features/playtest/api'
 import { cn } from '@/lib/utils'
 import { useUiStore } from '@/stores/ui'
@@ -58,6 +59,7 @@ export function WritingPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Writing</h1>
         <span className="text-muted">{book.data?.title}</span>
         <div className="ml-auto flex gap-2">
+          <CheckBook bookId={bookId} />
           <Button size="sm" variant="outline" onClick={() => setActOpen(true)}>
             <Sparkles className="size-4" /> Write an act
           </Button>
@@ -254,5 +256,36 @@ function ActDialog({
         )}
       </div>
     </Dialog>
+  )
+}
+
+function CheckBook({ bookId }: { bookId: string }) {
+  const qc = useQueryClient()
+  const check = useCheckConsistency(bookId)
+  const job = useJobStream(
+    check.data?.id,
+    () => void qc.invalidateQueries({ queryKey: ['book', bookId] }),
+  )
+  const running = check.isPending || isActive(job?.status)
+  const result = job?.result as
+    | { issues: number; checked: number; failed?: { node_id: string; error: string }[] }
+    | null
+    | undefined
+  const failed = result?.failed?.length ?? 0
+  return (
+    <div className="flex items-center gap-2">
+      {job && !running && (
+        <span role="status" className="text-xs text-muted">
+          {job.status === 'done' && result
+            ? `${result.checked} checked, ${result.issues} issue${result.issues === 1 ? '' : 's'} (see Problems)` +
+              (failed ? `; ${failed} couldn't be checked: ${result.failed![0]!.error}` : '')
+            : job.error}
+        </span>
+      )}
+      <Button size="sm" variant="outline" disabled={running} onClick={() => check.mutate({})}>
+        <ScanSearch className="size-4" />{' '}
+        {running ? `Checking ${job?.progress ?? 0}/${job?.total ?? '…'}` : 'Check consistency'}
+      </Button>
+    </div>
   )
 }

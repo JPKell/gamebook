@@ -11,10 +11,11 @@ from __future__ import annotations
 import random
 import statistics
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
 
-from gamebook.core.engine.events import Event
+from gamebook.core.engine.events import Action, Event
 from gamebook.core.engine.game import Game, GameError
 from gamebook.core.model import BookSnapshot
 from gamebook.core.sim.bots import BotName, make_bot
@@ -108,23 +109,46 @@ class _Observer:
                     rec.error_sample = rec.error_sample or f"{d['where']}: {d['message']}"
 
 
-def play_run(
-    book: BookSnapshot, tier: str, seed: int, bot: BotName, *, max_steps: int, index: int = 0
+class StopRun(Exception):  # noqa: N818 - control flow, not an error
+    """Raised by a chooser to end a run early (e.g. a spending cap was reached)."""
+
+
+#: Picks an index into ``options``. Gets the events of the previous step (or of
+#: character creation) so a player can be told what just happened.
+Chooser = Callable[[Game, list[Action], list[Event]], int]
+
+
+def play_with(
+    book: BookSnapshot,
+    tier: str,
+    seed: int,
+    choose: Chooser,
+    *,
+    max_steps: int,
+    index: int = 0,
 ) -> RunRecord:
+    """Play one game with any chooser (a bot, or an LLM)."""
     rec = RunRecord(index, seed, "max_steps", None, None, 0, [])
     obs = _Observer(rec)
-    player = make_bot(bot)
-    rng = bot_rng(bot, seed)
+    stopped = False
     try:
         game = Game(book, tier, seed)
-        obs.see(game.start())
+        last = game.start()
+        obs.see(last)
         while not game.state.ended and game.state.steps < max_steps:
             options = game.available()
             if not options:
                 break
-            pick = player.choose(game, options, rng)
+            try:
+                pick = choose(game, options, last)
+            except StopRun:
+                stopped = True
+                break
+            if not 0 <= pick < len(options):
+                raise ValueError(f"Chooser picked {pick} of {len(options)} options")
             rec.picks.append(pick)
-            obs.see(game.step(options[pick]))
+            last = game.step(options[pick])
+            obs.see(last)
             game.log.clear()  # events are folded in; keep memory flat
     except Exception as exc:  # one broken run must not fail the batch
         rec.outcome = "error"
@@ -134,6 +158,8 @@ def play_run(
     s = game.state
     rec.steps = s.steps
     rec.last_node_id = s.node_id
+    if stopped:
+        rec.outcome = "stopped"
     if s.ended:
         rec.outcome = s.ended
         rec.ending_node_id = s.ending_node_id
@@ -145,6 +171,21 @@ def play_run(
         else:
             rec.death_cause = "stat"
     return rec
+
+
+def play_run(
+    book: BookSnapshot, tier: str, seed: int, bot: BotName, *, max_steps: int, index: int = 0
+) -> RunRecord:
+    player = make_bot(bot)
+    rng = bot_rng(bot, seed)
+    return play_with(
+        book,
+        tier,
+        seed,
+        lambda game, options, _events: player.choose(game, options, rng),
+        max_steps=max_steps,
+        index=index,
+    )
 
 
 def replay_run(book: BookSnapshot, tier: str, seed: int, picks: list[int]) -> Game:

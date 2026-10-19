@@ -1,4 +1,4 @@
-import { BookOpen, ListTree, MapPin, UserRound } from 'lucide-react'
+import { BookOpen, ListTree, MapPin, Sparkles, UserRound } from 'lucide-react'
 import { useParams, useSearchParams } from 'react-router'
 
 import { useEntities, useSeries } from '@/api/queries'
@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { useUiStore } from '@/stores/ui'
 
 import { CharacterEditor, LoreEditor } from './editors'
+import { LoreDrafts } from './LoreDrafts'
 import { LORE_TYPES } from './types'
 import { Outline } from './Outline'
 
@@ -19,13 +20,13 @@ export const LoreIndex = () => (
   <SeriesRedirect base="/lore" icon={BookOpen} what="Characters and lore" />
 )
 
-type Tab = 'characters' | 'entries' | 'outline'
+type Tab = 'characters' | 'entries' | 'outline' | 'drafts'
 
 export function LorePage() {
   const { seriesId = '' } = useParams()
   const [params, setParams] = useSearchParams()
   const tab: Tab =
-    (['entries', 'outline'] as const).find((t) => t === params.get('tab')) ?? 'characters'
+    (['entries', 'outline', 'drafts'] as const).find((t) => t === params.get('tab')) ?? 'characters'
   const set = (patch: Record<string, string | null>) =>
     setParams(
       (p) => {
@@ -51,6 +52,7 @@ export function LorePage() {
               ['characters', 'Characters', UserRound],
               ['entries', 'Places & lore', MapPin],
               ['outline', 'Outline', ListTree],
+              ['drafts', 'From prose', Sparkles],
             ] as const
           ).map(([v, label, Icon]) => (
             <button
@@ -75,6 +77,7 @@ export function LorePage() {
       {tab === 'entries' && (
         <Entries seriesId={seriesId} id={params.get('id')} select={(id) => set({ id })} />
       )}
+      {tab === 'drafts' && <LoreDrafts seriesId={seriesId} />}
       {tab === 'outline' && (
         <OutlineTab
           seriesId={seriesId}

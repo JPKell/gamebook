@@ -13,7 +13,16 @@ from typing import Any
 from jinja2 import StrictUndefined, TemplateError
 from jinja2.sandbox import SandboxedEnvironment
 
-ROLES = ("writer", "critic", "editor", "summarizer")
+ROLES = (
+    "writer",
+    "critic",
+    "editor",
+    "summarizer",
+    "consistency",
+    "suggester",
+    "lore_extractor",
+    "player",
+)
 
 RUBRIC = (
     "beat_adherence",
@@ -151,6 +160,205 @@ ISSUES TO FIX:
 </text>""",
     ),
 }
+
+CONSISTENCY_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "issues": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "severity": {"type": "string", "enum": ["warning", "info"]},
+                    "kind": {
+                        "type": "string",
+                        "enum": ["path_validity", "lore", "continuity", "mechanics", "other"],
+                    },
+                    "quote": {"type": "string"},
+                    "problem": {"type": "string"},
+                    "suggestion": {"type": "string"},
+                },
+                "required": ["problem"],
+            },
+        }
+    },
+    "required": ["issues"],
+}
+
+SUGGESTER_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "rationale": {"type": "string"},
+        "nodes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ref": {"type": "string"},
+                    "title": {"type": "string"},
+                    "beat_notes": {"type": "string"},
+                    "beat": {"type": "string"},
+                },
+                "required": ["ref", "title"],
+            },
+        },
+        "choices": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "from": {"type": "string"},
+                    "to": {"type": "string"},
+                    "label": {"type": "string"},
+                },
+                "required": ["from", "to"],
+            },
+        },
+    },
+    "required": ["nodes", "choices"],
+}
+
+LORE_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "characters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "existing_key": {"type": ["string", "null"]},
+                    "role": {"type": "string"},
+                    "appearance": {"type": "string"},
+                    "voice": {"type": "string"},
+                    "motivations": {"type": "string"},
+                    "notes": {"type": "string"},
+                    "evidence": {"type": "string"},
+                },
+                "required": ["name"],
+            },
+        },
+        "entries": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "existing_key": {"type": ["string", "null"]},
+                    "type": {
+                        "type": "string",
+                        "enum": ["location", "faction", "history", "glossary", "other"],
+                    },
+                    "body": {"type": "string"},
+                    "evidence": {"type": "string"},
+                },
+                "required": ["name"],
+            },
+        },
+    },
+    "required": ["characters", "entries"],
+}
+
+DEFAULTS["consistency"] = (
+    "You check one section of an interactive gamebook for consistency. Report only real "
+    "problems: the prose assumes something only some readers have (path_validity), "
+    "contradicts the lore or characters (lore), contradicts the section before it "
+    "(continuity), or contradicts the game mechanics, e.g. mentions an item or enemy that "
+    "isn't there (mechanics). Quote the exact words. If there's nothing wrong, return no "
+    'issues. Respond with JSON only: {"issues": [{"severity": "warning"|"info", "kind", '
+    '"quote", "problem", "suggestion"}]}.',
+    _CONTEXT
+    + """
+<may>{{ ctx.digest.may_text }}</may>
+<prose>
+{{ prose }}
+</prose>""",
+)
+
+DEFAULTS["suggester"] = (
+    "You help plan an interactive gamebook. From the act outline and the sections that "
+    "already exist, propose new sections and choices that cover the story beats with no "
+    "sections yet, and fill dead ends. Keep it small: at most five new sections. Refer to "
+    "existing sections by their key and to new ones by a ref like new1. Respond with JSON "
+    'only: {"rationale", "nodes": [{"ref", "title", "beat_notes", "beat"}], '
+    '"choices": [{"from", "to", "label"}]}.',
+    """BOOK: {{ book.title }}
+ACT: {{ act.title }}{% if act.summary %} — {{ act.summary }}{% endif %}
+STORY BEATS
+{% for b in beats %}- {{ b.title }}{% if b.description %}: {{ b.description }}{% endif %}{% if b.nodes %} (told in: {{ b.nodes | join(", ") }}){% else %} (NO SECTIONS YET){% endif %}
+{% endfor %}<unlinked_beats>
+{% for b in beats if not b.nodes %}{{ b.title }}|{{ b.description }}
+{% endfor %}</unlinked_beats>
+EXISTING SECTIONS (key | title | notes | choices)
+<nodes>
+{% for n in nodes %}{{ n.key }}|{{ n.title }}|{{ n.flags }}|{{ n.beat_notes }}|{% for c in n.choices %}{{ c.label }} -> {{ c.to }}; {% endfor %}
+{% endfor %}</nodes>
+{% if notes %}AUTHOR'S NOTES: {{ notes }}
+{% endif %}Propose the new sections and choices now.""",
+)
+
+DEFAULTS["lore_extractor"] = (
+    "You maintain the lore wiki of a gamebook series. From the approved prose below, list "
+    "characters and places, factions, history or terms that the wiki doesn't have yet, or "
+    "new facts about ones it has (give existing_key for those). Only include what the prose "
+    "states; quote it as evidence. Respond with JSON only: "
+    '{"characters": [{"name", "existing_key", "role", "appearance", "voice", "motivations", '
+    '"notes", "evidence"}], "entries": [{"name", "existing_key", "type", "body", "evidence"}]}.',
+    """THE WIKI ALREADY HAS
+<existing>
+{% for e in existing %}{{ e.kind }}|{{ e.key }}|{{ e.name }}
+{% endfor %}</existing>
+APPROVED PROSE
+{% for p in prose %}<section title="{{ p.title }}">
+{{ p.text }}
+</section>
+{% endfor %}""",
+)
+
+PLAYER_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "choice": {"type": "integer", "minimum": 1},
+        "reasoning": {"type": "string"},
+        "memory": {"type": "string"},
+        "confused": {"type": "boolean"},
+        "confusion": {"type": "string"},
+    },
+    "required": ["choice", "reasoning", "memory"],
+}
+
+#: How each persona plays (the player's system prompt includes one).
+PERSONAS: dict[str, str] = {
+    "cautious": "You play carefully: you avoid fights and gambles when there's another way, "
+    "keep your health up, and value survival over treasure.",
+    "reckless": "You play boldly: you take fights, gambles and risky shortcuts, and you "
+    "rarely back down.",
+    "completionist": "You want to see everything: you pick up every item, explore side paths "
+    "and try options you haven't tried before.",
+    "role-player": "You play as the hero of the story: you choose what the character would "
+    "most plausibly do given the story so far, not what is mechanically best.",
+}
+
+DEFAULTS["player"] = (
+    "You are playing an interactive gamebook as a reader, one section at a time. You see "
+    "only what a reader sees. {{ persona }} Pick one of the numbered options. If the text is "
+    "confusing, contradicts itself, or doesn't explain your options, say so in "
+    '"confusion" and set "confused" to true; otherwise leave it empty. Keep "memory" as a '
+    "short running summary (under 80 words) of your adventure so far and what you want to "
+    "do next. Respond with JSON only: "
+    '{"choice": <number>, "reasoning": "...", "memory": "...", "confused": false, '
+    '"confusion": ""}.',
+    """{% if memory %}YOUR NOTES SO FAR
+{{ memory }}
+
+{% endif %}<page>
+{{ page }}
+</page>
+<options>
+{% for o in options %}{{ loop.index }}. {{ o }}
+{% endfor %}</options>
+Choose a number from 1 to {{ options | length }}.""",
+)
 
 _env = SandboxedEnvironment(undefined=StrictUndefined, autoescape=False, keep_trailing_newline=True)
 

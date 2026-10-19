@@ -52,3 +52,21 @@ def _is_stdlib(name: str) -> bool:
     import sys
 
     return name in sys.stdlib_module_names or name == "__future__"
+
+
+def test_operation_ids_are_unique() -> None:
+    """Route function names become client operation ids; a duplicate silently
+    mixes up two endpoints' types in the generated TypeScript client."""
+    from collections import Counter
+
+    from gamebook.api import create_app
+    from gamebook.config import Settings
+
+    app = create_app(Settings(database_url="sqlite:///:memory:", auto_migrate=False))
+    ids = [
+        op["operationId"]
+        for path in app.openapi()["paths"].values()
+        for op in path.values()
+        if isinstance(op, dict) and "operationId" in op
+    ]
+    assert [k for k, n in Counter(ids).items() if n > 1] == []

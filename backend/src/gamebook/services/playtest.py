@@ -23,11 +23,13 @@ from gamebook.schemas.playtest import (
     BatchOut,
     CoverageIn,
     JobOut,
+    LlmPlayer,
     PlayOut,
+    ResumeIn,
     RunOut,
     RunPage,
 )
-from gamebook.services import play, simpool, snapshot
+from gamebook.services import llm_play, play, simpool, snapshot
 from gamebook.services.common import require
 from gamebook.services.errors import ConflictError, InvalidError
 
@@ -68,15 +70,21 @@ def create_batch(session: Session, book_id: str, data: BatchIn) -> PlaytestBatch
     require(session, Book, book_id)
     book, bundle, digest = content(session, book_id)
     _check_playable(book, data.tier)
-    bot = data.player.bot
-    label = data.label or f"{data.runs:,} {bot} · {data.tier}"
+    player = data.player.model_dump()
+    if isinstance(data.player, LlmPlayer):
+        llm_play.check_player(session, data.player)
+        who = f"{data.player.model} ({data.player.persona})"
+        player["budget_usd"] = data.budget_usd
+    else:
+        who = data.player.bot
+    label = data.label or f"{data.runs:,} {who} · {data.tier}"
     job = _job(session, "batch", f"Playtest: {label}", data.runs, {"book_id": book_id})
     batch = PlaytestBatch(
         book_id=book_id,
         job_id=job.id,
         label=label,
         tier=data.tier,
-        player=data.player.model_dump(),
+        player=player,
         n_runs=data.runs,
         seed_base=data.seed_base,
         max_steps=data.max_steps,
@@ -150,9 +158,59 @@ def recover(db: Database) -> int:
         session.close()
 
 
+def is_llm(batch: PlaytestBatch) -> bool:
+    return batch.player.get("kind") == "llm"
+
+
 def start_batch(runner: JobRunner, workers: int, batch: PlaytestBatch) -> None:
     assert batch.job_id is not None
-    runner.submit(batch.job_id, batch_job(batch.id, workers), finish_batch(runner.db, batch.id))
+    if is_llm(batch):
+        # Own lane: an LLM batch can take hours and mustn't hold up other jobs.
+        runner.submit(
+            batch.job_id,
+            llm_play.batch_job(batch.id),
+            finish_batch(runner.db, batch.id),
+            lane="llm",
+        )
+    else:
+        runner.submit(batch.job_id, batch_job(batch.id, workers), finish_batch(runner.db, batch.id))
+
+
+def resume_batch(session: Session, batch_id: str, data: ResumeIn) -> PlaytestBatch:
+    """Play an LLM batch's missing and stopped runs (optionally with a new budget)."""
+    b = require(session, PlaytestBatch, batch_id)
+    if not is_llm(b):
+        raise ConflictError("Only LLM batches can be resumed; start a new bot batch instead")
+    if b.status in ("queued", "running"):
+        raise ConflictError("This batch is still running")
+    left = session.scalar(
+        select(func.count()).where(
+            PlaytestRun.batch_id == b.id, PlaytestRun.outcome.in_(llm_play.REPLAYABLE)
+        )
+    )
+    if b.status == "done" and not left:
+        raise ConflictError("This batch has played all its runs")
+    budget = data.budget_usd if data.budget_usd is not None else b.player.get("budget_usd")
+    if budget is not None and b.cost_usd >= budget:
+        raise InvalidError(
+            f"The batch has already spent ${b.cost_usd:.4f}; raise the budget to continue",
+            field="budget_usd",
+        )
+    llm_play.check_player(
+        session, LlmPlayer.model_validate({k: v for k, v in b.player.items() if k != "budget_usd"})
+    )
+    b.player = {**b.player, "budget_usd": budget}
+    job = _job(
+        session,
+        "batch",
+        f"Playtest (resumed): {b.label}",
+        b.n_runs,
+        {"book_id": b.book_id, "batch_id": b.id},
+    )
+    b.job_id = job.id
+    b.status = "queued"
+    session.flush()
+    return b
 
 
 def _batch_out(b: PlaytestBatch, current_hash: str | None) -> dict[str, Any]:
@@ -206,13 +264,20 @@ def get_batch(session: Session, batch_id: str) -> BatchDetail:
 
 def delete_batch(session: Session, runner: JobRunner, batch_id: str) -> None:
     b = require(session, PlaytestBatch, batch_id)
-    if b.status in ("queued", "running") and b.job_id:
+    running = b.status in ("queued", "running")
+    if running and b.job_id:
         runner.cancel(b.job_id)
-    job_id = b.job_id
+    # Every job the batch ran (a resumed batch has several); a running one is left
+    # to finish cancelling and records its own end.
+    jobs = [
+        j.id
+        for j in session.scalars(select(Job).where(Job.kind == "batch"))
+        if (j.payload or {}).get("batch_id") == batch_id and not (running and j.id == b.job_id)
+    ]
     session.execute(delete(PlaytestRun).where(PlaytestRun.batch_id == batch_id))
     session.delete(b)
-    if job_id and b.status not in ("queued", "running"):
-        session.execute(delete(Job).where(Job.id == job_id))
+    if jobs:
+        session.execute(delete(Job).where(Job.id.in_(jobs)))
 
 
 def list_runs(
@@ -224,7 +289,18 @@ def list_runs(
         q = q.where(PlaytestRun.outcome == outcome)
     total = session.scalar(select(func.count()).select_from(q.subquery())) or 0
     rows = session.scalars(q.order_by(PlaytestRun.index).offset(offset).limit(limit))
-    return RunPage(total=total, runs=[RunOut.model_validate(r) for r in rows])
+    return RunPage(
+        total=total,
+        runs=[
+            RunOut.model_validate(
+                {
+                    **{k: getattr(r, k) for k in RunOut.model_fields if hasattr(r, k)},
+                    "confused_steps": sum(bool(n.get("confused")) for n in r.notes or []),
+                }
+            )
+            for r in rows
+        ],
+    )
 
 
 def replay(session: Session, batch_id: str, index: int, upto: int | None) -> PlayOut:
@@ -250,7 +326,8 @@ def replay(session: Session, batch_id: str, index: int, upto: int | None) -> Pla
         game.step(options[pick])
         turns += [i] * (len(game.log) - mark)
     ids = [game.state.node_id] if game.state.node_id else []
-    return play.view(
+    notes = run.notes or []
+    out = play.view(
         game,
         turns=turns,
         applied=len(picks),
@@ -258,6 +335,9 @@ def replay(session: Session, batch_id: str, index: int, upto: int | None) -> Pla
         beat_notes=play.beat_notes_for(session, ids),
         prose=play.prose_for(session, [game.state.variant_id] if game.state.variant_id else []),
     )
+    # LLM runs: what the player thought at this step, and why it chose what it did.
+    out.next_note = notes[len(picks)] if len(picks) < len(notes) else None
+    return out
 
 
 # ── coverage ─────────────────────────────────────────────────────────────

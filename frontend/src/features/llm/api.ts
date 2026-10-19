@@ -11,7 +11,15 @@ export type ProviderUpdate = S['ProviderUpdate']
 export type ModelInfo = S['ModelInfo']
 export type Template = S['TemplateOut']
 export type WritingSettings = S['WritingSettings']
-export type Role = 'writer' | 'critic' | 'editor' | 'summarizer'
+export type Role =
+  | 'writer'
+  | 'critic'
+  | 'editor'
+  | 'summarizer'
+  | 'consistency'
+  | 'suggester'
+  | 'lore_extractor'
+  | 'player'
 export const ROLES: { key: Role; label: string; hint: string }[] = [
   { key: 'writer', label: 'Writer', hint: 'Drafts the prose for a section.' },
   {
@@ -21,7 +29,30 @@ export const ROLES: { key: Role; label: string; hint: string }[] = [
   },
   { key: 'editor', label: 'Editor', hint: 'Rewrites the draft to fix the critic’s issues.' },
   { key: 'summarizer', label: 'Summarizer', hint: 'Writes the 2–3 sentence “story so far” note.' },
+  {
+    key: 'consistency',
+    label: 'Consistency',
+    hint: 'Checks prose against lore, the state digest and the previous section.',
+  },
+  {
+    key: 'suggester',
+    label: 'Suggester',
+    hint: 'Proposes new sections and choices for uncovered story beats.',
+  },
+  {
+    key: 'lore_extractor',
+    label: 'Lore extractor',
+    hint: 'Finds characters and places in approved prose.',
+  },
+  {
+    key: 'player',
+    label: 'Player',
+    hint: 'Plays the book as a reader in LLM playtests (its model is chosen per batch).',
+  },
 ]
+
+/** Roles whose model is set in a series' pipeline settings (the player's is per batch). */
+export const PIPELINE_ROLES = ROLES.filter((r) => r.key !== 'player')
 
 const lk = {
   providers: ['llm', 'providers'] as const,

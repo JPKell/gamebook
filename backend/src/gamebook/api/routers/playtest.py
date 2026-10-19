@@ -23,6 +23,7 @@ from gamebook.schemas.playtest import (
     JobOut,
     PlayIn,
     PlayOut,
+    ResumeIn,
     RunPage,
 )
 from gamebook.services import play, playtest, simpool
@@ -63,6 +64,17 @@ def create_batch(
     session.commit()  # the job thread reads the batch
     playtest.start_batch(runner, simpool.processes(settings.sim_processes), batch)
     return BatchOut.model_validate(playtest._batch_out(batch, batch.content_hash))
+
+
+@router.post("/batches/{batch_id}/resume", response_model=BatchOut)
+def resume_batch(
+    batch_id: str, data: ResumeIn, session: SessionDep, runner: RunnerDep, settings: SettingsDep
+) -> BatchOut:
+    """Continue an LLM batch that was cancelled, failed or ran out of budget."""
+    batch = playtest.resume_batch(session, batch_id, data)
+    session.commit()
+    playtest.start_batch(runner, simpool.processes(settings.sim_processes), batch)
+    return BatchOut.model_validate(playtest._batch_out(batch, None))
 
 
 @router.get("/books/{book_id}/batches", response_model=list[BatchOut])

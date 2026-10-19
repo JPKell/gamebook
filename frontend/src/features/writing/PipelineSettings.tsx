@@ -8,7 +8,7 @@ import { NumberInput, Select } from '@/components/ui/inputs'
 import {
   type ModelInfo,
   type Role,
-  ROLES,
+  PIPELINE_ROLES,
   useProviders,
   useSaveWritingSettings,
   useWritingSettings,
@@ -84,7 +84,7 @@ function SettingsForm({
             </tr>
           </thead>
           <tbody>
-            {ROLES.map((r) => {
+            {PIPELINE_ROLES.map((r) => {
               const rm = draft.roles?.[r.key]
               const provider = enabled.find((p) => p.id === rm?.provider_id)
               const models = (provider?.models ?? []) as ModelInfo[]

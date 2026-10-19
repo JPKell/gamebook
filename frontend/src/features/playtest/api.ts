@@ -109,6 +109,23 @@ export function useCreateBatch(bookId: string) {
   })
 }
 
+export function useResumeBatch(bookId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, budget }: { id: string; budget?: number | null }) =>
+      unwrap(
+        api.POST('/api/batches/{batch_id}/resume', {
+          params: { path: { batch_id: id } },
+          body: { budget_usd: budget ?? null },
+        }),
+      ),
+    onSuccess: (b) => {
+      void qc.invalidateQueries({ queryKey: pk.batches(bookId) })
+      void qc.invalidateQueries({ queryKey: pk.batch(b.id) })
+    },
+  })
+}
+
 export function useDeleteBatch(bookId: string) {
   const qc = useQueryClient()
   return useMutation({

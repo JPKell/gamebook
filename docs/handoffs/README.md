@@ -15,7 +15,9 @@ and what the next phase needs. Read the latest one before starting a phase.
 | 5 | In-app player & bot simulation | `v2-phase-05-playtest.md` | ✅ Complete |
 | 6 | Lore, outline, state digest | `v2-phase-06-lore-digest.md` | ✅ Complete |
 | 7 | LLM infrastructure & prose pipeline | `v2-phase-07-prose.md` | ✅ Complete |
-| 8 | LLM authoring assists | | Next |
+| 8 | LLM authoring assists | `v2-phase-08-assists.md` | ✅ Complete |
+| 9 | LLM players | `v2-phase-09-llm-players.md` | ✅ Complete |
+| 10 | Artwork, maps & appendices | | Next |
 
 ## v1 prototype (archived; code at tag `v1-prototype`)
 

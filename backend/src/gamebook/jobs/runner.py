@@ -7,7 +7,7 @@ import threading
 import time
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any
+from typing import Any, Literal
 
 from sqlalchemy import select
 
@@ -63,6 +63,8 @@ class JobRunner:
     def __init__(self, db: Database) -> None:
         self.db = db
         self._pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="gamebook-job")
+        #: LLM playtests run for hours; their own lane keeps the other jobs moving.
+        self._llm_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="gamebook-llm-job")
         self._cancel: set[str] = set()
         #: Submitted and not yet finished (in memory: shutdown must not need the DB).
         self._active: set[str] = set()
@@ -83,10 +85,18 @@ class JobRunner:
         finally:
             session.close()
 
-    def submit(self, job_id: str, fn: JobFn, on_finish: Finisher | None = None) -> None:
+    def submit(
+        self,
+        job_id: str,
+        fn: JobFn,
+        on_finish: Finisher | None = None,
+        *,
+        lane: Literal["main", "llm"] = "main",
+    ) -> None:
         with self._lock:
             self._active.add(job_id)
-        self._pool.submit(self._run, job_id, fn, on_finish)
+        pool = self._llm_pool if lane == "llm" else self._pool
+        pool.submit(self._run, job_id, fn, on_finish)
 
     def cancel(self, job_id: str) -> None:
         with self._lock:
@@ -136,3 +146,4 @@ class JobRunner:
         with self._lock:
             self._cancel.update(self._active)
         self._pool.shutdown(wait=True, cancel_futures=True)
+        self._llm_pool.shutdown(wait=True, cancel_futures=True)

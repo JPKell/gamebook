@@ -395,11 +395,14 @@ def call_json(db: Database, **kw: Any) -> tuple[dict[str, Any], CallResult]:
         return parse_object(first.text), first
     except BadJson:
         pass
+    # Overrides the caller's own previous/nudge (e.g. a re-ask of its own).
     retry = call(
         db,
-        **kw,
-        previous=first.text,
-        nudge="Your previous reply was not valid JSON. Reply with only the JSON object.",
+        **{
+            **kw,
+            "previous": first.text,
+            "nudge": "Your previous reply was not valid JSON. Reply with only the JSON object.",
+        },
     )
     combined = CallResult(
         text=retry.text, call_id=retry.call_id, cost_usd=first.cost_usd + retry.cost_usd

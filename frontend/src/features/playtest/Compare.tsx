@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { type BatchDetail, useBatch } from './api'
-import { METRICS, OUTCOME_LABELS, pct, type Summary } from './summary'
+import { METRICS, OUTCOME_LABELS, pct, type Summary, usd } from './summary'
 
 function Delta({
   a,
@@ -27,6 +27,8 @@ function Delta({
     </span>
   )
 }
+
+const confusedRate = (s: Summary) => (s.llm && s.llm.steps ? s.llm.confused_steps / s.llm.steps : 0)
 
 /** Two batches side by side: before/after a balance change. */
 export function Compare({ a, bId, onClose }: { a: BatchDetail; bId: string; onClose: () => void }) {
@@ -83,6 +85,26 @@ export function Compare({ a, bId, onClose }: { a: BatchDetail; bId: string; onCl
               </td>
             </tr>
           ))}
+          {sa.llm && sb.llm && (
+            <>
+              <tr>
+                <td className="py-1">Steps flagged confusing</td>
+                <td className="text-right tabular-nums">{pct(confusedRate(sa))}</td>
+                <td className="text-right tabular-nums">{pct(confusedRate(sb))}</td>
+                <td className="text-right">
+                  <Delta a={confusedRate(sa)} b={confusedRate(sb)} fmt={pct} pctPoints />
+                </td>
+              </tr>
+              <tr>
+                <td className="py-1">Cost</td>
+                <td className="text-right tabular-nums">{usd(a.cost_usd ?? 0)}</td>
+                <td className="text-right tabular-nums">{usd(b.cost_usd ?? 0)}</td>
+                <td className="text-right">
+                  <Delta a={a.cost_usd ?? 0} b={b.cost_usd ?? 0} fmt={usd} pctPoints={false} />
+                </td>
+              </tr>
+            </>
+          )}
           {outcomes.map((k) => {
             const x = (sa.outcomes[k] ?? 0) / sa.runs
             const y = (sb.outcomes[k] ?? 0) / sb.runs

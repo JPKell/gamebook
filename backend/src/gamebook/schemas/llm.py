@@ -9,7 +9,16 @@ from gamebook.schemas.common import In, Out
 
 ProviderKind = Literal["openai", "fake"]
 KEY_ENV_PATTERN = r"^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$"
-Role = Literal["writer", "critic", "editor", "summarizer"]
+Role = Literal[
+    "writer",
+    "critic",
+    "editor",
+    "summarizer",
+    "consistency",
+    "suggester",
+    "lore_extractor",
+    "player",
+]
 
 
 class ModelInfo(In):

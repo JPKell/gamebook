@@ -7,6 +7,8 @@ import {
   GitCompare,
   Library,
   Map,
+  Play,
+  Sparkles,
   Square,
   Trash2,
 } from 'lucide-react'
@@ -20,6 +22,7 @@ import { EmptyState } from '@/components/ui/empty'
 import { Field } from '@/components/ui/field'
 import { NumberInput, Select, TextInput } from '@/components/ui/inputs'
 import { cn } from '@/lib/utils'
+import { useProviders } from '@/features/llm/api'
 import { useUiStore } from '@/stores/ui'
 
 import {
@@ -34,13 +37,14 @@ import {
   useCreateBatch,
   useDeleteBatch,
   useJobStream,
+  useResumeBatch,
   useStartCoverage,
 } from './api'
 import { Compare } from './Compare'
 import { Dashboard } from './Dashboard'
 import { Player } from './Player'
 import { Replay } from './Replay'
-import { pct } from './summary'
+import { pct, usd } from './summary'
 
 /** /playtest → the last book opened. */
 export function PlaytestIndex() {
@@ -167,7 +171,7 @@ function Batches({
 }) {
   const batches = useBatches(bookId)
   const selectedId =
-    params.get('batch') ?? batches.data?.find((b) => b.status === 'done')?.id ?? null
+    params.get('batch') ?? batches.data?.find((b) => b.win_rate != null)?.id ?? null
   const compareId = params.get('compare')
   const run = params.get('run')
   const selected = useBatch(selectedId)
@@ -197,7 +201,7 @@ function Batches({
                   set({ batch: b.id, run: null, compare: compareId === b.id ? null : compareId })
                 }
                 onCompare={
-                  selectedId && b.id !== selectedId && b.status === 'done'
+                  selectedId && b.id !== selectedId && b.win_rate != null && !isActive(b.status)
                     ? () => set({ compare: compareId === b.id ? null : b.id })
                     : undefined
                 }
@@ -221,13 +225,19 @@ function Batches({
             key={`${selected.data.id}:${run}`}
             batch={selected.data}
             index={Number(run)}
-            onClose={() => set({ run: null })}
+            initialStep={params.get('step') === null ? null : Number(params.get('step'))}
+            onClose={() => set({ run: null, step: null })}
           />
         )}
         {selected.data?.summary ? (
           <>
             <h2 className="text-lg font-semibold">{selected.data.label}</h2>
-            <Dashboard batch={selected.data} onReplay={(i) => set({ run: String(i) })} />
+            <Dashboard
+              batch={selected.data}
+              onReplay={(i, step) =>
+                set({ run: String(i), step: step === undefined ? null : String(step) })
+              }
+            />
           </>
         ) : (
           !selectedId && (
@@ -261,7 +271,16 @@ function BatchRow({
 }) {
   const qc = useQueryClient()
   const cancel = useCancelJob()
+  const resume = useResumeBatch(bookId)
   const active = isActive(batch.status)
+  const llm = batch.player.kind === 'llm'
+  const resumable = llm && ['stopped', 'cancelled', 'failed'].includes(batch.status)
+  const cap = batch.player.budget_usd as number | null | undefined
+  const spent = batch.cost_usd ?? 0
+  const overBudget = cap != null && spent >= cap
+  const [asking, setAsking] = useState(false)
+  const [newBudget, setNewBudget] = useState<number | null>(null)
+  const budgetOk = newBudget !== null && newBudget > spent
   const job = useJobStream(active ? batch.job_id : null, () => {
     void qc.invalidateQueries({ queryKey: pk.batches(bookId) })
     void qc.invalidateQueries({ queryKey: pk.batch(batch.id) })
@@ -282,7 +301,10 @@ function BatchRow({
           <span className="block text-xs text-muted">
             {batch.status === 'done'
               ? `${pct(batch.win_rate ?? 0)} wins · ${batch.duration_s?.toFixed(1)} s`
-              : batch.status}
+              : batch.status === 'stopped'
+                ? 'stopped: budget reached'
+                : batch.status}
+            {llm && (batch.cost_usd ?? 0) > 0 && ` · ${usd(batch.cost_usd ?? 0)}`}
             {batch.stale && batch.status === 'done' && ' · book changed since'}
           </span>
         </button>
@@ -296,6 +318,20 @@ function BatchRow({
             className={cn(comparing && 'text-accent')}
           >
             <GitCompare className="size-4" />
+          </Button>
+        )}
+        {resumable && (
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={`Resume ${batch.label}`}
+            title="Play the remaining runs"
+            disabled={resume.isPending}
+            onClick={() =>
+              overBudget ? setAsking(true) : resume.mutate({ id: batch.id, budget: null })
+            }
+          >
+            <Play className="size-4" />
           </Button>
         )}
         {active ? (
@@ -318,6 +354,40 @@ function BatchRow({
           </Button>
         )}
       </div>
+      {asking && resumable && (
+        <form
+          aria-label={`Resume ${batch.label}`}
+          className="mt-2 flex flex-wrap items-end gap-2"
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (!budgetOk) return
+            resume.mutate(
+              { id: batch.id, budget: newBudget },
+              { onSuccess: () => setAsking(false) },
+            )
+          }}
+        >
+          <label className="text-xs text-muted">
+            New budget (USD), more than {usd(spent)} spent
+            <NumberInput
+              min={0}
+              step={0.5}
+              allowEmpty
+              autoFocus
+              value={newBudget}
+              onCommit={setNewBudget}
+              className="mt-0.5 w-32"
+            />
+          </label>
+          <Button size="sm" type="submit" disabled={!budgetOk || resume.isPending}>
+            Resume
+          </Button>
+          <Button size="sm" type="button" variant="ghost" onClick={() => setAsking(false)}>
+            Cancel
+          </Button>
+        </form>
+      )}
+      {resume.error && <p className="mt-1 text-xs text-danger">{resume.error.message}</p>}
       {active && (
         <div
           role="progressbar"
@@ -337,6 +407,21 @@ function BatchRow({
   )
 }
 
+type Persona = 'cautious' | 'reckless' | 'completionist' | 'role-player'
+const PERSONAS: { value: Persona; label: string; hint: string }[] = [
+  { value: 'cautious', label: 'Cautious', hint: 'Avoids fights and gambles, keeps its health up.' },
+  { value: 'reckless', label: 'Reckless', hint: 'Takes fights, gambles and risky shortcuts.' },
+  {
+    value: 'completionist',
+    label: 'Completionist',
+    hint: 'Explores side paths and takes every item.',
+  },
+  { value: 'role-player', label: 'Role-player', hint: 'Does what the hero would do in the story.' },
+]
+/** Same caps as the backend: every LLM step is a paid call. */
+const LLM_RUNS = 200
+const LLM_STEPS = 400
+
 function NewBatch({
   bookId,
   tiers,
@@ -349,19 +434,57 @@ function NewBatch({
   onCreated: (id: string) => void
 }) {
   const bots = useBots()
+  const providers = useProviders()
   const create = useCreateBatch(bookId)
   const [tier, setTier] = useState(defaultTier)
+  const [kind, setKind] = useState<'bot' | 'llm'>('bot')
   const [bot, setBot] = useState<BotName>('random')
+  const [providerId, setProviderId] = useState<string | null>(null)
+  const [model, setModel] = useState<string | null>(null)
+  const [persona, setPersona] = useState<Persona>('cautious')
+  const [budget, setBudget] = useState<number | null>(1)
   const [runs, setRuns] = useState(1000)
   const [seed, setSeed] = useState(1)
   const [maxSteps, setMaxSteps] = useState(500)
   const [label, setLabel] = useState('')
+  const llm = kind === 'llm'
+  const enabled = (providers.data ?? []).filter((p) => p.enabled)
+  const provider = enabled.find((p) => p.id === providerId) ?? enabled[0]
+  const modelIds = (provider?.models ?? []).map((m) => String(m.id))
+  const modelId = model && modelIds.includes(model) ? model : (modelIds[0] ?? null)
+  const maxRuns = llm ? LLM_RUNS : 20000
+  const stepCap = llm ? LLM_STEPS : 5000
+  const switchKind = (k: 'bot' | 'llm') => {
+    setKind(k)
+    // LLM games are paid calls per step: start small.
+    if (k === 'llm') {
+      setRuns((r) => Math.min(r, 10))
+      setMaxSteps((m) => Math.min(m, 200))
+    }
+  }
   return (
     <section
       aria-label="New batch"
       className="space-y-3 rounded-xl border border-border bg-surface p-4"
     >
-      <h2 className="text-sm font-semibold">New bot batch</h2>
+      <h2 className="text-sm font-semibold">New batch</h2>
+      <div role="radiogroup" aria-label="Player" className="flex gap-1 rounded-lg bg-surface-2 p-1">
+        {(['bot', 'llm'] as const).map((k) => (
+          <button
+            key={k}
+            type="button"
+            role="radio"
+            aria-checked={kind === k}
+            onClick={() => switchKind(k)}
+            className={cn(
+              'flex-1 rounded-md px-2 py-1 text-xs font-medium',
+              kind === k ? 'bg-surface shadow-sm' : 'text-muted hover:text-text',
+            )}
+          >
+            {k === 'bot' ? 'Bots' : 'LLM players'}
+          </button>
+        ))}
+      </div>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Tier">
           {(id) => (
@@ -373,30 +496,106 @@ function NewBatch({
             />
           )}
         </Field>
-        <Field label="Bot">
-          {(id) => (
-            <Select
-              id={id}
-              value={bot}
-              options={(bots.data ?? []).map((b) => ({
-                value: b.name,
-                label: b.name[0]!.toUpperCase() + b.name.slice(1),
-              }))}
-              onValueChange={(b) => b && setBot(b)}
-            />
-          )}
-        </Field>
+        {llm ? (
+          <Field label="Persona">
+            {(id) => (
+              <Select
+                id={id}
+                value={persona}
+                options={PERSONAS}
+                onValueChange={(p) => p && setPersona(p)}
+              />
+            )}
+          </Field>
+        ) : (
+          <Field label="Bot">
+            {(id) => (
+              <Select
+                id={id}
+                value={bot}
+                options={(bots.data ?? []).map((b) => ({
+                  value: b.name,
+                  label: b.name[0]!.toUpperCase() + b.name.slice(1),
+                }))}
+                onValueChange={(b) => b && setBot(b)}
+              />
+            )}
+          </Field>
+        )}
       </div>
-      <p className="text-xs text-muted">{bots.data?.find((b) => b.name === bot)?.description}</p>
+      {llm ? (
+        enabled.length === 0 ? (
+          <p className="text-xs text-muted">
+            Add a model provider in{' '}
+            <Link to="/settings/llm" className="text-accent hover:underline">
+              Settings → Models
+            </Link>{' '}
+            first.
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Provider">
+              {(id) => (
+                <Select
+                  id={id}
+                  value={provider?.id ?? null}
+                  options={enabled.map((p) => ({ value: p.id, label: p.name }))}
+                  onValueChange={setProviderId}
+                />
+              )}
+            </Field>
+            <Field label="Model">
+              {(id) => (
+                <Select
+                  id={id}
+                  value={modelId}
+                  options={modelIds.map((m) => ({ value: m, label: m }))}
+                  onValueChange={setModel}
+                />
+              )}
+            </Field>
+            {modelIds.length === 0 && (
+              <p className="col-span-2 text-xs text-danger">
+                {provider?.name} lists no models. Add one in{' '}
+                <Link to="/settings/llm" className="underline">
+                  Settings → Models
+                </Link>
+                .
+              </p>
+            )}
+            <Field label="Budget (USD)" hint="Stops starting new steps once spent">
+              {(id) => (
+                <NumberInput
+                  id={id}
+                  min={0}
+                  step={0.5}
+                  allowEmpty
+                  placeholder="No cap"
+                  value={budget}
+                  onCommit={(v) => setBudget(v === null ? null : Math.max(0, v))}
+                />
+              )}
+            </Field>
+          </div>
+        )
+      ) : (
+        <p className="text-xs text-muted">{bots.data?.find((b) => b.name === bot)?.description}</p>
+      )}
+      {llm && (
+        <p className="text-xs text-muted">
+          {PERSONAS.find((p) => p.value === persona)?.hint} Every step is one model call; each run
+          is saved as it finishes, so a stopped batch can be resumed.
+        </p>
+      )}
       <div className="grid grid-cols-3 gap-3">
         <Field label="Runs">
           {(id) => (
             <NumberInput
               id={id}
               min={1}
-              max={20000}
+              max={maxRuns}
               value={runs}
-              onCommit={(v) => v && setRuns(Math.min(20000, Math.max(1, v)))}
+              onCommit={(v) => v && setRuns(Math.min(maxRuns, Math.max(1, v)))}
             />
           )}
         </Field>
@@ -410,9 +609,9 @@ function NewBatch({
             <NumberInput
               id={id}
               min={10}
-              max={5000}
+              max={stepCap}
               value={maxSteps}
-              onCommit={(v) => v && setMaxSteps(Math.min(5000, Math.max(10, v)))}
+              onCommit={(v) => v && setMaxSteps(Math.min(stepCap, Math.max(10, v)))}
             />
           )}
         </Field>
@@ -422,16 +621,20 @@ function NewBatch({
       </Field>
       <Button
         className="w-full"
-        disabled={create.isPending || !tier}
+        disabled={create.isPending || !tier || (llm && !(provider && modelId))}
         onClick={() =>
           create.mutate(
             {
               tier,
-              runs,
+              runs: Math.min(runs, maxRuns),
               seed_base: seed,
-              max_steps: maxSteps,
+              max_steps: Math.min(maxSteps, stepCap),
               label,
-              player: { kind: 'bot', bot },
+              player:
+                llm && provider && modelId
+                  ? { kind: 'llm', provider_id: provider.id, model: modelId, persona }
+                  : { kind: 'bot', bot },
+              budget_usd: llm ? budget : null,
             },
             {
               onSuccess: (b) => {
@@ -442,8 +645,10 @@ function NewBatch({
           )
         }
       >
-        <Bot className="size-4" /> Run {runs.toLocaleString()} games
+        {llm ? <Sparkles className="size-4" /> : <Bot className="size-4" />} Run{' '}
+        {Math.min(runs, maxRuns).toLocaleString()} games
       </Button>
+      {create.error && <p className="text-xs text-danger">{create.error.message}</p>}
     </section>
   )
 }

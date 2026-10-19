@@ -369,7 +369,9 @@ Validation runs the digest at the highest tier, where every choice is available.
 - `PlaytestBatch {book, tier, player, n_runs, seed_base, max_steps, content_hash,
   bundle, status, summary, duration}`:
   - `player` is a bot (`random | greedy | cautious | explorer | completionist`). LLM
-    players (`provider, model, persona, temperature`) arrive in Phase 8.
+    players (`kind: llm, provider_id, model, persona, temperature, max_tokens`, plus the
+    batch's `budget_usd`) were added in Phase 9 (ADR 0010).
+  - `cost_usd`: what the batch's model calls cost (LLM batches).
   - `bundle` is the exact game bundle played, so runs replay after edits; `content_hash`
     is its SHA-256 (ADR 0008).
 - `PlaytestRun {index, seed, outcome: ending kind | max_steps | error, ending node, last
@@ -744,12 +746,76 @@ capped by a budget.
   as a *draft subgraph* the author can accept piecemeal.
 - **Lore extractor**: from approved prose, proposes new/updated characters & places as drafts.
 
+As built (Phase 8), each assist is a job that leaves `AssistItem` rows for the author:
+- **Consistency checker**
+  - Reads a variant's prose (approved, else the newest draft) with its assembled context and
+    the "only some readers have" facts.
+  - Returns findings: `{severity, category (path_validity | lore | continuity | mechanics),
+    quote, problem, suggestion}`.
+  - Open findings appear in the Problems panel (`consistency`) until the prose changes; then
+    they show as outdated. A re-check replaces the variant's open findings; findings can be
+    dismissed.
+  - Runs per section, per act, or for the whole book (sections with prose only).
+- **Suggester**
+  - Reads the act's beats (marking those with no sections) and its existing sections and
+    choices, plus author notes.
+  - Returns new sections (`ref`, title, beat notes) and choices between existing keys and new
+    refs. Malformed sections and choices are dropped, as are choices with an unknown end and
+    choices between two existing sections.
+  - Shown as dashed **ghost** cards and edges on the canvas.
+  - The author adds sections and choices one at a time or all at once. Adding a choice also
+    adds any new section at its ends.
+  - New sections are placed to the right of their source and moved down past existing cards
+    (the ghosts use the same rule). Accepting is a single undo step.
+- **Lore extractor**
+  - Reads approved prose (up to about 24k characters) against the existing wiki.
+  - Proposes new characters and entries, or new facts for existing ones (`existing_key`),
+    each with quoted evidence.
+  - The author edits a draft, then creates the entry or appends the new text to the existing
+    one. Open drafts aren't proposed twice.
+- **Models:** the three new roles (`consistency`, `suggester`, `lore_extractor`) have
+  versioned templates and per-series models like the prose roles. Unset roles use the
+  writer's model.
+
 ### 5.4 LLM player
 
 Sees only what a reader sees: rendered page (prose + mechanics block for the tier),
 adventure sheet, choice list. Responds with JSON `{choice, reasoning, confusion?}`. The
 engine rolls all dice — the model cannot cheat. Personas: cautious, reckless, completionist,
 role-player. Memory: rolling self-summary to bound context.
+
+As built (Phase 9, ADR 0010):
+- **Page** (`core/sim/reader.py`): approved prose for the reader's variant, else the beat
+  notes, else "(This section has no text yet.)". Then:
+  - "What just happened": narrated events, including dice.
+  - The adventure sheet: player stats with caps, class, skills, items, equipped, codewords.
+  - Any fight in progress.
+
+  Options are numbered separately. No titles, keys or conditions.
+- **Protocol:** the `player` role (an editable template) answers with
+  `{choice, reasoning, memory, confused, confusion}`.
+  - Invalid JSON is re-asked once (`call_json`). An out-of-range choice is re-asked once.
+  - A run whose model call still fails ends as `llm_error`. Three in a row halt the batch
+    as `failed`.
+  - Page text is capped at 12k characters, options at 200. Content-error events are never
+    shown.
+  - Memory is the model's own summary (≤ 600 characters). Notes are clipped to 500.
+- **Batches:** `BatchIn.player` is a bot or `{kind: "llm", provider_id, model, persona,
+  temperature, max_tokens}`.
+  - A player with no `kind` is treated as a bot.
+  - Caps: 200 runs and 400 steps. `budget_usd` is optional.
+  - Games run in parallel (≤ 4, and no more than the provider's concurrency) on the job
+    runner's separate `llm` lane. Each run is saved as it finishes.
+  - The batch's cost is a running total, updated per call.
+  - The batch ends `done`, `stopped` (budget reached), `cancelled` or `failed`.
+- **Resume:** `POST /batches/{id}/resume {budget_usd?}` plays the missing, stopped and
+  `llm_error` runs.
+- **Results:**
+  - Runs carry `notes` per step and `cost_usd`. Replays return the `next_note` for the
+    step shown.
+  - The summary adds `llm`: steps, confused steps, cost, stopped runs, and confusion by
+    node with sample notes.
+  - Every call is in the LLM call log (role `player`), scoped to the book and job.
 
 ---
 

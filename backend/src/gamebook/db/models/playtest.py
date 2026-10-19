@@ -48,6 +48,8 @@ class PlaytestBatch(IdMixin, Base):
     status: Mapped[str] = mapped_column(String(16), default="queued")
     summary: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     duration_s: Mapped[float | None] = mapped_column(Float)
+    #: LLM players: total model spend for the batch so far.
+    cost_usd: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
@@ -70,3 +72,6 @@ class PlaytestRun(Base):
     death_cause: Mapped[str | None] = mapped_column(String(80))
     errors: Mapped[int] = mapped_column(Integer, default=0)
     error_sample: Mapped[str | None] = mapped_column(Text)
+    #: LLM players: per step {step, node_id, choice, reasoning, confused, confusion}.
+    notes: Mapped[list[dict[str, Any]] | None] = mapped_column(JSON)
+    cost_usd: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")

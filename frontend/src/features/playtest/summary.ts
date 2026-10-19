@@ -21,6 +21,19 @@ export interface Summary {
     choices_taken: number
   }
   errors: { runs: number; sample: string[] }
+  /** LLM batches only. */
+  llm?: {
+    steps: number
+    confused_steps: number
+    cost_usd: number
+    stopped_runs: number
+    failed_runs?: number
+    confusion: {
+      node_id: string | null
+      count: number
+      notes: { run: number; step: number; text: string }[]
+    }[]
+  }
 }
 
 export const DEATHS = ['death', 'defeated']
@@ -33,7 +46,11 @@ export const OUTCOME_LABELS: Record<string, string> = {
   stuck: 'Stuck',
   max_steps: 'Ran out of steps',
   error: 'Error',
+  stopped: 'Stopped (budget or cancel)',
+  llm_error: 'Model error',
 }
+
+export const usd = (x: number) => (x < 0.01 && x > 0 ? `$${x.toFixed(4)}` : `$${x.toFixed(2)}`)
 
 export const pct = (x: number, digits = 1) => `${(x * 100).toFixed(digits)}%`
 

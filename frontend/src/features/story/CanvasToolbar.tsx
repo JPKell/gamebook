@@ -6,6 +6,7 @@ import {
   Redo2,
   Search,
   Settings2,
+  Sparkles,
   Undo2,
   X,
 } from 'lucide-react'
@@ -40,6 +41,7 @@ export function CanvasToolbar({
   onUndo,
   onRedo,
   onOpenBook,
+  onSuggest,
   busy,
 }: {
   graph: BookGraph
@@ -51,6 +53,7 @@ export function CanvasToolbar({
   onUndo: () => void
   onRedo: () => void
   onOpenBook: () => void
+  onSuggest: () => void
   busy: boolean
 }) {
   const { search, setSearch, filters, setFilters } = useStoryStore()
@@ -170,6 +173,14 @@ export function CanvasToolbar({
           title="Fit to screen (F)"
         >
           <Maximize className="size-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onSuggest}
+          title="Suggest sections for an act's outline"
+        >
+          <Sparkles className="size-4" /> Suggest
         </Button>
         <Button variant="ghost" size="sm" onClick={onOpenBook} title="Book details, style and acts">
           <Settings2 className="size-4" /> Book & acts

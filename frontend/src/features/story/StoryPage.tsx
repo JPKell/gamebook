@@ -15,6 +15,8 @@ import { useUiStore } from '@/stores/ui'
 
 import { BookDialog } from './BookDialog'
 import { HeatProvider } from './HeatBar'
+import { SuggestDialog, SuggestionsBar } from './Suggestions'
+import { useSuggestionGhosts } from './useSuggestionGhosts'
 import { CanvasToolbar } from './CanvasToolbar'
 import { autoLayout } from './canvas/autoLayout'
 import { NODE_WIDTH } from './canvas/flow'
@@ -130,6 +132,8 @@ function StoryWorkspace({ graph }: { graph: BookGraph }) {
   const vocab = useVocabularyFor(graph)
   const searchRef = useRef<HTMLInputElement>(null)
   const [bookOpen, setBookOpen] = useState(false)
+  const [suggestOpen, setSuggestOpen] = useState(false)
+  const ghosts = useSuggestionGhosts(bookId, graph)
   const [layingOut, setLayingOut] = useState(false)
   const { selectedIds, select, openNode, copy, clipboard, search, filters } = useStoryStore()
 
@@ -247,11 +251,13 @@ function StoryWorkspace({ graph }: { graph: BookGraph }) {
             onUndo={doUndo}
             onRedo={doRedo}
             onOpenBook={() => setBookOpen(true)}
+            onSuggest={() => setSuggestOpen(true)}
             busy={undo.isPending || redo.isPending || layingOut}
           />
+          <SuggestionsBar graph={graph} />
           <HeatProvider bookId={bookId}>
             <div className="min-h-0 flex-1">
-              <StoryCanvas graph={graph} problems={problemMap} />
+              <StoryCanvas graph={graph} problems={problemMap} ghosts={ghosts} />
             </div>
           </HeatProvider>
         </div>
@@ -263,6 +269,7 @@ function StoryWorkspace({ graph }: { graph: BookGraph }) {
         </aside>
       </div>
       <BookDialog graph={graph} open={bookOpen} onOpenChange={setBookOpen} />
+      <SuggestDialog graph={graph} open={suggestOpen} onOpenChange={setSuggestOpen} />
     </VocabularyContext.Provider>
   )
 }

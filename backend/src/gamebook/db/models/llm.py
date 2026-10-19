@@ -129,3 +129,28 @@ class ProseVersion(IdMixin, Base):
     notes: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AssistItem(IdMixin, Base):
+    """Something an assist pipeline proposes, for the author to accept or dismiss.
+
+    ``kind``: ``finding`` (consistency issue on a node) · ``suggestion`` (a draft
+    subgraph for an act) · ``lore`` (a new or updated character / lore entry).
+    The payload's shape depends on the kind (``schemas/assist.py``).
+    """
+
+    __tablename__ = "assist_item"
+    __table_args__ = (Index("ix_assist_item_book_kind_status", "book_id", "kind", "status"),)
+
+    book_id: Mapped[str] = mapped_column(ForeignKey("book.id", ondelete="CASCADE"))
+    kind: Mapped[str] = mapped_column(String(16))
+    #: open | accepted | partial | rejected | dismissed | superseded
+    status: Mapped[str] = mapped_column(String(16), default="open")
+    node_id: Mapped[str | None] = mapped_column(String(36), index=True)
+    act_id: Mapped[str | None] = mapped_column(String(36))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    #: For findings: hash of the prose that was checked (outdated once it changes).
+    checked_hash: Mapped[str | None] = mapped_column(String(64))
+    job_id: Mapped[str | None] = mapped_column(String(36))
+    call_id: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

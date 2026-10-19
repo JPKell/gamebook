@@ -4,6 +4,7 @@ import {
   Background,
   BackgroundVariant,
   type Connection,
+  type Edge,
   Controls,
   type FinalConnectionState,
   MarkerType,
@@ -31,6 +32,7 @@ import { useResolvedTheme } from '@/app/useTheme'
 import { anyFilter, matchesFilters, matchesSearch, type ProblemSummary, sortedActs } from '../model'
 import { useStoryStore } from '../storyStore'
 import { ActFrame } from './ActFrame'
+import { GhostCard, type GhostFlowNode } from './GhostCard'
 import { ChoiceEdge } from './ChoiceEdge'
 import { NodeCard } from './NodeCard'
 import {
@@ -45,15 +47,18 @@ import {
 } from './flow'
 
 // Defined at module level so React Flow sees stable component identities.
-const nodeTypes = { story: NodeCard, act: ActFrame }
+const nodeTypes = { story: NodeCard, act: ActFrame, ghost: GhostCard }
 const edgeTypes = { choice: ChoiceEdge }
 
 export function StoryCanvas({
   graph,
   problems,
+  ghosts,
 }: {
   graph: BookGraph
   problems: Map<string, ProblemSummary>
+  /** Suggested sections and choices, drawn dashed (not part of the book yet). */
+  ghosts?: { nodes: GhostFlowNode[]; edges: Edge[] }
 }) {
   const bookId = graph.book.id
   const flow = useReactFlow<StoryFlowNode | ActFrameNode, ChoiceFlowEdge>()
@@ -108,8 +113,26 @@ export function StoryCanvas({
       computeFrames(graph, nodes).map((f) => ({ ...f, data: { ...f.data, onAdd: addNodeInAct } })),
     [graph, nodes, addNodeInAct],
   )
-  const edges = useMemo(() => buildEdges(graph, isVisible), [graph, isVisible])
-  const allNodes = useMemo(() => [...frames, ...nodes], [frames, nodes])
+  const edges = useMemo(
+    () => [...buildEdges(graph, isVisible), ...((ghosts?.edges ?? []) as ChoiceFlowEdge[])],
+    [graph, isVisible, ghosts],
+  )
+  // React Flow measures every node; ghosts aren't in `nodes`, so keep their sizes
+  // here (without them it re-measures forever and the cards never settle).
+  const [ghostSizes, setGhostSizes] = useState<Record<string, { width: number; height: number }>>(
+    {},
+  )
+  const allNodes = useMemo(
+    () => [
+      ...frames,
+      ...nodes,
+      ...((ghosts?.nodes ?? []).map((g) => ({
+        ...g,
+        measured: ghostSizes[g.id],
+      })) as unknown as StoryFlowNode[]),
+    ],
+    [frames, nodes, ghosts, ghostSizes],
+  )
 
   // Selections made outside the canvas (inspector, problems panel, palette)
   // are mirrored into React Flow's node state.
@@ -128,8 +151,18 @@ export function StoryCanvas({
   // reporting an empty selection while a just-created node is still loading.)
   const onNodesChange = useCallback(
     (changes: NodeChange<StoryFlowNode | ActFrameNode>[]) => {
+      const ghostSizeChanges = changes.filter(
+        (c) => c.type === 'dimensions' && c.id.startsWith('ghost:') && c.dimensions,
+      )
+      if (ghostSizeChanges.length)
+        setGhostSizes((prev) => {
+          const next = { ...prev }
+          for (const c of ghostSizeChanges)
+            if (c.type === 'dimensions' && c.dimensions) next[c.id] = c.dimensions
+          return next
+        })
       const storyChanges = changes.filter(
-        (c) => !('id' in c) || !c.id.startsWith('act:'),
+        (c) => !('id' in c) || !(c.id.startsWith('act:') || c.id.startsWith('ghost:')),
       ) as NodeChange<StoryFlowNode>[]
       setNodes((ns) => applyNodeChanges(storyChanges, ns))
       const selection = storyChanges.filter((c) => c.type === 'select')

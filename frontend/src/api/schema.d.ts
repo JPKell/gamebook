@@ -76,6 +76,97 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/acts/{act_id}/suggest': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Suggest Sections
+     * @description Propose new sections and choices for an act's uncovered beats (a draft subgraph).
+     */
+    post: operations['suggest_sections']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assist/{item_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Set Assist Status
+     * @description Dismiss a finding (or reopen it), or reject a lore draft.
+     */
+    patch: operations['set_assist_status']
+    trace?: never
+  }
+  '/api/assist/{item_id}/accept-lore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Accept Lore */
+    post: operations['accept_lore']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assist/{item_id}/accept-suggestion': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Accept Suggestion */
+    post: operations['accept_suggestion']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assist/{item_id}/reject-suggestion': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reject Suggestion */
+    post: operations['reject_suggestion']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/batches/{batch_id}': {
     parameters: {
       query?: never
@@ -89,6 +180,26 @@ export interface paths {
     post?: never
     /** Delete Batch */
     delete: operations['delete_batch']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/batches/{batch_id}/resume': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Resume Batch
+     * @description Continue an LLM batch that was cancelled, failed or ran out of budget.
+     */
+    post: operations['resume_batch']
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -202,6 +313,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/assist': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Assist Items */
+    get: operations['list_assist_items']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}/batches': {
     parameters: {
       query?: never
@@ -214,6 +342,26 @@ export interface paths {
     put?: never
     /** Create Batch */
     post: operations['create_batch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/consistency': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Check Book Consistency
+     * @description Check every section with prose (optionally one act) against lore, digest and mechanics.
+     */
+    post: operations['check_book_consistency']
     delete?: never
     options?: never
     head?: never
@@ -271,6 +419,26 @@ export interface paths {
     put?: never
     /** Duplicate Nodes */
     post: operations['duplicate_nodes']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/extract-lore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Extract Lore
+     * @description Propose new and updated characters and lore from approved prose.
+     */
+    post: operations['extract_lore']
     delete?: never
     options?: never
     head?: never
@@ -988,6 +1156,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/nodes/{node_id}/consistency': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Check Node Consistency */
+    post: operations['check_node_consistency']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/nodes/{node_id}/digest': {
     parameters: {
       query?: never
@@ -1698,6 +1883,23 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** AcceptLoreIn */
+    AcceptLoreIn: {
+      /** Fields */
+      fields?: {
+        [key: string]: string
+      } | null
+    }
+    /**
+     * AcceptSuggestionIn
+     * @description Which parts to accept; both empty means everything still pending.
+     */
+    AcceptSuggestionIn: {
+      /** Choices */
+      choices?: number[]
+      /** Nodes */
+      nodes?: string[]
+    }
     /** ActCreate */
     ActCreate: {
       /** Color */
@@ -1773,12 +1975,46 @@ export interface components {
       /** Text */
       text?: string | null
     }
+    /** AssistItemOut */
+    AssistItemOut: {
+      /** Act Id */
+      act_id: string | null
+      /** Book Id */
+      book_id: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Id */
+      id: string
+      /** Kind */
+      kind: string
+      /** Node Id */
+      node_id: string | null
+      /**
+       * Outdated
+       * @default false
+       */
+      outdated?: boolean
+      /** Payload */
+      payload: {
+        [key: string]: unknown
+      }
+      /** Status */
+      status: string
+    }
     /** BatchDetail */
     BatchDetail: {
       /** Book Id */
       book_id: string
       /** Content Hash */
       content_hash: string
+      /**
+       * Cost Usd
+       * @default 0
+       */
+      cost_usd?: number
       /**
        * Created At
        * Format: date-time
@@ -1827,6 +2063,8 @@ export interface components {
     }
     /** BatchIn */
     BatchIn: {
+      /** Budget Usd */
+      budget_usd?: number | null
       /**
        * Label
        * @default
@@ -1837,7 +2075,8 @@ export interface components {
        * @default 500
        */
       max_steps?: number
-      player?: components['schemas']['BotPlayer']
+      /** Player */
+      player?: components['schemas']['BotPlayer'] | components['schemas']['LlmPlayer']
       /**
        * Runs
        * @default 1000
@@ -1857,6 +2096,11 @@ export interface components {
       book_id: string
       /** Content Hash */
       content_hash: string
+      /**
+       * Cost Usd
+       * @default 0
+       */
+      cost_usd?: number
       /**
        * Created At
        * Format: date-time
@@ -2365,6 +2609,11 @@ export interface components {
       /** Player Attack */
       player_attack?: string | null
     }
+    /** ConsistencyIn */
+    ConsistencyIn: {
+      /** Act Id */
+      act_id?: string | null
+    }
     /**
      * Context
      * @description Standard authoring contexts. ``scope_for`` builds a Scope for each.
@@ -2677,6 +2926,11 @@ export interface components {
       details?: {
         [key: string]: unknown
       } | null
+    }
+    /** ExtractLoreIn */
+    ExtractLoreIn: {
+      /** Act Id */
+      act_id?: string | null
     }
     /** FactOut */
     FactOut: {
@@ -3289,6 +3543,37 @@ export interface components {
       /** Total */
       total: number
     }
+    /**
+     * LlmPlayer
+     * @description A model plays, seeing only what a reader sees (SPEC §5.4).
+     */
+    LlmPlayer: {
+      /**
+       * Kind
+       * @constant
+       */
+      kind: 'llm'
+      /**
+       * Max Tokens
+       * @default 400
+       */
+      max_tokens?: number
+      /** Model */
+      model: string
+      /**
+       * Persona
+       * @default cautious
+       * @enum {string}
+       */
+      persona?: 'cautious' | 'reckless' | 'completionist' | 'role-player'
+      /** Provider Id */
+      provider_id: string
+      /**
+       * Temperature
+       * @default 0.7
+       */
+      temperature?: number
+    }
     /** LootEntry */
     LootEntry: {
       /** Item */
@@ -3836,6 +4121,10 @@ export interface components {
       flags: string[]
       /** Items */
       items: components['schemas']['PlayItem'][]
+      /** Next Note */
+      next_note?: {
+        [key: string]: unknown
+      } | null
       node: components['schemas']['PlayNode'] | null
       /** Seed */
       seed: number
@@ -4117,6 +4406,13 @@ export interface components {
        */
       notes?: string
     }
+    /** RejectSuggestionIn */
+    RejectSuggestionIn: {
+      /** Choices */
+      choices?: number[]
+      /** Nodes */
+      nodes?: string[]
+    }
     /** Relationship */
     Relationship: {
       /** Character */
@@ -4138,6 +4434,11 @@ export interface components {
     Reorder: {
       /** Ids */
       ids: string[]
+    }
+    /** ResumeIn */
+    ResumeIn: {
+      /** Budget Usd */
+      budget_usd?: number | null
     }
     /** RoleModel */
     RoleModel: {
@@ -4206,6 +4507,16 @@ export interface components {
     }
     /** RunOut */
     RunOut: {
+      /**
+       * Confused Steps
+       * @default 0
+       */
+      confused_steps?: number
+      /**
+       * Cost Usd
+       * @default 0
+       */
+      cost_usd?: number
       /** Death Cause */
       death_cause: string | null
       /** Ending Node Id */
@@ -4510,6 +4821,14 @@ export interface components {
       /** Origin */
       origin: string
     }
+    /** StatusIn */
+    StatusIn: {
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'dismissed' | 'rejected' | 'open'
+    }
     /**
      * StyleGuide
      * @description How prose should read. The LLM writer always receives it (Phase 7).
@@ -4562,6 +4881,14 @@ export interface components {
       word_max?: number | null
       /** Word Min */
       word_min?: number | null
+    }
+    /** SuggestIn */
+    SuggestIn: {
+      /**
+       * Notes
+       * @default
+       */
+      notes?: string
     }
     /** SummaryIn */
     SummaryIn: {
@@ -5278,6 +5605,226 @@ export interface operations {
       }
     }
   }
+  suggest_sections: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        act_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SuggestIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  set_assist_status: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StatusIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssistItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  accept_lore: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AcceptLoreIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssistItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  accept_suggestion: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AcceptSuggestionIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssistItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reject_suggestion: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        item_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RejectSuggestionIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssistItemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_batch: {
     parameters: {
       query?: never
@@ -5335,6 +5882,50 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  resume_batch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        batch_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ResumeIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BatchOut']
+        }
       }
       /** @description Validation Error */
       422: {
@@ -5735,6 +6326,50 @@ export interface operations {
       }
     }
   }
+  list_assist_items: {
+    parameters: {
+      query?: {
+        kind?: string | null
+        status?: string | null
+        node_id?: string | null
+      }
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssistItemOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   list_batches: {
     parameters: {
       query?: never
@@ -5797,6 +6432,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['BatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  check_book_consistency: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConsistencyIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
         }
       }
       /** @description Validation Error */
@@ -5927,6 +6606,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['DuplicateResult']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  extract_lore: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExtractLoreIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
         }
       }
       /** @description Validation Error */
@@ -8119,6 +8842,46 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ChoiceOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  check_node_consistency: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        node_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['JobOut']
         }
       }
       /** @description Validation Error */

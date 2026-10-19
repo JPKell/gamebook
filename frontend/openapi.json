@@ -1,6 +1,51 @@
 {
   "components": {
     "schemas": {
+      "AcceptLoreIn": {
+        "additionalProperties": false,
+        "properties": {
+          "fields": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fields"
+          }
+        },
+        "title": "AcceptLoreIn",
+        "type": "object"
+      },
+      "AcceptSuggestionIn": {
+        "additionalProperties": false,
+        "description": "Which parts to accept; both empty means everything still pending.",
+        "properties": {
+          "choices": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 200,
+            "title": "Choices",
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Nodes",
+            "type": "array"
+          }
+        },
+        "title": "AcceptSuggestionIn",
+        "type": "object"
+      },
       "ActCreate": {
         "additionalProperties": false,
         "properties": {
@@ -227,6 +272,75 @@
         "title": "ApproveIn",
         "type": "object"
       },
+      "AssistItemOut": {
+        "properties": {
+          "act_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Id"
+          },
+          "book_id": {
+            "title": "Book Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "outdated": {
+            "default": false,
+            "title": "Outdated",
+            "type": "boolean"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "book_id",
+          "kind",
+          "status",
+          "node_id",
+          "act_id",
+          "payload",
+          "created_at"
+        ],
+        "title": "AssistItemOut",
+        "type": "object"
+      },
       "BatchDetail": {
         "properties": {
           "book_id": {
@@ -236,6 +350,11 @@
           "content_hash": {
             "title": "Content Hash",
             "type": "string"
+          },
+          "cost_usd": {
+            "default": 0.0,
+            "title": "Cost Usd",
+            "type": "number"
           },
           "created_at": {
             "format": "date-time",
@@ -370,6 +489,18 @@
       "BatchIn": {
         "additionalProperties": false,
         "properties": {
+          "budget_usd": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Usd"
+          },
           "label": {
             "default": "",
             "maxLength": 200,
@@ -384,7 +515,15 @@
             "type": "integer"
           },
           "player": {
-            "$ref": "#/components/schemas/BotPlayer"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BotPlayer"
+              },
+              {
+                "$ref": "#/components/schemas/LlmPlayer"
+              }
+            ],
+            "title": "Player"
           },
           "runs": {
             "default": 1000,
@@ -418,6 +557,11 @@
           "content_hash": {
             "title": "Content Hash",
             "type": "string"
+          },
+          "cost_usd": {
+            "default": 0.0,
+            "title": "Cost Usd",
+            "type": "number"
           },
           "created_at": {
             "format": "date-time",
@@ -2064,6 +2208,24 @@
         "title": "CombatDef",
         "type": "object"
       },
+      "ConsistencyIn": {
+        "additionalProperties": false,
+        "properties": {
+          "act_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Id"
+          }
+        },
+        "title": "ConsistencyIn",
+        "type": "object"
+      },
       "Context": {
         "description": "Standard authoring contexts. ``scope_for`` builds a Scope for each.",
         "enum": [
@@ -2890,6 +3052,24 @@
         },
         "required": ["detail", "code"],
         "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ExtractLoreIn": {
+        "additionalProperties": false,
+        "properties": {
+          "act_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Id"
+          }
+        },
+        "title": "ExtractLoreIn",
         "type": "object"
       },
       "FactOut": {
@@ -4695,6 +4875,50 @@
         "title": "LlmCallPage",
         "type": "object"
       },
+      "LlmPlayer": {
+        "additionalProperties": false,
+        "description": "A model plays, seeing only what a reader sees (SPEC \u00a75.4).",
+        "properties": {
+          "kind": {
+            "const": "llm",
+            "title": "Kind",
+            "type": "string"
+          },
+          "max_tokens": {
+            "default": 400,
+            "maximum": 4000.0,
+            "minimum": 64.0,
+            "title": "Max Tokens",
+            "type": "integer"
+          },
+          "model": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Model",
+            "type": "string"
+          },
+          "persona": {
+            "default": "cautious",
+            "enum": ["cautious", "reckless", "completionist", "role-player"],
+            "title": "Persona",
+            "type": "string"
+          },
+          "provider_id": {
+            "title": "Provider Id",
+            "type": "string"
+          },
+          "temperature": {
+            "default": 0.7,
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "Temperature",
+            "type": "number"
+          }
+        },
+        "required": ["kind", "provider_id", "model"],
+        "title": "LlmPlayer",
+        "type": "object"
+      },
       "LootEntry": {
         "additionalProperties": false,
         "properties": {
@@ -6445,6 +6669,18 @@
             "title": "Items",
             "type": "array"
           },
+          "next_note": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Note"
+          },
           "node": {
             "anyOf": [
               {
@@ -6800,7 +7036,7 @@
           "api_key_env": {
             "anyOf": [
               {
-                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$",
                 "type": "string"
               },
               {
@@ -6982,7 +7218,7 @@
           "api_key_env": {
             "anyOf": [
               {
-                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$",
                 "type": "string"
               },
               {
@@ -7280,6 +7516,29 @@
         "title": "RejectIn",
         "type": "object"
       },
+      "RejectSuggestionIn": {
+        "additionalProperties": false,
+        "properties": {
+          "choices": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 200,
+            "title": "Choices",
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Nodes",
+            "type": "array"
+          }
+        },
+        "title": "RejectSuggestionIn",
+        "type": "object"
+      },
       "Relationship": {
         "additionalProperties": false,
         "properties": {
@@ -7327,6 +7586,25 @@
         },
         "required": ["ids"],
         "title": "Reorder",
+        "type": "object"
+      },
+      "ResumeIn": {
+        "additionalProperties": false,
+        "properties": {
+          "budget_usd": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Usd"
+          }
+        },
+        "title": "ResumeIn",
         "type": "object"
       },
       "RoleModel": {
@@ -7520,6 +7798,16 @@
       },
       "RunOut": {
         "properties": {
+          "confused_steps": {
+            "default": 0,
+            "title": "Confused Steps",
+            "type": "integer"
+          },
+          "cost_usd": {
+            "default": 0.0,
+            "title": "Cost Usd",
+            "type": "number"
+          },
           "death_cause": {
             "anyOf": [
               {
@@ -8256,6 +8544,19 @@
         "title": "StatView",
         "type": "object"
       },
+      "StatusIn": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "enum": ["dismissed", "rejected", "open"],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": ["status"],
+        "title": "StatusIn",
+        "type": "object"
+      },
       "StyleGuide": {
         "additionalProperties": false,
         "description": "How prose should read. The LLM writer always receives it (Phase 7).",
@@ -8373,6 +8674,19 @@
           }
         },
         "title": "StyleOverrides",
+        "type": "object"
+      },
+      "SuggestIn": {
+        "additionalProperties": false,
+        "properties": {
+          "notes": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Notes",
+            "type": "string"
+          }
+        },
+        "title": "SuggestIn",
         "type": "object"
       },
       "SummaryIn": {
@@ -9665,7 +9979,16 @@
               "$ref": "#/components/schemas/RoleModel"
             },
             "propertyNames": {
-              "enum": ["writer", "critic", "editor", "summarizer"]
+              "enum": [
+                "writer",
+                "critic",
+                "editor",
+                "summarizer",
+                "consistency",
+                "suggester",
+                "lore_extractor",
+                "player"
+              ]
             },
             "title": "Roles",
             "type": "object"
@@ -9978,6 +10301,308 @@
         "tags": ["writing"]
       }
     },
+    "/api/acts/{act_id}/suggest": {
+      "post": {
+        "description": "Propose new sections and choices for an act's uncovered beats (a draft subgraph).",
+        "operationId": "suggest_sections",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "act_id",
+            "required": true,
+            "schema": {
+              "title": "Act Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SuggestIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Suggest Sections",
+        "tags": ["assist"]
+      }
+    },
+    "/api/assist/{item_id}": {
+      "patch": {
+        "description": "Dismiss a finding (or reopen it), or reject a lore draft.",
+        "operationId": "set_assist_status",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Set Assist Status",
+        "tags": ["assist"]
+      }
+    },
+    "/api/assist/{item_id}/accept-lore": {
+      "post": {
+        "operationId": "accept_lore",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptLoreIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Accept Lore",
+        "tags": ["assist"]
+      }
+    },
+    "/api/assist/{item_id}/accept-suggestion": {
+      "post": {
+        "operationId": "accept_suggestion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptSuggestionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Accept Suggestion",
+        "tags": ["assist"]
+      }
+    },
+    "/api/assist/{item_id}/reject-suggestion": {
+      "post": {
+        "operationId": "reject_suggestion",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "title": "Item Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectSuggestionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssistItemOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Reject Suggestion",
+        "tags": ["assist"]
+      }
+    },
     "/api/batches/{batch_id}": {
       "delete": {
         "operationId": "delete_batch",
@@ -10066,6 +10691,67 @@
           }
         },
         "summary": "Get Batch",
+        "tags": ["playtest"]
+      }
+    },
+    "/api/batches/{batch_id}/resume": {
+      "post": {
+        "description": "Continue an LLM batch that was cancelled, failed or ran out of budget.",
+        "operationId": "resume_batch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "batch_id",
+            "required": true,
+            "schema": {
+              "title": "Batch Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Resume Batch",
         "tags": ["playtest"]
       }
     },
@@ -10609,6 +11295,108 @@
         "tags": ["books"]
       }
     },
+    "/api/books/{book_id}/assist": {
+      "get": {
+        "operationId": "list_assist_items",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "node_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Node Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AssistItemOut"
+                  },
+                  "title": "Response List Assist Items",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Assist Items",
+        "tags": ["assist"]
+      }
+    },
     "/api/books/{book_id}/batches": {
       "get": {
         "operationId": "list_batches",
@@ -10719,6 +11507,67 @@
         },
         "summary": "Create Batch",
         "tags": ["playtest"]
+      }
+    },
+    "/api/books/{book_id}/consistency": {
+      "post": {
+        "description": "Check every section with prose (optionally one act) against lore, digest and mechanics.",
+        "operationId": "check_book_consistency",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsistencyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Check Book Consistency",
+        "tags": ["assist"]
       }
     },
     "/api/books/{book_id}/coverage": {
@@ -10907,6 +11756,67 @@
         },
         "summary": "Duplicate Nodes",
         "tags": ["books"]
+      }
+    },
+    "/api/books/{book_id}/extract-lore": {
+      "post": {
+        "description": "Propose new and updated characters and lore from approved prose.",
+        "operationId": "extract_lore",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtractLoreIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Extract Lore",
+        "tags": ["assist"]
       }
     },
     "/api/books/{book_id}/graph": {
@@ -13795,6 +14705,56 @@
         },
         "summary": "Reorder Choices",
         "tags": ["nodes"]
+      }
+    },
+    "/api/nodes/{node_id}/consistency": {
+      "post": {
+        "operationId": "check_node_consistency",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "node_id",
+            "required": true,
+            "schema": {
+              "title": "Node Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Check Node Consistency",
+        "tags": ["assist"]
       }
     },
     "/api/nodes/{node_id}/digest": {

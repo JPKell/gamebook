@@ -204,3 +204,20 @@ def test_deaths_blame_only_a_fight_lost_in_the_same_step() -> None:
     assert obs.lost_to == "rat"  # the last enemy to land a blow
     obs.see([Event("action", {"action": "choose", "target": "pit"})])
     assert obs.lost_to is None  # survived; a later death isn't the rat's
+
+
+def test_reader_page_shows_events_but_hides_content_errors() -> None:
+    from gamebook.core.engine.events import Event
+    from gamebook.core.sim.reader import render_page
+
+    game = Game(engine_book(), "basic", 1)
+    game.start()
+    events = [
+        Event("error", {"where": "choice Secret door condition", "message": "unknown flag"}),
+        Event("flag_set", {"flag": "met_mara"}),
+    ]
+    page = render_page(
+        game, game.available(), events, names=Names.for_game(game), prose={}, beat_notes={}
+    )
+    assert "Secret door" not in page.text
+    assert "Content error" not in page.text

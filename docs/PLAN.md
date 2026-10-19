@@ -134,13 +134,13 @@ as unsatisfiable.
 **Demo:** generate Act 1 prose, review with critique trail, approve, edit an upstream beat
 and watch downstream nodes go stale.
 
-## Phase 8 — LLM authoring assists
+## Phase 8 — LLM authoring assists ✅ (2026-10-18, see `docs/handoffs/v2-phase-08-assists.md`)
 
 - Consistency checker (node/act/book) → issues in Problems panel with quotes.
 - Beat/branch suggester → draft subgraph overlay, accept per node/choice.
 - Lore extractor → draft lore entries for review.
 
-## Phase 9 — LLM players
+## Phase 9 — LLM players ✅ (2026-10-18, see `docs/handoffs/v2-phase-09-llm-players.md`)
 
 - Reader-view renderer as LLM input; JSON action protocol; personas; rolling memory.
 - LLM batches in the playtest system (budget caps, concurrency, resumable).

@@ -18,8 +18,8 @@ from gamebook.schemas.book import (
 from gamebook.schemas.common import Reorder
 from gamebook.schemas.node import DuplicateRequest, DuplicateResult, LayoutUpdate, NodeOut
 from gamebook.schemas.series import BookSummary
+from gamebook.services import assist, history, snapshot, writing
 from gamebook.services import books as svc
-from gamebook.services import history, snapshot, writing
 from gamebook.services import nodes as node_svc
 from gamebook.services.common import require
 
@@ -67,7 +67,11 @@ def get_book_graph(book_id: str, session: SessionDep) -> BookGraph:
 @router.get("/books/{book_id}/problems", response_model=ProblemsOut)
 def get_book_problems(book_id: str, session: SessionDep) -> ProblemsOut:
     snap = snapshot.book_snapshot(session, book_id)  # shared by both checks
-    problems = validate_book(snap) + writing.stale_problems(session, book_id, snap)
+    problems = (
+        validate_book(snap)
+        + writing.stale_problems(session, book_id, snap)
+        + assist.finding_problems(session, book_id)
+    )
     return ProblemsOut(
         counts=ProblemCounts(
             errors=sum(p.severity == "error" for p in problems),
