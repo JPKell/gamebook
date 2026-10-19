@@ -149,7 +149,7 @@ and watch downstream nodes go stale.
 
 **Demo:** three models play Act 1–3 on Medium; dashboard shows where they got confused.
 
-## Phase 10 — Artwork, maps & appendices
+## Phase 10 — Artwork, maps & appendices ✅ (2026-10-18, see `docs/handoffs/v2-phase-10-art.md`)
 
 - **Asset library** (SPEC §2.13):
   - content-addressed storage under the data dir, Pillow thumbnails, dedupe by hash

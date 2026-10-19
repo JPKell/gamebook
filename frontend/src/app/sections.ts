@@ -83,13 +83,7 @@ export const SECTIONS: Section[] = [
     icon: Image,
     phase: 10,
     summary: 'Illustrations, full-page art, maps and appendices.',
-    upcoming: [
-      'Image library with alt text, credits and where-used',
-      'Node illustrations with print size, position, wrap and DPI checks',
-      'Act openers, covers and maps with clickable markers',
-      'Generated appendices: bestiary, adventure sheet, item catalogue, rules reference',
-      'Commissioning tracker and shot list for illustrators',
-    ],
+    upcoming: [],
   },
   {
     id: 'mechanics',

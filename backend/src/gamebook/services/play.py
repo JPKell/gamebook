@@ -14,25 +14,29 @@ from sqlalchemy.orm import Session
 from gamebook.core.engine import Action, Game, GameError
 from gamebook.core.engine.narrate import Names, narrate
 from gamebook.core.model import BookSnapshot
-from gamebook.db.models import Node, ProseVersion
+from gamebook.db.models import Appendix, Asset, Map, Node, ProseVersion
 from gamebook.schemas.playtest import (
     ActionInput,
     ForceInput,
     JumpInput,
     Option,
     PlayAction,
+    PlayArt,
+    PlayCodex,
     PlayCombat,
     PlayEnemy,
     PlayEvent,
     PlayIn,
     PlayInput,
     PlayItem,
+    PlayMap,
+    PlayMarker,
     PlayNode,
     PlayOut,
     PlayStat,
     SetInput,
 )
-from gamebook.services import snapshot
+from gamebook.services import art, snapshot
 from gamebook.services.errors import InvalidError
 
 
@@ -181,7 +185,7 @@ def play(session: Session, book_id: str, data: PlayIn) -> PlayOut:
         turns += [i] * (len(game.log) - mark)
         applied += 1
     ids = [game.state.node_id] if game.state.node_id else []
-    return view(
+    out = view(
         game,
         turns=turns,
         applied=applied,
@@ -189,3 +193,79 @@ def play(session: Session, book_id: str, data: PlayIn) -> PlayOut:
         beat_notes=beat_notes_for(session, ids),
         prose=prose_for(session, [game.state.variant_id] if game.state.variant_id else []),
     )
+    s = game.state
+    if s.node_id:
+        out.art = [
+            PlayArt.model_validate(a)
+            for a in art.player_art(session, s.node_id, s.variant_id, s.tier)
+        ]
+    out.maps = _maps(session, book, game)
+    out.codex = _codex(session, book_id, game)
+    return out
+
+
+def _maps(session: Session, book: BookSnapshot, game: Game) -> list[PlayMap]:
+    """The book's maps with the markers this reader can see (``visible_if`` holds)."""
+    rows = list(
+        session.scalars(
+            select(Map)
+            .where(
+                Map.series_id == book.series_id,
+                (Map.book_id.is_(None)) | (Map.book_id == book.book_id),
+            )
+            .order_by(Map.title)
+        )
+    )
+    alts = dict(
+        session.execute(
+            select(Asset.id, Asset.alt_text).where(
+                Asset.id.in_({m.asset_id for m in rows if m.asset_id})
+            )
+        ).all()
+    )
+    here = game.state.node_id
+    return [
+        PlayMap(
+            id=m.id,
+            title=m.title,
+            url=f"/api/assets/{m.asset_id}/file" if m.asset_id else None,
+            alt=alts.get(m.asset_id or "", "") or m.title,
+            markers=[
+                PlayMarker(
+                    id=mk["id"],
+                    x=mk["x"],
+                    y=mk["y"],
+                    label=mk.get("label", ""),
+                    here=bool(here and mk.get("node_id") == here),
+                )
+                for mk in m.markers
+                if game.holds(mk.get("visible_if"))
+            ],
+        )
+        for m in rows
+    ]
+
+
+def _codex(session: Session, book_id: str, game: Game) -> PlayCodex:
+    """Enemies fought and items held or found so far (codex entries unlock as met)."""
+    enemies: set[str] = set()
+    items = {k for k, n in game.state.items.items() if n > 0}
+    for e in game.log:
+        d = e.data
+        if e.type == "combat_start":
+            enemies.update(x["key"].partition("#")[0] for x in d.get("enemies", []))
+        elif d.get("item") and (
+            e.type in ("item_taken", "item_bought")
+            or (e.type == "effect" and d.get("op") == "give")
+        ):
+            items.add(d["item"])
+    available = session.scalar(
+        select(Appendix.id)
+        .where(
+            Appendix.book_id == book_id,
+            Appendix.enabled,
+            Appendix.kind != "sheet",
+        )
+        .limit(1)
+    )
+    return PlayCodex(enemies=sorted(enemies), items=sorted(items), available=available is not None)

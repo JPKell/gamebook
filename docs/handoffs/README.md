@@ -17,7 +17,8 @@ and what the next phase needs. Read the latest one before starting a phase.
 | 7 | LLM infrastructure & prose pipeline | `v2-phase-07-prose.md` | ✅ Complete |
 | 8 | LLM authoring assists | `v2-phase-08-assists.md` | ✅ Complete |
 | 9 | LLM players | `v2-phase-09-llm-players.md` | ✅ Complete |
-| 10 | Artwork, maps & appendices | | Next |
+| 10 | Artwork, maps & appendices | `v2-phase-10-art.md` | ✅ Complete |
+| 11 | Print & EPUB | | Next |
 
 ## v1 prototype (archived; code at tag `v1-prototype`)
 

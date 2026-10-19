@@ -129,7 +129,17 @@ function NodeCardImpl({ data, selected }: NodeProps<StoryFlowNode>) {
           ) : null}
         </span>
       </div>
-      <div className="px-2.5 pt-0.5 pb-1 text-sm leading-snug font-semibold">{node.title}</div>
+      <div className="flex items-start gap-2 px-2.5 pt-0.5 pb-1">
+        <span className="min-w-0 flex-1 text-sm leading-snug font-semibold">{node.title}</span>
+        {node.art_thumb && (
+          <img
+            src={node.art_thumb}
+            alt=""
+            loading="lazy"
+            className="size-9 shrink-0 rounded border border-border object-cover"
+          />
+        )}
+      </div>
       {node.beat_notes && (
         <p className="line-clamp-2 px-2.5 text-xs leading-snug text-muted">{node.beat_notes}</p>
       )}

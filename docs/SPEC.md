@@ -523,6 +523,41 @@ sha256, alt_text, caption, credit, licence, tags[]}`.
 - **Digital player:** an interactive map. Markers link to codex entries, and can be revealed
   by codewords.
 
+As built (Phase 10, ADR 0011):
+- **Assets:**
+  - Uploads are the raw request body, up to 40 MB and 160 Mpx.
+  - Pillow checks the format (PNG, JPEG or WebP) and makes a 480 px WebP thumbnail.
+  - Files live at `assets/<sha256>.<ext>`; rows are deduplicated per series.
+  - GC (`POST /assets/gc`, and after asset deletes, series deletes and import replaces)
+    keeps any hash named by a live row or by the `asset` table of any checkpoint, and any
+    file touched in the last 15 minutes. An unreadable checkpoint aborts GC.
+  - Imports take an image's type and size from the image itself, never from `assets.yaml`.
+    Files are served with `nosniff`.
+- **Placements** (`art_placement`):
+  - One table, with a nullable foreign key per target kind (`node_id`, `act_id`, `book_id`,
+    `character_id`, `enemy_id`, `item_id`, `lore_id`) and `target_type`.
+  - Deleting the target cascades; deleting the image sets `asset_id` to NULL, leaving a
+    placeholder.
+  - Node, act and book placements are part of the book's undo history.
+  - Placements and maps are RefIndex sources whose targets are `asset` rows (keyed by id),
+    which powers where-used and the delete guard.
+- **Page setup:** `book.print_setup` holds trim, margins and bleed in mm. The default is a
+  6×9 in trim with 1/8 in bleed.
+- **Print sizes:**
+  - Image size presets are relative to the text block (`core/art.py`). An image fills its
+    box's width, shrinking to fit the box height and the maximum height.
+  - Full-bleed art covers trim + bleed on the three outer edges.
+  - Effective DPI is computed on the cropped pixels.
+  - A placeholder is drawn as a 4:3 box.
+- **Problems:**
+  - `art_low_dpi`: a warning below 300 dpi, an error below 150.
+  - `art_bleed`: an error.
+  - Info: `art_placeholder`, `art_alt_text`, `asset_unused` and `map_no_image`.
+  - `map_marker_broken`: a warning.
+- **Maps:** the book is optional (none means series-wide). Markers live in a JSON list,
+  each with `{id, x, y, label, node_id?, lore_id?, visible_if?}`. The player shows only the
+  markers whose condition holds, and flags the one at the reader's section.
+
 ### 2.14 Appendices (generated back matter)
 
 `Appendix {book, kind, title, position, enabled, options}`.
@@ -553,6 +588,20 @@ sha256, alt_text, caption, credit, licence, tags[]}`.
 - **Maps:** each map as a full page, with a marker legend.
 - **Custom page:** Markdown with `[[mentions]]` and artwork, for an author's note, credits
   and the like.
+
+As built (Phase 10):
+- **Rendering:** each kind renders through `gamebook/render/templates/appendix/<kind>.html`,
+  which is autoescaped. Author Markdown in custom pages, rules text and glossary entries
+  uses a small safe subset (`render/markdown.py`): it escapes everything else, with no raw
+  HTML, links or images.
+- **Previews:** `GET /appendices/{id}/render` returns a fragment and a standalone document.
+  The app shows the document in a sandboxed iframe.
+- **Tier:** the default is the highest tier.
+- **Spoilers:** `met_on_canonical_path` keeps nodes on canonical-predecessor chains from
+  the start to each reachable victory, or every reachable node if the book has no victory.
+- **Codex:** `POST /books/{id}/codex {tier, enemies, items}` returns the enabled
+  appendices except adventure sheets. The bestiary and items list only what the reader has
+  met, which the player reports in `PlayOut.codex`.
 
 ## 3. Architecture
 

@@ -1,0 +1,16 @@
+<section class="appendix maps">
+  <h1>{{ title }}</h1>
+  {% if not maps %}<p class="note">No maps.</p>{% endif %}
+  {% for m in maps %}
+  <article class="entry">
+    <h2>{{ m.title }}</h2>
+    {% if m.image %}
+    <div class="map">
+      <img src="{{ m.image.url }}" alt="{{ m.image.alt or m.title }}">
+      {% for p in m.markers %}<span class="pin" style="left:{{ '%.2f'|format(p.x) }}%;top:{{ '%.2f'|format(p.y) }}%">{{ p.n }}</span>{% endfor %}
+    </div>
+    {% else %}<p class="note">No image yet.</p>{% endif %}
+    {% if m.markers %}<ol>{% for p in m.markers %}<li>{{ p.label or "—" }}</li>{% endfor %}</ol>{% endif %}
+  </article>
+  {% endfor %}
+</section>

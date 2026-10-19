@@ -1,0 +1,27 @@
+<section class="appendix sheet">
+  <h1>{{ title }}</h1>
+  {% if stats %}
+  <table>
+    <tr><th></th><th class="num">Initial</th><th class="num">Current</th>{% if stats|selectattr("has_max")|list %}<th class="num">Maximum</th>{% endif %}</tr>
+    {% for s in stats %}
+    <tr><th>{{ s.label }}</th><td class="num"></td><td class="num"></td>{% if stats|selectattr("has_max")|list %}<td class="num">{{ "" if s.has_max else "—" }}</td>{% endif %}</tr>
+    {% endfor %}
+  </table>
+  <p class="muted">{% for s in stats %}{{ s.label }}: {{ s.initial }}{{ "" if loop.last else ". " }}{% endfor %}.</p>
+  {% endif %}
+  {% if classes %}<h2>Class</h2><ul class="checks">{% for c in classes %}<li>{{ c.label }}</li>{% endfor %}</ul>{% endif %}
+  {% if skills %}<h2>Skills</h2><ul class="checks">{% for s in skills %}<li>{{ s }}</li>{% endfor %}</ul>{% endif %}
+  {% if slots %}
+  <h2>Equipment</h2>
+  <table>{% for s in slots %}<tr><th style="width:30%">{{ s|replace("_", " ")|capitalize }}</th><td></td></tr>{% endfor %}</table>
+  {% endif %}
+  {% if currency %}<h2>{{ currency }}</h2><p><span class="box" style="min-width:8rem"></span></p>{% endif %}
+  {% if inventory_lines %}<h2>Inventory</h2><ul class="lines">{% for _ in range(inventory_lines) %}<li></li>{% endfor %}</ul>{% endif %}
+  {% if codewords or blank_codewords %}
+  <h2>Codewords</h2>
+  {% if codewords %}<ul class="checks">{% for c in codewords %}<li>{{ c }}</li>{% endfor %}</ul>
+  {% else %}<ul class="lines">{% for _ in range(6) %}<li></li>{% endfor %}</ul>{% endif %}
+  {% endif %}
+  <h2>Notes</h2>
+  <ul class="lines">{% for _ in range(4) %}<li></li>{% endfor %}</ul>
+</section>

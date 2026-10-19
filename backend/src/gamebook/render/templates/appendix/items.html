@@ -1,0 +1,15 @@
+<section class="appendix items">
+  <h1>{{ title }}</h1>
+  {% if codex %}<p class="note">{{ entries|length }} of {{ total }} items found</p>{% endif %}
+  {% if not entries %}<p class="note">{{ "Nothing found yet." if codex else "No items." }}</p>{% endif %}
+  {% for i in entries %}
+  <article class="entry">
+    {% if i.image %}<img class="portrait" src="{{ i.image.url }}" alt="{{ i.image.alt }}">{% endif %}
+    <h2>{{ i.name }}</h2>
+    <p class="tag">{{ i.category }}{% if i.slot %} · {{ i.slot|replace("_", " ") }}{% endif %}{% if i.value %} · worth {{ i.value }}{% endif %}</p>
+    {% if i.description %}<p>{{ i.description }}</p>{% endif %}
+    {% if i.modifiers %}<p>{{ i.modifiers|join(", ") }}</p>{% endif %}
+    {% for u in i.uses %}<p class="muted">When used: {{ u }}</p>{% endfor %}
+  </article>
+  {% endfor %}
+</section>

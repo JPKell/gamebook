@@ -11,6 +11,7 @@ import { modKey } from '@/lib/utils'
 
 import { sortedActs } from '../model'
 import { type InspectorTab, useStoryStore } from '../storyStore'
+import { ArtTab } from './ArtTab'
 import { BeatTab } from './BeatTab'
 import { ChoicesTab } from './ChoicesTab'
 import { EncountersTab } from './EncountersTab'
@@ -131,6 +132,7 @@ function NodeInspector({ graph, node }: { graph: BookGraph; node: NodeOut }) {
       content: <VariantsTab graph={graph} node={node} />,
     },
     { value: 'lore', label: 'Lore', content: <LoreTab graph={graph} node={node} /> },
+    { value: 'art', label: 'Art', content: <ArtTab graph={graph} node={node} /> },
     { value: 'digest', label: 'Digest', content: <DigestTab graph={graph} node={node} /> },
   ]
 

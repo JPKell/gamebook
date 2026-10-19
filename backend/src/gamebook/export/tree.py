@@ -10,6 +10,12 @@ Layout::
     books/<NN>-<key>/{enemies,items,tables,characters,lore}/…   (book-specific)
     books/<NN>-<key>/acts/<NN>-<key>/act.yaml
     books/<NN>-<key>/acts/<NN>-<key>/nodes/<key>.md            (front matter + beat notes)
+    books/<NN>-<key>/maps/<key>.yaml  books/<NN>-<key>/appendices.yaml
+    maps/<key>.yaml                                            (series-wide maps)
+    assets.yaml  assets/<sha256>.<ext>                         (the image library)
+
+Artwork placements travel with their owner: ``art:`` in node front matter,
+``act.yaml``, ``book.yaml`` and entity files.
 
 Output is deterministic (stable ordering, no timestamps, empty values omitted)
 so diffs show only real changes. Cross references are written as keys for
@@ -18,9 +24,11 @@ readability; ids are kept so identity survives a round trip.
 
 from __future__ import annotations
 
+import hashlib
 import io
+import re
 import zipfile
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -33,6 +41,9 @@ from gamebook.core.keys import key_problem
 from gamebook.db.base import utcnow
 from gamebook.db.models import (
     Act,
+    Appendix,
+    ArtPlacement,
+    Asset,
     BeatNode,
     Book,
     Character,
@@ -43,6 +54,7 @@ from gamebook.db.models import (
     Enemy,
     Item,
     LoreEntry,
+    Map,
     Node,
     NodeCharacter,
     NodeItem,
@@ -57,7 +69,22 @@ from gamebook.db.models import (
 
 FORMAT = "gamebook-tree"
 VERSION = 1
-MANAGED = ("series.yaml", "rules", "enemies", "items", "tables", "characters", "lore", "books")
+MANAGED = (
+    "series.yaml",
+    "rules",
+    "enemies",
+    "items",
+    "tables",
+    "characters",
+    "lore",
+    "books",
+    "maps",
+    "assets.yaml",
+    "assets",
+)
+#: Image files in an export (``assets/<sha256>.<ext>``); everything else is text.
+ASSET_EXTS = frozenset({"png", "jpg", "webp"})
+_HEX64 = re.compile(r"[0-9a-f]{64}")
 
 
 class TreeError(ValueError):
@@ -128,6 +155,86 @@ def _load_yaml(text: str, path: str) -> dict[str, Any]:
     return data
 
 
+# ── artwork ─────────────────────────────────────────────────────────────
+
+_PLACEMENT_COLUMNS = {
+    "node": "node_id",
+    "act": "act_id",
+    "book": "book_id",
+    "character": "character_id",
+    "enemy": "enemy_id",
+    "item": "item_id",
+    "lore": "lore_id",
+}
+
+
+def _art_dump(rows: list[ArtPlacement]) -> list[dict[str, Any]]:
+    return [
+        _clean(
+            {
+                "id": p.id,
+                "role": p.role,
+                "asset": p.asset_id,
+                "variant": p.variant_id,
+                "tier": p.tier,
+                "media": p.media if p.media != "both" else None,
+                "caption": p.caption,
+                "brief": p.brief,
+                "status": p.status,
+                "layout": dict(sorted((p.layout or {}).items())),
+                "digital": dict(sorted((p.digital or {}).items())),
+            }
+        )
+        for p in sorted(rows, key=lambda r: (r.position, r.id))
+    ]
+
+
+def _art_by(session: Session, column: str, ids: list[str]) -> dict[str, list[ArtPlacement]]:
+    out: dict[str, list[ArtPlacement]] = {}
+    if ids:
+        col = getattr(ArtPlacement, column)
+        for p in session.scalars(select(ArtPlacement).where(col.in_(ids))):
+            if column == "book_id" and p.target_type != "book":
+                continue
+            out.setdefault(getattr(p, column), []).append(p)
+    return out
+
+
+def _art_load(
+    session: Session,
+    rows: list[dict[str, Any]] | None,
+    *,
+    series_id: str,
+    target_type: str,
+    target_id: str,
+    book_id: str | None,
+) -> None:
+    """Recreate placements; images no longer in the library become placeholders."""
+    for i, d in enumerate(rows or []):
+        asset = d.get("asset")
+        if asset and session.get(Asset, asset) is None:
+            asset = None
+        p = ArtPlacement(
+            id=d["id"],
+            series_id=series_id,
+            target_type=target_type,
+            book_id=book_id,
+            role=d["role"],
+            asset_id=asset,
+            variant_id=d.get("variant"),
+            tier=d.get("tier"),
+            media=d.get("media", "both"),
+            position=i + 1,
+            caption=d.get("caption", ""),
+            brief=d.get("brief", ""),
+            status=d.get("status", "final" if asset else "needed"),
+            layout=d.get("layout", {}),
+            digital=d.get("digital", {}),
+        )
+        setattr(p, _PLACEMENT_COLUMNS[target_type], target_id)
+        session.add(p)
+
+
 # ── export ──────────────────────────────────────────────────────────────
 
 
@@ -152,6 +259,15 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
     table_keys = entity_keys(RandomTable)
     char_keys = entity_keys(Character)
     lore_keys = entity_keys(LoreEntry)
+    entity_art = {
+        kind: _art_by(session, column, list(ids))
+        for kind, column, ids in (
+            ("enemy", "enemy_id", enemy_keys),
+            ("item", "item_id", item_keys),
+            ("character", "character_id", char_keys),
+            ("lore", "lore_id", lore_keys),
+        )
+    }
 
     files["series.yaml"] = _dump(
         _clean(
@@ -192,6 +308,7 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
                     "abilities": e.abilities,
                     "loot": e.loot,
                     "lore": lore_keys.get(e.lore_entry_id or ""),
+                    "art": _art_dump(entity_art["enemy"].get(e.id, [])),
                 }
             )
         )
@@ -211,6 +328,7 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
                     "uses": i.uses,
                     "modifiers": i.modifiers,
                     "use_effects": i.use_effects,
+                    "art": _art_dump(entity_art["item"].get(i.id, [])),
                 }
             )
         )
@@ -244,6 +362,7 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
                     "motivations": c.motivations,
                     "secrets": c.secrets,
                     "relationships": c.relationships,
+                    "art": _art_dump(entity_art["character"].get(c.id, [])),
                 }
             ),
             c.notes,
@@ -258,6 +377,7 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
                     "key": le.key,
                     "name": le.name,
                     "fields": dict(sorted(le.fields.items())),
+                    "art": _art_dump(entity_art["lore"].get(le.id, [])),
                 }
             ),
             le.body,
@@ -267,7 +387,74 @@ def export_series(session: Session, series_id: str) -> dict[str, str]:
     for b in books:
         for rel, content in _book_files(session, b, keys, include_prose=True).items():
             files[f"{book_dirs[b.id]}/{rel}"] = content
+        appendices = list(
+            session.scalars(
+                select(Appendix).where(Appendix.book_id == b.id).order_by(Appendix.position)
+            )
+        )
+        if appendices:
+            files[f"{book_dirs[b.id]}/appendices.yaml"] = _dump(
+                {
+                    "appendices": [
+                        _clean(
+                            {
+                                "id": a.id,
+                                "kind": a.kind,
+                                "title": a.title,
+                                "disabled": not a.enabled,
+                                "options": a.options,
+                            }
+                        )
+                        for a in appendices
+                    ]
+                }
+            )
+    for m in session.scalars(select(Map).where(Map.series_id == series_id).order_by(Map.key)):
+        files[f"{prefix(m.book_id)}maps/{m.key}.yaml"] = _dump(
+            _clean({"id": m.id, "key": m.key, "title": m.title, "asset": m.asset_id})
+            | {"markers": m.markers}
+        )
+    library = list(
+        session.scalars(select(Asset).where(Asset.series_id == series_id).order_by(Asset.sha256))
+    )
+    if library:
+        files["assets.yaml"] = _dump(
+            {
+                "assets": [
+                    _clean(
+                        {
+                            "id": a.id,
+                            "sha256": a.sha256,
+                            "ext": a.ext,
+                            "filename": a.filename,
+                            "mime": a.mime,
+                            "width_px": a.width_px,
+                            "height_px": a.height_px,
+                            "bytes": a.bytes,
+                            "alt_text": a.alt_text,
+                            "caption": a.caption,
+                            "credit": a.credit,
+                            "licence": a.licence,
+                            "tags": a.tags,
+                        }
+                    )
+                    for a in library
+                ]
+            }
+        )
     return dict(sorted(files.items()))
+
+
+def asset_blobs(session: Session, series_id: str) -> list[tuple[str, str, str]]:
+    """(export path, sha256, ext) of every image in a series' library."""
+    return [
+        (f"assets/{sha}.{ext}", sha, ext)
+        for sha, ext in session.execute(
+            select(Asset.sha256, Asset.ext)
+            .where(Asset.series_id == series_id)
+            .order_by(Asset.sha256)
+        )
+    ]
 
 
 @dataclass(frozen=True)
@@ -297,6 +484,9 @@ def _book_files(
     files: dict[str, str] = {}
     nodes = list(session.scalars(select(Node).where(Node.book_id == b.id).order_by(Node.key)))
     node_keys = {n.id: n.key for n in nodes}
+    node_art = _art_by(session, "node_id", list(node_keys))
+    act_art = _art_by(session, "act_id", [a.id for a in b.acts])
+    book_art = _art_by(session, "book_id", [b.id]).get(b.id, [])
     files["book.yaml"] = _dump(
         _clean(
             {
@@ -306,7 +496,9 @@ def _book_files(
                 "title": b.title,
                 "synopsis": b.synopsis,
                 "style_overrides": b.style_overrides,
+                "print_setup": dict(sorted((b.print_setup or {}).items())),
                 "start": node_keys.get(b.start_node_id or ""),
+                "art": _art_dump(book_art),
             }
         )
     )
@@ -332,6 +524,7 @@ def _book_files(
                         )
                         for bt in a.beats
                     ],
+                    "art": _art_dump(act_art.get(a.id, [])),
                 }
             )
         )
@@ -363,6 +556,8 @@ def _book_files(
         ]
         if prose:
             meta["prose"] = prose
+        if art := _art_dump(node_art.get(n.id, [])):
+            meta["art"] = art
         files[f"{act_dirs[n.act_id]}/nodes/{n.key}.md"] = _front_matter(meta, n.beat_notes)
     return files
 
@@ -399,6 +594,16 @@ def restore_book(session: Session, book_id: str, files: Mapping[str, str]) -> No
         session.delete(node)
     session.flush()
     refs.drop(session, "beat", [b.id for a in book.acts for b in a.beats])
+    refs.drop_placements(session, "act_id", [a.id for a in book.acts])
+    for p in list(
+        session.scalars(
+            select(ArtPlacement).where(
+                ArtPlacement.book_id == book_id, ArtPlacement.target_type == "book"
+            )
+        )
+    ):
+        refs.drop(session, "placement", [p.id])
+        session.delete(p)
     for act in list(book.acts):
         session.delete(act)
     session.flush()
@@ -408,6 +613,7 @@ def restore_book(session: Session, book_id: str, files: Mapping[str, str]) -> No
     book.title = meta["title"]
     book.synopsis = meta.get("synopsis", "")
     book.style_overrides = meta.get("style_overrides", {})
+    book.print_setup = meta.get("print_setup", {})
     _import_book(session, book, files, keys)
     session.flush()
     ctx = refs.RefContext(session, book.series_id)
@@ -417,6 +623,12 @@ def restore_book(session: Session, book_id: str, files: Mapping[str, str]) -> No
         select(StoryBeat).join(Act, StoryBeat.act_id == Act.id).where(Act.book_id == book_id)
     ):
         refs.reindex(session, "beat", beat, ctx)
+    for p in session.scalars(
+        select(ArtPlacement).where(
+            ArtPlacement.book_id == book_id, ArtPlacement.target_type.in_(("act", "book"))
+        )
+    ):
+        refs.reindex(session, "placement", p, ctx)
 
 
 def _node_meta(
@@ -540,7 +752,9 @@ def _node_meta(
 # ── files on disk / zip ─────────────────────────────────────────────────
 
 
-def write_tree(files: Mapping[str, str], root: Path) -> None:
+def write_tree(
+    files: Mapping[str, str], root: Path, blobs: Mapping[str, bytes] | None = None
+) -> None:
     """Write an export, removing stale managed files (other files are untouched)."""
     root.mkdir(parents=True, exist_ok=True)
     real_root = root.resolve()
@@ -560,6 +774,29 @@ def write_tree(files: Mapping[str, str], root: Path) -> None:
             raise TreeError(f"Refusing to write outside the export folder: {rel}")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
+    for rel, data in (blobs or {}).items():
+        path = root / rel
+        if not path.resolve().is_relative_to(real_root):
+            raise TreeError(f"Refusing to write outside the export folder: {rel}")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data)
+
+
+def _is_blob(rel: str) -> bool:
+    parts = rel.split("/")
+    return len(parts) == 2 and parts[0] == "assets" and rel.rsplit(".", 1)[-1] in ASSET_EXTS
+
+
+def read_blobs(root: Path) -> dict[str, bytes]:
+    """The image files of an export folder (``assets/<sha256>.<ext>``)."""
+    folder = root / "assets"
+    if not folder.is_dir():
+        return {}
+    return {
+        f"assets/{p.name}": p.read_bytes()
+        for p in sorted(folder.iterdir())
+        if p.is_file() and _is_blob(f"assets/{p.name}")
+    }
 
 
 def read_tree(root: Path) -> dict[str, str]:
@@ -577,22 +814,34 @@ def read_tree(root: Path) -> dict[str, str]:
     return files
 
 
-def to_zip(files: Mapping[str, str]) -> bytes:
+def to_zip(files: Mapping[str, str], blobs: Mapping[str, bytes] | None = None) -> bytes:
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
         for rel, content in files.items():
             info = zipfile.ZipInfo(rel, date_time=(2000, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             zf.writestr(info, content)
+        for rel, data in sorted((blobs or {}).items()):
+            info = zipfile.ZipInfo(rel, date_time=(2000, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_STORED  # images are already compressed
+            zf.writestr(info, data)
     return buf.getvalue()
 
 
 MAX_ZIP_ENTRIES = 50_000
-MAX_ZIP_BYTES = 200 * 1024 * 1024
+#: Extracted size cap (images included).
+MAX_ZIP_BYTES = 1024 * 1024 * 1024
 
 
 def from_zip(data: bytes) -> dict[str, str]:
+    """The text files of an export zip."""
+    return from_zip_all(data)[0]
+
+
+def from_zip_all(data: bytes) -> tuple[dict[str, str], dict[str, bytes]]:
+    """(text files, image files) of an export zip."""
     files: dict[str, str] = {}
+    blobs: dict[str, bytes] = {}
     with zipfile.ZipFile(io.BytesIO(data)) as zf:
         infos = zf.infolist()
         if len(infos) > MAX_ZIP_ENTRIES:
@@ -603,24 +852,46 @@ def from_zip(data: bytes) -> dict[str, str]:
             path = PurePosixPath(info.filename)
             if info.is_dir() or path.is_absolute() or ".." in path.parts:
                 continue
-            files[path.as_posix()] = zf.read(info).decode("utf-8")
-    return files
+            if _is_blob(path.as_posix()):
+                blobs[path.as_posix()] = zf.read(info)
+            else:
+                files[path.as_posix()] = zf.read(info).decode("utf-8")
+    return files, blobs
 
 
 # ── import ──────────────────────────────────────────────────────────────
 
 
-def import_series(session: Session, files: Mapping[str, str], *, replace: bool = False) -> Series:
+#: Checks and stores an import's image (sha256, ext, bytes or None when the archive has no
+#: file) and returns its real (mime, width, height), or None if no file exists for it.
+BlobWriter = Callable[[str, str, bytes | None], tuple[str, int, int] | None]
+
+
+def import_series(
+    session: Session,
+    files: Mapping[str, str],
+    *,
+    replace: bool = False,
+    blobs: Mapping[str, bytes] | None = None,
+    write_blob: BlobWriter | None = None,
+) -> Series:
     """Create a series from an export (see ``_import_series``); malformed files raise TreeError."""
     try:
-        return _import_series(session, files, replace=replace)
+        return _import_series(session, files, replace=replace, blobs=blobs, write_blob=write_blob)
     except (KeyError, TypeError, AttributeError, ValueError) as exc:
         if isinstance(exc, TreeError):
             raise
         raise TreeError(f"Malformed export: {type(exc).__name__}: {exc}") from exc
 
 
-def _import_series(session: Session, files: Mapping[str, str], *, replace: bool = False) -> Series:
+def _import_series(
+    session: Session,
+    files: Mapping[str, str],
+    *,
+    replace: bool = False,
+    blobs: Mapping[str, bytes] | None = None,
+    write_blob: BlobWriter | None = None,
+) -> Series:
     """Create a series from an export. With ``replace``, an existing series with
     the same id is deleted first. The RefIndex is rebuilt afterwards."""
     from gamebook.services import refs  # local import: export ← services is one-way
@@ -691,27 +962,129 @@ def _import_series(session: Session, files: Mapping[str, str], *, replace: bool 
             title=data["title"],
             synopsis=data.get("synopsis", ""),
             style_overrides=data.get("style_overrides", {}),
+            print_setup=data.get("print_setup", {}),
         )
         session.add(book)
         books.append((book, bfiles))
     session.flush()
 
+    _import_assets(session, series.id, files.get("assets.yaml"), blobs or {}, write_blob)
+    session.flush()
+
     # Lore (any scope) first — enemies may link to it — then other entities.
-    _import_lore(session, series.id, None, series_files, "")
+    entity_art: list[tuple[str, str, str | None, list[dict[str, Any]]]] = []
+    _import_lore(session, series.id, None, series_files, "", entity_art)
     for book, bfiles in books:
-        _import_lore(session, series.id, book.id, bfiles, f"books/{book.key}/")
+        _import_lore(session, series.id, book.id, bfiles, f"books/{book.key}/", entity_art)
     session.flush()
-    _import_entities(session, series.id, None, series_files, "")
+    _import_entities(session, series.id, None, series_files, "", entity_art)
     for book, bfiles in books:
-        _import_entities(session, series.id, book.id, bfiles, f"books/{book.key}/")
+        _import_entities(session, series.id, book.id, bfiles, f"books/{book.key}/", entity_art)
     session.flush()
+    for kind, entity_id, book_id, rows in entity_art:
+        _art_load(
+            session,
+            rows,
+            series_id=series.id,
+            target_type=kind,
+            target_id=entity_id,
+            book_id=book_id,
+        )
 
     keys = _EntityKeys(session, series.id)
     for book, bfiles in books:
         _import_book(session, book, bfiles, keys)
     session.flush()
+    _import_maps(session, series.id, None, series_files, "")
+    for book, bfiles in books:
+        _import_maps(session, series.id, book.id, bfiles, f"books/{book.key}/")
+        _import_appendices(session, book.id, bfiles.get("appendices.yaml"))
+    session.flush()
     refs.rebuild_series(session, series.id)
     return series
+
+
+def _import_assets(
+    session: Session,
+    series_id: str,
+    text: str | None,
+    blobs: Mapping[str, bytes],
+    write_blob: BlobWriter | None,
+) -> None:
+    """Library rows from ``assets.yaml``. The file's type and size come from the image
+    itself, never the YAML; an entry with no image (in the archive or the store) is
+    skipped, so its placements import as placeholders."""
+    if not text:
+        return
+    seen: set[str] = set()
+    for d in _load_yaml(text, "assets.yaml").get("assets", []):
+        sha, ext = str(d.get("sha256", "")), str(d.get("ext", ""))
+        if ext not in ASSET_EXTS or not _HEX64.fullmatch(sha):
+            raise TreeError(f"assets.yaml: bad asset {d.get('filename')!r}")
+        if sha in seen:
+            raise TreeError(f"assets.yaml lists {sha} twice")
+        seen.add(sha)
+        blob = blobs.get(f"assets/{sha}.{ext}")
+        if blob is not None and hashlib.sha256(blob).hexdigest() != sha:
+            raise TreeError(f"assets/{sha}.{ext} doesn't match its hash")
+        info = write_blob(sha, ext, blob) if write_blob is not None else None
+        if info is None:
+            continue
+        mime, width, height = info
+        session.add(
+            Asset(
+                id=d["id"],
+                series_id=series_id,
+                sha256=sha,
+                ext=ext,
+                mime=mime,
+                filename=str(d.get("filename") or f"{sha[:12]}.{ext}")[:255],
+                width_px=width,
+                height_px=height,
+                bytes=len(blob) if blob is not None else int(d.get("bytes", 0)),
+                alt_text=d.get("alt_text", ""),
+                caption=d.get("caption", ""),
+                credit=d.get("credit", ""),
+                licence=d.get("licence", ""),
+                tags=d.get("tags", []),
+            )
+        )
+
+
+def _import_maps(
+    session: Session, series_id: str, book_id: str | None, files: Mapping[str, str], where: str
+) -> None:
+    for rel, content in _under(files, "maps"):
+        d = _load_yaml(content, where + rel)
+        asset = d.get("asset")
+        session.add(
+            Map(
+                id=d["id"],
+                series_id=series_id,
+                book_id=book_id,
+                key=_k(d),
+                title=d["title"],
+                asset_id=asset if asset and session.get(Asset, asset) else None,
+                markers=d.get("markers", []),
+            )
+        )
+
+
+def _import_appendices(session: Session, book_id: str, text: str | None) -> None:
+    if not text:
+        return
+    for i, d in enumerate(_load_yaml(text, "appendices.yaml").get("appendices", [])):
+        session.add(
+            Appendix(
+                id=d["id"],
+                book_id=book_id,
+                kind=d["kind"],
+                title=d.get("title", d["kind"].title()),
+                position=i + 1,
+                enabled=not d.get("disabled", False),
+                options=d.get("options", {}),
+            )
+        )
 
 
 def _under(files: Mapping[str, str], folder: str) -> list[tuple[str, str]]:
@@ -759,8 +1132,17 @@ def _k(data: Mapping[str, Any]) -> str:
     return key
 
 
+#: (target type, entity id, book id, placement rows) gathered while importing entities.
+_EntityArt = list[tuple[str, str, str | None, list[dict[str, Any]]]]
+
+
 def _import_lore(
-    session: Session, series_id: str, book_id: str | None, files: Mapping[str, str], where: str
+    session: Session,
+    series_id: str,
+    book_id: str | None,
+    files: Mapping[str, str],
+    where: str,
+    art: _EntityArt,
 ) -> None:
     for rel, content in _under(files, "lore"):
         meta, body = _parse_front_matter(content, where + rel)
@@ -779,10 +1161,16 @@ def _import_lore(
                 fields=meta.get("fields", {}),
             )
         )
+        art.append(("lore", meta["id"], book_id, meta.get("art", [])))
 
 
 def _import_entities(
-    session: Session, series_id: str, book_id: str | None, files: Mapping[str, str], where: str
+    session: Session,
+    series_id: str,
+    book_id: str | None,
+    files: Mapping[str, str],
+    where: str,
+    art: _EntityArt,
 ) -> None:
     all_lore = dict(
         session.execute(
@@ -807,6 +1195,7 @@ def _import_entities(
                 lore_entry_id=_EntityKeys.get(all_lore, d.get("lore"), where + rel),
             )
         )
+        art.append(("enemy", d["id"], book_id, d.get("art", [])))
     for rel, content in _under(files, "items"):
         d = _load_yaml(content, where + rel)
         session.add(
@@ -827,6 +1216,7 @@ def _import_entities(
                 use_effects=d.get("use_effects", []),
             )
         )
+        art.append(("item", d["id"], book_id, d.get("art", [])))
     for rel, content in _under(files, "tables"):
         d = _load_yaml(content, where + rel)
         session.add(
@@ -859,11 +1249,13 @@ def _import_entities(
                 relationships=meta.get("relationships", []),
             )
         )
+        art.append(("character", meta["id"], book_id, meta.get("art", [])))
 
 
 def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _EntityKeys) -> None:
     act_files = sorted(k for k in files if k.startswith("acts/") and k.endswith("/act.yaml"))
     node_metas: list[tuple[str, dict[str, Any], str, str]] = []  # (act id, meta, body, path)
+    act_art: list[tuple[str, list[dict[str, Any]]]] = []
     beat_data: list[tuple[str, list[dict[str, Any]], str]] = []  # (act id, beats, path)
     for position, act_rel in enumerate(act_files):
         d = _load_yaml(files[act_rel], act_rel)
@@ -878,6 +1270,7 @@ def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _
         )
         session.add(act)
         beat_data.append((act.id, d.get("beats", []), act_rel))
+        act_art.append((act.id, d.get("art", [])))
         act_dir = act_rel.rsplit("/", 1)[0]
         for rel in sorted(k for k in files if k.startswith(f"{act_dir}/nodes/")):
             meta, body = _parse_front_matter(files[rel], rel)
@@ -1034,6 +1427,12 @@ def _import_book(session: Session, book: Book, files: Mapping[str, str], keys: _
                 if (nid := node_ref(key, rel)) is not None
             ]
             session.add(beat)
-    book.start_node_id = node_ref(
-        _load_yaml(files["book.yaml"], "book.yaml").get("start"), "book.yaml"
-    )
+    book_meta = _load_yaml(files["book.yaml"], "book.yaml")
+    book.start_node_id = node_ref(book_meta.get("start"), "book.yaml")
+    session.flush()
+    art = {"series_id": book.series_id, "book_id": book.id}
+    _art_load(session, book_meta.get("art"), target_type="book", target_id=book.id, **art)
+    for act_id, rows in act_art:
+        _art_load(session, rows, target_type="act", target_id=act_id, **art)
+    for _act_id, meta, _body, _rel in node_metas:
+        _art_load(session, meta.get("art"), target_type="node", target_id=meta["id"], **art)

@@ -1,0 +1,24 @@
+<section class="appendix rules">
+  <h1>{{ title }}</h1>
+  {% if tier %}<p class="note">{{ tier }} rules</p>{% endif %}
+  {% if text %}{{ text }}{% endif %}
+  {% for t in tests %}
+  <h2>{{ t.label }}</h2>
+  {% if t.description %}<p>{{ t.description }}</p>{% endif %}
+  <p>Roll {{ t.roll }}. You succeed if {{ t.success }}.</p>
+  {% for a in t.after %}<p class="muted">Afterwards: {{ a }}</p>{% endfor %}
+  {% endfor %}
+  {% if combat %}
+  <h2>Combat</h2>
+  <ol>
+    <li>Your attack strength is {{ combat.player_attack or "—" }}.</li>
+    <li>Your opponent's attack strength is {{ combat.enemy_attack or "—" }}.</li>
+    <li>Whoever has the higher attack strength wounds the other: deduct {{ combat.damage or "—" }} from their {{ combat.damage_stat }}.</li>
+    {% for h in combat.hooks %}<li>Then adjust the damage: {{ h }}.</li>{% endfor %}
+    <li>Repeat until one side's {{ combat.damage_stat }} runs out.</li>
+  </ol>
+  {% if combat.multi == "simultaneous" %}<p>When fighting several enemies, fight them all at once.</p>{% else %}<p>When fighting several enemies, fight them one at a time.</p>{% endif %}
+  {% if combat.flee %}<p>You may flee from a fight where the text allows it{% if combat.flee_cost %}: {{ combat.flee_cost|join(" ") }}{% else %}.{% endif %}</p>{% endif %}
+  {% endif %}
+  {% if not (text or tests or combat) %}<p class="note">No rules written for this tier yet.</p>{% endif %}
+</section>

@@ -96,6 +96,131 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/appendices/{appendix_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Appendix */
+    delete: operations['delete_appendix']
+    options?: never
+    head?: never
+    /** Update Appendix */
+    patch: operations['update_appendix']
+    trace?: never
+  }
+  '/api/appendices/{appendix_id}/render': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Render Appendix */
+    get: operations['render_appendix']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assets/gc': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Collect Asset Garbage
+     * @description Remove image files no asset (live or in a checkpoint) refers to.
+     */
+    post: operations['collect_asset_garbage']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assets/{asset_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Asset */
+    get: operations['get_asset']
+    put?: never
+    post?: never
+    /** Delete Asset */
+    delete: operations['delete_asset']
+    options?: never
+    head?: never
+    /** Update Asset */
+    patch: operations['update_asset']
+    trace?: never
+  }
+  '/api/assets/{asset_id}/file': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Asset File */
+    get: operations['asset_file']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assets/{asset_id}/thumb': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Asset Thumb */
+    get: operations['asset_thumb']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/assets/{asset_id}/where-used': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Asset Where Used */
+    get: operations['asset_where_used']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/assist/{item_id}': {
     parameters: {
       query?: never
@@ -313,6 +438,41 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/appendices': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Appendices */
+    get: operations['list_appendices']
+    put?: never
+    /** Create Appendix */
+    post: operations['create_appendix']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/appendices/reorder': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reorder Appendices */
+    post: operations['reorder_appendices']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}/assist': {
     parameters: {
       query?: never
@@ -342,6 +502,27 @@ export interface paths {
     put?: never
     /** Create Batch */
     post: operations['create_batch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/codex': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Book Codex
+     * @description The player's codex: enabled appendices, with bestiary and items limited to what the
+     *     reader has met.
+     */
+    post: operations['book_codex']
     delete?: never
     options?: never
     head?: never
@@ -526,6 +707,24 @@ export interface paths {
      */
     get: operations['get_outline']
     put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/books/{book_id}/page-setup': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Page Setup */
+    get: operations['get_page_setup']
+    /** Save Page Setup */
+    put: operations['save_page_setup']
     post?: never
     delete?: never
     options?: never
@@ -1103,6 +1302,25 @@ export interface paths {
     patch: operations['update_lore_entry']
     trace?: never
   }
+  '/api/maps/{map_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get Map */
+    get: operations['get_map']
+    put?: never
+    post?: never
+    /** Delete Map */
+    delete: operations['delete_map']
+    options?: never
+    head?: never
+    /** Update Map */
+    patch: operations['update_map']
+    trace?: never
+  }
   '/api/nodes/{node_id}': {
     parameters: {
       query?: never
@@ -1309,6 +1527,59 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/placements': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Placements */
+    get: operations['list_placements']
+    put?: never
+    /** Create Placement */
+    post: operations['create_placement']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/placements/reorder': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Reorder Placements */
+    post: operations['reorder_placements']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/placements/{placement_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Delete Placement */
+    delete: operations['delete_placement']
+    options?: never
+    head?: never
+    /** Update Placement */
+    patch: operations['update_placement']
+    trace?: never
+  }
   '/api/playtest/bots': {
     parameters: {
       query?: never
@@ -1470,6 +1741,28 @@ export interface paths {
     patch: operations['update_series']
     trace?: never
   }
+  '/api/series/{series_id}/assets': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Assets */
+    get: operations['list_assets']
+    put?: never
+    /**
+     * Upload Asset
+     * @description Upload an image as the raw request body. The same image twice returns the existing
+     *     asset (200).
+     */
+    post: operations['upload_asset']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/series/{series_id}/books': {
     parameters: {
       query?: never
@@ -1593,7 +1886,7 @@ export interface paths {
     }
     /**
      * Export Series
-     * @description Download the series as a git-friendly tree of YAML/Markdown files.
+     * @description Download the series as a git-friendly tree of YAML/Markdown files (plus its images).
      */
     get: operations['export_series']
     put?: never
@@ -1694,6 +1987,24 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/series/{series_id}/maps': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List Maps */
+    get: operations['list_maps']
+    put?: never
+    /** Create Map */
+    post: operations['create_map']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/series/{series_id}/reindex': {
     parameters: {
       query?: never
@@ -1726,6 +2037,27 @@ export interface paths {
     put?: never
     /** Create Rule System */
     post: operations['create_rule_system']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/series/{series_id}/shot-list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Shot List
+     * @description Every placement with its brief, status and printed size; CSV or Markdown for
+     *     illustrators.
+     */
+    get: operations['shot_list']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -1968,12 +2300,360 @@ export interface components {
        */
       type: 'choose' | 'take' | 'buy' | 'sell' | 'use' | 'equip' | 'unequip' | 'attack' | 'flee'
     }
+    /** AppendixIn */
+    AppendixIn: {
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'bestiary' | 'sheet' | 'items' | 'rules' | 'personae' | 'glossary' | 'maps' | 'custom'
+      options?: components['schemas']['AppendixOptions']
+      /** Title */
+      title?: string | null
+    }
+    /** AppendixOptions */
+    AppendixOptions: {
+      /**
+       * Blank Entries
+       * @default false
+       */
+      blank_entries?: boolean
+      /**
+       * Body
+       * @default
+       */
+      body?: string
+      /**
+       * Codewords
+       * @default list
+       * @enum {string}
+       */
+      codewords?: 'list' | 'blank'
+      /**
+       * Hide Key Items
+       * @default false
+       */
+      hide_key_items?: boolean
+      /**
+       * Inventory Lines
+       * @default 12
+       */
+      inventory_lines?: number
+      /** Map Ids */
+      map_ids?: string[]
+      /**
+       * Order
+       * @default alpha
+       * @enum {string}
+       */
+      order?: 'alpha' | 'first_appearance'
+      /**
+       * Show Images
+       * @default true
+       */
+      show_images?: boolean
+      /**
+       * Spoilers
+       * @default all
+       * @enum {string}
+       */
+      spoilers?: 'all' | 'met_on_canonical_path'
+      /**
+       * Stat Mode
+       * @default levels
+       * @enum {string}
+       */
+      stat_mode?: 'levels' | 'table'
+      /** Tier */
+      tier?: string | null
+    }
+    /** AppendixOut */
+    AppendixOut: {
+      /** Book Id */
+      book_id: string
+      /** Enabled */
+      enabled: boolean
+      /** Id */
+      id: string
+      /** Kind */
+      kind: string
+      options: components['schemas']['AppendixOptions']
+      /** Position */
+      position: number
+      /** Title */
+      title: string
+    }
+    /** AppendixUpdate */
+    AppendixUpdate: {
+      /** Enabled */
+      enabled?: boolean | null
+      options?: components['schemas']['AppendixOptions'] | null
+      /** Title */
+      title?: string | null
+    }
     /** ApproveIn */
     ApproveIn: {
       /** Summary */
       summary?: string | null
       /** Text */
       text?: string | null
+    }
+    /** ArtPlacementIn */
+    ArtPlacementIn: {
+      /** Asset Id */
+      asset_id?: string | null
+      /**
+       * Brief
+       * @default
+       */
+      brief?: string
+      /**
+       * Caption
+       * @default
+       */
+      caption?: string
+      digital?: components['schemas']['DigitalLayout'] | null
+      layout?: components['schemas']['PrintLayout'] | null
+      /**
+       * Media
+       * @default both
+       * @enum {string}
+       */
+      media?: 'print' | 'digital' | 'both'
+      /** Role */
+      role?:
+        | (
+            | 'illustration'
+            | 'opener'
+            | 'cover_front'
+            | 'cover_back'
+            | 'frontispiece'
+            | 'title_page'
+            | 'endpaper'
+            | 'portrait'
+            | 'image'
+          )
+        | null
+      /** Status */
+      status?: ('needed' | 'sketch' | 'final') | null
+      /** Target Id */
+      target_id: string
+      /**
+       * Target Type
+       * @enum {string}
+       */
+      target_type: 'node' | 'act' | 'book' | 'character' | 'enemy' | 'item' | 'lore'
+      /** Tier */
+      tier?: string | null
+      /** Variant Id */
+      variant_id?: string | null
+    }
+    /** ArtPlacementOut */
+    ArtPlacementOut: {
+      /** Act Id */
+      act_id: string | null
+      asset: components['schemas']['AssetOut'] | null
+      /** Asset Id */
+      asset_id: string | null
+      /** Book Id */
+      book_id: string | null
+      /** Brief */
+      brief: string
+      /** Caption */
+      caption: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      digital: components['schemas']['DigitalLayout']
+      /** Id */
+      id: string
+      layout: components['schemas']['PrintLayout']
+      /** Media */
+      media: string
+      /** Node Id */
+      node_id: string | null
+      /** Position */
+      position: number
+      print_size: components['schemas']['PrintSizeOut']
+      /** Role */
+      role: string
+      /** Series Id */
+      series_id: string
+      /** Status */
+      status: string
+      /** Target Id */
+      target_id: string
+      /** Target Label */
+      target_label: string
+      /** Target Type */
+      target_type: string
+      /** Tier */
+      tier: string | null
+      /** Variant Id */
+      variant_id: string | null
+    }
+    /** ArtPlacementUpdate */
+    ArtPlacementUpdate: {
+      /** Asset Id */
+      asset_id?: string | null
+      /** Brief */
+      brief?: string | null
+      /** Caption */
+      caption?: string | null
+      digital?: components['schemas']['DigitalLayout'] | null
+      layout?: components['schemas']['PrintLayout'] | null
+      /** Media */
+      media?: ('print' | 'digital' | 'both') | null
+      /** Role */
+      role?:
+        | (
+            | 'illustration'
+            | 'opener'
+            | 'cover_front'
+            | 'cover_back'
+            | 'frontispiece'
+            | 'title_page'
+            | 'endpaper'
+            | 'portrait'
+            | 'image'
+          )
+        | null
+      /** Status */
+      status?: ('needed' | 'sketch' | 'final') | null
+      /** Tier */
+      tier?: string | null
+      /** Variant Id */
+      variant_id?: string | null
+    }
+    /** AssetOut */
+    AssetOut: {
+      /** Alt Text */
+      alt_text: string
+      /** Bytes */
+      bytes: number
+      /** Caption */
+      caption: string
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Credit */
+      credit: string
+      /** Filename */
+      filename: string
+      /** Height Px */
+      height_px: number
+      /** Id */
+      id: string
+      /** Licence */
+      licence: string
+      /** Mime */
+      mime: string
+      /** Series Id */
+      series_id: string
+      /** Sha256 */
+      sha256: string
+      /** Tags */
+      tags: string[]
+      /** Thumb Url */
+      thumb_url: string
+      /** Url */
+      url: string
+      /**
+       * Uses
+       * @default 0
+       */
+      uses?: number
+      /** Width Px */
+      width_px: number
+    }
+    /** AssetUpdate */
+    AssetUpdate: {
+      /** Alt Text */
+      alt_text?: string | null
+      /** Caption */
+      caption?: string | null
+      /** Credit */
+      credit?: string | null
+      /** Filename */
+      filename?: string | null
+      /** Licence */
+      licence?: string | null
+      /** Tags */
+      tags?: string[] | null
+    }
+    /** AssetUploadOut */
+    AssetUploadOut: {
+      /** Alt Text */
+      alt_text: string
+      /** Bytes */
+      bytes: number
+      /** Caption */
+      caption: string
+      /**
+       * Created
+       * @default true
+       */
+      created?: boolean
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Credit */
+      credit: string
+      /** Filename */
+      filename: string
+      /** Height Px */
+      height_px: number
+      /** Id */
+      id: string
+      /** Licence */
+      licence: string
+      /** Mime */
+      mime: string
+      /** Series Id */
+      series_id: string
+      /** Sha256 */
+      sha256: string
+      /** Tags */
+      tags: string[]
+      /** Thumb Url */
+      thumb_url: string
+      /** Url */
+      url: string
+      /**
+       * Uses
+       * @default 0
+       */
+      uses?: number
+      /** Width Px */
+      width_px: number
+    }
+    /** AssetUse */
+    AssetUse: {
+      /** Book Id */
+      book_id?: string | null
+      /** Book Title */
+      book_title?: string | null
+      /** Id */
+      id: string
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'placement' | 'map'
+      /** Label */
+      label: string
+      /** Node Id */
+      node_id?: string | null
+      /** Role */
+      role: string
+      /** Target Type */
+      target_type: string
     }
     /** AssistItemOut */
     AssistItemOut: {
@@ -2572,6 +3252,26 @@ export interface components {
       /** Print Text */
       print_text?: string | null
     }
+    /** CodexEntry */
+    CodexEntry: {
+      /** Document */
+      document: string
+      /** Id */
+      id: string
+      /** Title */
+      title: string
+    }
+    /** CodexIn */
+    CodexIn: {
+      /** Enemies */
+      enemies?: string[]
+      /** Flags */
+      flags?: string[]
+      /** Items */
+      items?: string[]
+      /** Tier */
+      tier: string
+    }
     /**
      * CombatDef
      * @description Combat is a fixed procedure with expression hooks (SPEC §2.4).
@@ -2686,6 +3386,20 @@ export interface components {
       samples?: number
       /** Tier */
       tier: string
+    }
+    /** DigitalLayout */
+    DigitalLayout: {
+      /**
+       * Display
+       * @default inline
+       * @enum {string}
+       */
+      display?: 'full_width' | 'inline' | 'thumbnail'
+      /**
+       * Zoom
+       * @default true
+       */
+      zoom?: boolean
     }
     /** Distribution */
     Distribution: {
@@ -3041,6 +3755,11 @@ export interface components {
       severity: 'error' | 'warning' | 'info'
       /** Start */
       start: number
+    }
+    /** GcOut */
+    GcOut: {
+      /** Removed */
+      removed: number
     }
     /** GenerateIn */
     GenerateIn: {
@@ -3647,6 +4366,70 @@ export interface components {
       /** Type */
       type?: ('location' | 'faction' | 'history' | 'glossary' | 'other') | null
     }
+    /** MapIn */
+    MapIn: {
+      /** Asset Id */
+      asset_id?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Key */
+      key?: string | null
+      /** Title */
+      title: string
+    }
+    /** MapOut */
+    MapOut: {
+      asset: components['schemas']['AssetOut'] | null
+      /** Asset Id */
+      asset_id: string | null
+      /** Book Id */
+      book_id: string | null
+      /** Id */
+      id: string
+      /** Key */
+      key: string
+      /** Markers */
+      markers: {
+        [key: string]: unknown
+      }[]
+      /** Series Id */
+      series_id: string
+      /** Title */
+      title: string
+    }
+    /** MapUpdate */
+    MapUpdate: {
+      /** Asset Id */
+      asset_id?: string | null
+      /** Book Id */
+      book_id?: string | null
+      /** Key */
+      key?: string | null
+      /** Markers */
+      markers?: components['schemas']['Marker'][] | null
+      /** Title */
+      title?: string | null
+    }
+    /** Marker */
+    Marker: {
+      /** Id */
+      id: string
+      /**
+       * Label
+       * @default
+       */
+      label?: string
+      /** Lore Id */
+      lore_id?: string | null
+      /** Node Id */
+      node_id?: string | null
+      /** Visible If */
+      visible_if?: string | null
+      /** X */
+      x: number
+      /** Y */
+      y: number
+    }
     /** ModelInfo */
     ModelInfo: {
       /**
@@ -3746,6 +4529,8 @@ export interface components {
     NodeOut: {
       /** Act Id */
       act_id: string
+      /** Art Thumb */
+      art_thumb?: string | null
       /** Beat Notes */
       beat_notes: string
       /** Book Id */
@@ -3942,6 +4727,95 @@ export interface components {
       /** Book Id */
       book_id: string
     }
+    /**
+     * PageSetup
+     * @description A book's printed page in mm. Defaults: 6x9 in trade paperback, 1/8 in bleed.
+     */
+    PageSetup: {
+      /**
+       * Bleed Mm
+       * @default 3.175
+       */
+      bleed_mm?: number
+      /**
+       * Margin Bottom Mm
+       * @default 22
+       */
+      margin_bottom_mm?: number
+      /**
+       * Margin Inner Mm
+       * @default 19
+       */
+      margin_inner_mm?: number
+      /**
+       * Margin Outer Mm
+       * @default 16
+       */
+      margin_outer_mm?: number
+      /**
+       * Margin Top Mm
+       * @default 18
+       */
+      margin_top_mm?: number
+      /**
+       * Trim Height Mm
+       * @default 228.6
+       */
+      trim_height_mm?: number
+      /**
+       * Trim Width Mm
+       * @default 152.4
+       */
+      trim_width_mm?: number
+    }
+    /** PageSetupOut */
+    PageSetupOut: {
+      /**
+       * Bleed Mm
+       * @default 3.175
+       */
+      bleed_mm?: number
+      /**
+       * Margin Bottom Mm
+       * @default 22
+       */
+      margin_bottom_mm?: number
+      /**
+       * Margin Inner Mm
+       * @default 19
+       */
+      margin_inner_mm?: number
+      /**
+       * Margin Outer Mm
+       * @default 16
+       */
+      margin_outer_mm?: number
+      /**
+       * Margin Top Mm
+       * @default 18
+       */
+      margin_top_mm?: number
+      /**
+       * Text Height
+       * @default 0
+       */
+      text_height?: number
+      /**
+       * Text Width
+       * @default 0
+       */
+      text_width?: number
+      /**
+       * Trim Height Mm
+       * @default 228.6
+       */
+      trim_height_mm?: number
+      /**
+       * Trim Width Mm
+       * @default 152.4
+       */
+      trim_width_mm?: number
+    }
     /** PipelineRunOut */
     PipelineRunOut: {
       /** Cost Usd */
@@ -4005,6 +4879,33 @@ export interface components {
       target: string | null
       /** Type */
       type: string
+    }
+    /** PlayArt */
+    PlayArt: {
+      /** Alt */
+      alt: string
+      /** Caption */
+      caption: string
+      /** Display */
+      display: string
+      /** Thumb Url */
+      thumb_url: string
+      /** Url */
+      url: string
+      /** Zoom */
+      zoom: boolean
+    }
+    /** PlayCodex */
+    PlayCodex: {
+      /**
+       * Available
+       * @default false
+       */
+      available?: boolean
+      /** Enemies */
+      enemies?: string[]
+      /** Items */
+      items?: string[]
     }
     /** PlayCombat */
     PlayCombat: {
@@ -4079,6 +4980,35 @@ export interface components {
       /** Slot */
       slot: string | null
     }
+    /** PlayMap */
+    PlayMap: {
+      /** Alt */
+      alt: string
+      /** Id */
+      id: string
+      /** Markers */
+      markers: components['schemas']['PlayMarker'][]
+      /** Title */
+      title: string
+      /** Url */
+      url: string | null
+    }
+    /** PlayMarker */
+    PlayMarker: {
+      /**
+       * Here
+       * @default false
+       */
+      here?: boolean
+      /** Id */
+      id: string
+      /** Label */
+      label: string
+      /** X */
+      x: number
+      /** Y */
+      y: number
+    }
     /** PlayNode */
     PlayNode: {
       /** Act Title */
@@ -4106,10 +5036,13 @@ export interface components {
       actions: components['schemas']['PlayAction'][]
       /** Applied */
       applied: number
+      /** Art */
+      art?: components['schemas']['PlayArt'][]
       /** Character Class */
       character_class: string | null
       /** Classes */
       classes: components['schemas']['Option'][]
+      codex?: components['schemas']['PlayCodex']
       combat: components['schemas']['PlayCombat'] | null
       /** Ended */
       ended: string | null
@@ -4121,6 +5054,8 @@ export interface components {
       flags: string[]
       /** Items */
       items: components['schemas']['PlayItem'][]
+      /** Maps */
+      maps?: components['schemas']['PlayMap'][]
       /** Next Note */
       next_note?: {
         [key: string]: unknown
@@ -4151,6 +5086,100 @@ export interface components {
       max: number | null
       /** Value */
       value: number
+    }
+    /**
+     * PrintLayout
+     * @description Per-placement print controls (all optional; defaults suit a node illustration).
+     */
+    PrintLayout: {
+      /**
+       * Align
+       * @default center
+       * @enum {string}
+       */
+      align?: 'left' | 'right' | 'center'
+      /**
+       * Aspect
+       * @default original
+       * @enum {string}
+       */
+      aspect?: 'original' | '1:1' | '4:3' | '3:2' | '2:3' | '16:9'
+      /**
+       * Bleed
+       * @default false
+       */
+      bleed?: boolean
+      /**
+       * Focal X
+       * @default 0.5
+       */
+      focal_x?: number
+      /**
+       * Focal Y
+       * @default 0.5
+       */
+      focal_y?: number
+      /**
+       * Gutter Mm
+       * @default 4
+       */
+      gutter_mm?: number
+      /**
+       * Keep With
+       * @default true
+       */
+      keep_with?: boolean
+      /** Max Height Mm */
+      max_height_mm?: number | null
+      /**
+       * Page Side
+       * @default any
+       * @enum {string}
+       */
+      page_side?: 'any' | 'recto' | 'verso'
+      /**
+       * Paragraph
+       * @default 1
+       */
+      paragraph?: number
+      /**
+       * Position
+       * @default before_text
+       * @enum {string}
+       */
+      position?: 'before_text' | 'after_text' | 'after_paragraph' | 'own_page' | 'facing_page'
+      /**
+       * Size
+       * @default half
+       * @enum {string}
+       */
+      size?: 'full_page' | 'full_width' | 'half' | 'third' | 'vignette' | 'custom'
+      /** Width Mm */
+      width_mm?: number | null
+      /** Width Pct */
+      width_pct?: number | null
+      /**
+       * Wrap
+       * @default false
+       */
+      wrap?: boolean
+    }
+    /** PrintSizeOut */
+    PrintSizeOut: {
+      /** Box Height Mm */
+      box_height_mm: number
+      /** Box Width Mm */
+      box_width_mm: number
+      /** Dpi */
+      dpi: number | null
+      /** Height Mm */
+      height_mm: number
+      /** Needed Px */
+      needed_px: [number, number]
+      /** Status */
+      status: string
+      /** Width Mm */
+      width_mm: number
     }
     /** ProblemCounts */
     ProblemCounts: {
@@ -4430,6 +5459,15 @@ export interface components {
       /** Changed */
       changed: number
     }
+    /** RenderedOut */
+    RenderedOut: {
+      /** Document */
+      document: string
+      /** Html */
+      html: string
+      /** Title */
+      title: string
+    }
     /** Reorder */
     Reorder: {
       /** Ids */
@@ -4703,6 +5741,35 @@ export interface components {
       price: number
       /** Stock */
       stock: number | null
+    }
+    /** ShotRow */
+    ShotRow: {
+      /** Book Id */
+      book_id: string | null
+      /** Book Title */
+      book_title: string | null
+      /** Brief */
+      brief: string
+      /** Has Asset */
+      has_asset: boolean
+      /** Height Mm */
+      height_mm: number
+      /** Needed Px */
+      needed_px: [number, number]
+      /** Node Id */
+      node_id: string | null
+      /** Placement Id */
+      placement_id: string
+      /** Role */
+      role: string
+      /** Status */
+      status: string
+      /** Target Label */
+      target_label: string
+      /** Target Type */
+      target_type: string
+      /** Width Mm */
+      width_mm: number
     }
     /** SkillDef */
     SkillDef: {
@@ -5649,6 +6716,397 @@ export interface operations {
       }
     }
   }
+  delete_appendix: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        appendix_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_appendix: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        appendix_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppendixUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppendixOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  render_appendix: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        appendix_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RenderedOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  collect_asset_garbage: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GcOut']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_asset: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssetOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_asset: {
+    parameters: {
+      query?: {
+        force?: boolean
+      }
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_asset: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AssetUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssetOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  asset_file: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  asset_thumb: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  asset_where_used: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        asset_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssetUse'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   set_assist_status: {
     parameters: {
       query?: never
@@ -6326,6 +7784,134 @@ export interface operations {
       }
     }
   }
+  list_appendices: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppendixOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_appendix: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppendixIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppendixOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_appendices: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppendixOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   list_assist_items: {
     parameters: {
       query?: {
@@ -6432,6 +8018,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['BatchOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  book_codex: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CodexIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CodexEntry'][]
         }
       }
       /** @description Validation Error */
@@ -6856,6 +8486,90 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['OutlineOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  get_page_setup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageSetupOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  save_page_setup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PageSetup']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageSetupOut']
         }
       }
       /** @description Validation Error */
@@ -8654,6 +10368,128 @@ export interface operations {
       }
     }
   }
+  get_map: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        map_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MapOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_map: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        map_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_map: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        map_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MapUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MapOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   get_node: {
     parameters: {
       query?: never
@@ -9246,6 +11082,215 @@ export interface operations {
       }
     }
   }
+  list_placements: {
+    parameters: {
+      query?: {
+        series_id?: string | null
+        book_id?: string | null
+        target_type?: string | null
+        target_id?: string | null
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ArtPlacementOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_placement: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArtPlacementIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ArtPlacementOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reorder_placements: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Reorder']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ArtPlacementOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_placement: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        placement_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_placement: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        placement_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArtPlacementUpdate']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ArtPlacementOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   list_bots: {
     parameters: {
       query?: never
@@ -9781,6 +11826,94 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SeriesOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_assets: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssetOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  upload_asset: {
+    parameters: {
+      query?: {
+        filename?: string
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'image/jpeg': string
+        'image/png': string
+        'image/webp': string
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AssetUploadOut']
         }
       }
       /** @description Validation Error */
@@ -10529,6 +12662,92 @@ export interface operations {
       }
     }
   }
+  list_maps: {
+    parameters: {
+      query?: {
+        book_id?: string | null
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MapOut'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_map: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MapIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MapOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   reindex_series: {
     parameters: {
       query?: never
@@ -10629,6 +12848,50 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['RuleSystemOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  shot_list: {
+    parameters: {
+      query?: {
+        status?: string | null
+        book_id?: string | null
+        format?: 'json' | 'csv' | 'md'
+      }
+      header?: never
+      path: {
+        series_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ShotRow'][]
         }
       }
       /** @description Validation Error */

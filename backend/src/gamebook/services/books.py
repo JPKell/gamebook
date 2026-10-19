@@ -123,6 +123,7 @@ def delete_act(session: Session, act_id: str, *, force: bool = False) -> None:
 
     delete_nodes(session, book, nodes)
     refs.drop(session, "beat", [b.id for b in act.beats])
+    refs.drop_placements(session, "act_id", [act.id])
     session.delete(act)
     session.flush()
     remaining = sorted(book.acts, key=lambda a: a.position)

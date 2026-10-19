@@ -269,3 +269,5 @@ class NodeOut(Out):
     encounters: list[EncounterOut]
     items: list[PlacementOut]
     shop_items: list[ShopItemOut]
+    #: Thumbnail of the first illustration with an image (canvas card), if any.
+    art_thumb: str | None = None

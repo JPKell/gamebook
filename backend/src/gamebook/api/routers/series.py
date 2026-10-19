@@ -4,7 +4,7 @@ from typing import Literal
 
 from fastapi import APIRouter, Query, Request, Response, status
 
-from gamebook.api.deps import SessionDep
+from gamebook.api.deps import DatabaseDep, SessionDep, SettingsDep
 from gamebook.core.keys import key_problem
 from gamebook.db.models import RuleSystem, Series
 from gamebook.schemas.analysis import FlagUsage, RefOut, WhereUsed
@@ -20,6 +20,7 @@ from gamebook.schemas.series import (
 )
 from gamebook.services import refs, transfer
 from gamebook.services import series as svc
+from gamebook.services.assets import Store, collect_quietly
 from gamebook.services.common import require
 from gamebook.services.errors import InvalidError
 
@@ -47,8 +48,12 @@ def update_series(series_id: str, data: SeriesUpdate, session: SessionDep) -> Se
 
 
 @router.delete("/series/{series_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_series(series_id: str, session: SessionDep) -> None:
+def delete_series(
+    series_id: str, session: SessionDep, db: DatabaseDep, settings: SettingsDep
+) -> None:
     svc.delete_series(session, series_id)
+    session.commit()  # GC must see its assets gone
+    collect_quietly(session, db, Store(settings.data_dir / "assets"))
 
 
 # ── rule systems ─────────────────────────────────────────────────────────
@@ -184,9 +189,9 @@ def reindex_series(series_id: str, session: SessionDep) -> None:
     response_class=Response,
     responses={200: {"content": {"application/zip": {}}}},
 )
-def export_series(series_id: str, session: SessionDep) -> Response:
-    """Download the series as a git-friendly tree of YAML/Markdown files."""
-    filename, data = transfer.export_zip(session, series_id)
+def export_series(series_id: str, session: SessionDep, settings: SettingsDep) -> Response:
+    """Download the series as a git-friendly tree of YAML/Markdown files (plus its images)."""
+    filename, data = transfer.export_zip(session, Store(settings.data_dir / "assets"), series_id)
     return Response(
         content=data,
         media_type="application/zip",
@@ -206,7 +211,16 @@ def export_series(series_id: str, session: SessionDep) -> Response:
     },
 )
 async def import_series(
-    request: Request, session: SessionDep, replace: bool = Query(default=False)
+    request: Request,
+    session: SessionDep,
+    settings: SettingsDep,
+    db: DatabaseDep,
+    replace: bool = Query(default=False),
 ) -> Series:
     """Import a series from an export zip (request body is the zip file)."""
-    return transfer.import_zip(session, await request.body(), replace=replace)
+    store = Store(settings.data_dir / "assets")
+    series = transfer.import_zip(session, store, await request.body(), replace=replace)
+    if replace:
+        session.commit()
+        collect_quietly(session, db, store)  # the replaced series' images
+    return series

@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from gamebook import __version__
 from gamebook.api.errors import ErrorResponse, install_error_handlers
 from gamebook.api.routers import (
+    art,
     assist,
     books,
     entities,
@@ -85,6 +86,7 @@ def create_app(settings: Settings | None = None, *, database: Database | None = 
     install_error_handlers(app)
     for module in (
         health,
+        art,
         series,
         books,
         nodes,

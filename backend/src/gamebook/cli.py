@@ -55,11 +55,13 @@ def cmd_openapi(args: argparse.Namespace) -> None:
 def cmd_export(args: argparse.Namespace) -> None:
     from gamebook.config import get_settings
     from gamebook.db.session import Database
-    from gamebook.services import transfer
+    from gamebook.services import assets, transfer
 
-    db = Database(get_settings().database_url)
+    settings = get_settings()
+    db = Database(settings.database_url)
     with db.session() as session:
-        count = transfer.export_to_dir(session, args.series, Path(args.directory))
+        store = assets.Store(settings.data_dir / "assets")
+        count = transfer.export_to_dir(session, store, args.series, Path(args.directory))
     print(f"Exported {count} files to {args.directory}")
 
 
@@ -67,13 +69,17 @@ def cmd_import(args: argparse.Namespace) -> None:
     from gamebook.config import get_settings
     from gamebook.db import migrate
     from gamebook.db.session import Database
-    from gamebook.services import transfer
+    from gamebook.services import assets, transfer
 
-    url = get_settings().database_url
+    settings = get_settings()
+    url = settings.database_url
     migrate.upgrade(url)
     db = Database(url)
     with db.session() as session:
-        series = transfer.import_from_dir(session, Path(args.directory), replace=args.replace)
+        store = assets.Store(settings.data_dir / "assets")
+        series = transfer.import_from_dir(
+            session, store, Path(args.directory), replace=args.replace
+        )
         print(f"Imported series {series.key!r} ({series.title})")
 
 

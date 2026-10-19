@@ -159,6 +159,15 @@ class Game:
             self._error(where, exc)
             return 0
 
+    def holds(self, src: str | None) -> bool:
+        """Whether a condition holds now, with no side effects (errors count as false)."""
+        if not src:
+            return True
+        try:
+            return compiled_bool(src)(self._env, None)
+        except (gbx.GbxSyntaxError, gbx.GbxEvalError):
+            return False
+
     def _bool(self, src: str | None, where: str, env: GameEnv | None = None) -> bool:
         if not src:
             return True

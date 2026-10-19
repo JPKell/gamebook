@@ -240,6 +240,196 @@
         "title": "ActionInput",
         "type": "object"
       },
+      "AppendixIn": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "bestiary",
+              "sheet",
+              "items",
+              "rules",
+              "personae",
+              "glossary",
+              "maps",
+              "custom"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "options": {
+            "$ref": "#/components/schemas/AppendixOptions"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": ["kind"],
+        "title": "AppendixIn",
+        "type": "object"
+      },
+      "AppendixOptions": {
+        "additionalProperties": false,
+        "properties": {
+          "blank_entries": {
+            "default": false,
+            "title": "Blank Entries",
+            "type": "boolean"
+          },
+          "body": {
+            "default": "",
+            "maxLength": 50000,
+            "title": "Body",
+            "type": "string"
+          },
+          "codewords": {
+            "default": "list",
+            "enum": ["list", "blank"],
+            "title": "Codewords",
+            "type": "string"
+          },
+          "hide_key_items": {
+            "default": false,
+            "title": "Hide Key Items",
+            "type": "boolean"
+          },
+          "inventory_lines": {
+            "default": 12,
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Inventory Lines",
+            "type": "integer"
+          },
+          "map_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Map Ids",
+            "type": "array"
+          },
+          "order": {
+            "default": "alpha",
+            "enum": ["alpha", "first_appearance"],
+            "title": "Order",
+            "type": "string"
+          },
+          "show_images": {
+            "default": true,
+            "title": "Show Images",
+            "type": "boolean"
+          },
+          "spoilers": {
+            "default": "all",
+            "enum": ["all", "met_on_canonical_path"],
+            "title": "Spoilers",
+            "type": "string"
+          },
+          "stat_mode": {
+            "default": "levels",
+            "enum": ["levels", "table"],
+            "title": "Stat Mode",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          }
+        },
+        "title": "AppendixOptions",
+        "type": "object"
+      },
+      "AppendixOut": {
+        "properties": {
+          "book_id": {
+            "title": "Book Id",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "options": {
+            "$ref": "#/components/schemas/AppendixOptions"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["id", "book_id", "kind", "title", "position", "enabled", "options"],
+        "title": "AppendixOut",
+        "type": "object"
+      },
+      "AppendixUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "options": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AppendixOptions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "AppendixUpdate",
+        "type": "object"
+      },
       "ApproveIn": {
         "additionalProperties": false,
         "properties": {
@@ -270,6 +460,767 @@
           }
         },
         "title": "ApproveIn",
+        "type": "object"
+      },
+      "ArtPlacementIn": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "brief": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Brief",
+            "type": "string"
+          },
+          "caption": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Caption",
+            "type": "string"
+          },
+          "digital": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DigitalLayout"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PrintLayout"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "media": {
+            "default": "both",
+            "enum": ["print", "digital", "both"],
+            "title": "Media",
+            "type": "string"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "illustration",
+                  "opener",
+                  "cover_front",
+                  "cover_back",
+                  "frontispiece",
+                  "title_page",
+                  "endpaper",
+                  "portrait",
+                  "image"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": ["needed", "sketch", "final"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "target_id": {
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_type": {
+            "enum": ["node", "act", "book", "character", "enemy", "item", "lore"],
+            "title": "Target Type",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "variant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Id"
+          }
+        },
+        "required": ["target_type", "target_id"],
+        "title": "ArtPlacementIn",
+        "type": "object"
+      },
+      "ArtPlacementOut": {
+        "properties": {
+          "act_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Act Id"
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "brief": {
+            "title": "Brief",
+            "type": "string"
+          },
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "digital": {
+            "$ref": "#/components/schemas/DigitalLayout"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "layout": {
+            "$ref": "#/components/schemas/PrintLayout"
+          },
+          "media": {
+            "title": "Media",
+            "type": "string"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "print_size": {
+            "$ref": "#/components/schemas/PrintSizeOut"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "series_id": {
+            "title": "Series Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_id": {
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_label": {
+            "title": "Target Label",
+            "type": "string"
+          },
+          "target_type": {
+            "title": "Target Type",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "variant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Id"
+          }
+        },
+        "required": [
+          "id",
+          "series_id",
+          "target_type",
+          "target_id",
+          "target_label",
+          "book_id",
+          "node_id",
+          "act_id",
+          "role",
+          "asset_id",
+          "asset",
+          "variant_id",
+          "tier",
+          "media",
+          "position",
+          "caption",
+          "brief",
+          "status",
+          "layout",
+          "digital",
+          "print_size",
+          "created_at"
+        ],
+        "title": "ArtPlacementOut",
+        "type": "object"
+      },
+      "ArtPlacementUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "brief": {
+            "anyOf": [
+              {
+                "maxLength": 4000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brief"
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "digital": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DigitalLayout"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "layout": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PrintLayout"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "media": {
+            "anyOf": [
+              {
+                "enum": ["print", "digital", "both"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "enum": [
+                  "illustration",
+                  "opener",
+                  "cover_front",
+                  "cover_back",
+                  "frontispiece",
+                  "title_page",
+                  "endpaper",
+                  "portrait",
+                  "image"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": ["needed", "sketch", "final"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "variant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variant Id"
+          }
+        },
+        "title": "ArtPlacementUpdate",
+        "type": "object"
+      },
+      "AssetOut": {
+        "properties": {
+          "alt_text": {
+            "title": "Alt Text",
+            "type": "string"
+          },
+          "bytes": {
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "credit": {
+            "title": "Credit",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          },
+          "height_px": {
+            "title": "Height Px",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "licence": {
+            "title": "Licence",
+            "type": "string"
+          },
+          "mime": {
+            "title": "Mime",
+            "type": "string"
+          },
+          "series_id": {
+            "title": "Series Id",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "thumb_url": {
+            "title": "Thumb Url",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "uses": {
+            "default": 0,
+            "title": "Uses",
+            "type": "integer"
+          },
+          "width_px": {
+            "title": "Width Px",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "series_id",
+          "sha256",
+          "filename",
+          "mime",
+          "width_px",
+          "height_px",
+          "bytes",
+          "alt_text",
+          "caption",
+          "credit",
+          "licence",
+          "tags",
+          "created_at",
+          "url",
+          "thumb_url"
+        ],
+        "title": "AssetOut",
+        "type": "object"
+      },
+      "AssetUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "alt_text": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alt Text"
+          },
+          "caption": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Caption"
+          },
+          "credit": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Credit"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "maxLength": 255,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename"
+          },
+          "licence": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Licence"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 50,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tags"
+          }
+        },
+        "title": "AssetUpdate",
+        "type": "object"
+      },
+      "AssetUploadOut": {
+        "properties": {
+          "alt_text": {
+            "title": "Alt Text",
+            "type": "string"
+          },
+          "bytes": {
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "created": {
+            "default": true,
+            "title": "Created",
+            "type": "boolean"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "credit": {
+            "title": "Credit",
+            "type": "string"
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string"
+          },
+          "height_px": {
+            "title": "Height Px",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "licence": {
+            "title": "Licence",
+            "type": "string"
+          },
+          "mime": {
+            "title": "Mime",
+            "type": "string"
+          },
+          "series_id": {
+            "title": "Series Id",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "thumb_url": {
+            "title": "Thumb Url",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "uses": {
+            "default": 0,
+            "title": "Uses",
+            "type": "integer"
+          },
+          "width_px": {
+            "title": "Width Px",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "series_id",
+          "sha256",
+          "filename",
+          "mime",
+          "width_px",
+          "height_px",
+          "bytes",
+          "alt_text",
+          "caption",
+          "credit",
+          "licence",
+          "tags",
+          "created_at",
+          "url",
+          "thumb_url"
+        ],
+        "title": "AssetUploadOut",
+        "type": "object"
+      },
+      "AssetUse": {
+        "properties": {
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "book_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Title"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": ["placement", "map"],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "target_type": {
+            "title": "Target Type",
+            "type": "string"
+          }
+        },
+        "required": ["kind", "id", "role", "target_type", "label"],
+        "title": "AssetUse",
         "type": "object"
       },
       "AssistItemOut": {
@@ -2074,6 +3025,61 @@
         "title": "ClearFlag",
         "type": "object"
       },
+      "CodexEntry": {
+        "properties": {
+          "document": {
+            "title": "Document",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["id", "title", "document"],
+        "title": "CodexEntry",
+        "type": "object"
+      },
+      "CodexIn": {
+        "additionalProperties": false,
+        "properties": {
+          "enemies": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2000,
+            "title": "Enemies",
+            "type": "array"
+          },
+          "flags": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2000,
+            "title": "Flags",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2000,
+            "title": "Items",
+            "type": "array"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          }
+        },
+        "required": ["tier"],
+        "title": "CodexIn",
+        "type": "object"
+      },
       "CombatDef": {
         "additionalProperties": false,
         "description": "Combat is a fixed procedure with expression hooks (SPEC \u00a72.4).\n\nEach round both sides roll attack strength; the higher one deals ``damage``\nto the other's ``damage_stat``, passed through ``damage_hooks`` in order.\nFields left None inherit from the parent tier; hooks accumulate.",
@@ -2363,6 +3369,23 @@
         },
         "required": ["tier"],
         "title": "CoverageIn",
+        "type": "object"
+      },
+      "DigitalLayout": {
+        "properties": {
+          "display": {
+            "default": "inline",
+            "enum": ["full_width", "inline", "thumbnail"],
+            "title": "Display",
+            "type": "string"
+          },
+          "zoom": {
+            "default": true,
+            "title": "Zoom",
+            "type": "boolean"
+          }
+        },
+        "title": "DigitalLayout",
         "type": "object"
       },
       "Distribution": {
@@ -3367,6 +4390,17 @@
         },
         "required": ["severity", "code", "message", "start", "end"],
         "title": "GbxDiagnosticOut",
+        "type": "object"
+      },
+      "GcOut": {
+        "properties": {
+          "removed": {
+            "title": "Removed",
+            "type": "integer"
+          }
+        },
+        "required": ["removed"],
+        "title": "GcOut",
         "type": "object"
       },
       "GenerateIn": {
@@ -5157,6 +6191,252 @@
         "title": "LoreUpdate",
         "type": "object"
       },
+      "MapIn": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "key": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["title"],
+        "title": "MapIn",
+        "type": "object"
+      },
+      "MapOut": {
+        "properties": {
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssetOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "markers": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Markers",
+            "type": "array"
+          },
+          "series_id": {
+            "title": "Series Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["id", "series_id", "book_id", "key", "title", "asset_id", "asset", "markers"],
+        "title": "MapOut",
+        "type": "object"
+      },
+      "MapUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Id"
+          },
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "key": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z][A-Za-z0-9_]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          },
+          "markers": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Marker"
+                },
+                "maxItems": 500,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Markers"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "MapUpdate",
+        "type": "object"
+      },
+      "Marker": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Label",
+            "type": "string"
+          },
+          "lore_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lore Id"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "visible_if": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visible If"
+          },
+          "x": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": ["id", "x", "y"],
+        "title": "Marker",
+        "type": "object"
+      },
       "ModelInfo": {
         "additionalProperties": false,
         "properties": {
@@ -5406,6 +6686,17 @@
           "act_id": {
             "title": "Act Id",
             "type": "string"
+          },
+          "art_thumb": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Art Thumb"
           },
           "beat_notes": {
             "title": "Beat Notes",
@@ -6134,6 +7425,127 @@
         "title": "OutlineOut",
         "type": "object"
       },
+      "PageSetup": {
+        "description": "A book's printed page in mm. Defaults: 6x9 in trade paperback, 1/8 in bleed.",
+        "properties": {
+          "bleed_mm": {
+            "default": 3.175,
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Bleed Mm",
+            "type": "number"
+          },
+          "margin_bottom_mm": {
+            "default": 22.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Bottom Mm",
+            "type": "number"
+          },
+          "margin_inner_mm": {
+            "default": 19.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Inner Mm",
+            "type": "number"
+          },
+          "margin_outer_mm": {
+            "default": 16.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Outer Mm",
+            "type": "number"
+          },
+          "margin_top_mm": {
+            "default": 18.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Top Mm",
+            "type": "number"
+          },
+          "trim_height_mm": {
+            "default": 228.6,
+            "maximum": 900.0,
+            "minimum": 50.0,
+            "title": "Trim Height Mm",
+            "type": "number"
+          },
+          "trim_width_mm": {
+            "default": 152.4,
+            "maximum": 600.0,
+            "minimum": 50.0,
+            "title": "Trim Width Mm",
+            "type": "number"
+          }
+        },
+        "title": "PageSetup",
+        "type": "object"
+      },
+      "PageSetupOut": {
+        "properties": {
+          "bleed_mm": {
+            "default": 3.175,
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Bleed Mm",
+            "type": "number"
+          },
+          "margin_bottom_mm": {
+            "default": 22.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Bottom Mm",
+            "type": "number"
+          },
+          "margin_inner_mm": {
+            "default": 19.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Inner Mm",
+            "type": "number"
+          },
+          "margin_outer_mm": {
+            "default": 16.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Outer Mm",
+            "type": "number"
+          },
+          "margin_top_mm": {
+            "default": 18.0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Margin Top Mm",
+            "type": "number"
+          },
+          "text_height": {
+            "default": 0,
+            "title": "Text Height",
+            "type": "number"
+          },
+          "text_width": {
+            "default": 0,
+            "title": "Text Width",
+            "type": "number"
+          },
+          "trim_height_mm": {
+            "default": 228.6,
+            "maximum": 900.0,
+            "minimum": 50.0,
+            "title": "Trim Height Mm",
+            "type": "number"
+          },
+          "trim_width_mm": {
+            "default": 152.4,
+            "maximum": 600.0,
+            "minimum": 50.0,
+            "title": "Trim Width Mm",
+            "type": "number"
+          }
+        },
+        "title": "PageSetupOut",
+        "type": "object"
+      },
       "PipelineRunOut": {
         "properties": {
           "cost_usd": {
@@ -6305,6 +7717,62 @@
         },
         "required": ["type", "target", "label", "enabled", "reason"],
         "title": "PlayAction",
+        "type": "object"
+      },
+      "PlayArt": {
+        "properties": {
+          "alt": {
+            "title": "Alt",
+            "type": "string"
+          },
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "display": {
+            "title": "Display",
+            "type": "string"
+          },
+          "thumb_url": {
+            "title": "Thumb Url",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "zoom": {
+            "title": "Zoom",
+            "type": "boolean"
+          }
+        },
+        "required": ["url", "thumb_url", "alt", "caption", "display", "zoom"],
+        "title": "PlayArt",
+        "type": "object"
+      },
+      "PlayCodex": {
+        "properties": {
+          "available": {
+            "default": false,
+            "title": "Available",
+            "type": "boolean"
+          },
+          "enemies": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Enemies",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "PlayCodex",
         "type": "object"
       },
       "PlayCombat": {
@@ -6498,6 +7966,71 @@
         "title": "PlayItem",
         "type": "object"
       },
+      "PlayMap": {
+        "properties": {
+          "alt": {
+            "title": "Alt",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "markers": {
+            "items": {
+              "$ref": "#/components/schemas/PlayMarker"
+            },
+            "title": "Markers",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "required": ["id", "title", "url", "alt", "markers"],
+        "title": "PlayMap",
+        "type": "object"
+      },
+      "PlayMarker": {
+        "properties": {
+          "here": {
+            "default": false,
+            "title": "Here",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "x": {
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": ["id", "x", "y", "label"],
+        "title": "PlayMarker",
+        "type": "object"
+      },
       "PlayNode": {
         "properties": {
           "act_title": {
@@ -6598,6 +8131,13 @@
             "title": "Applied",
             "type": "integer"
           },
+          "art": {
+            "items": {
+              "$ref": "#/components/schemas/PlayArt"
+            },
+            "title": "Art",
+            "type": "array"
+          },
           "character_class": {
             "anyOf": [
               {
@@ -6615,6 +8155,9 @@
             },
             "title": "Classes",
             "type": "array"
+          },
+          "codex": {
+            "$ref": "#/components/schemas/PlayCodex"
           },
           "combat": {
             "anyOf": [
@@ -6667,6 +8210,13 @@
               "$ref": "#/components/schemas/PlayItem"
             },
             "title": "Items",
+            "type": "array"
+          },
+          "maps": {
+            "items": {
+              "$ref": "#/components/schemas/PlayMap"
+            },
+            "title": "Maps",
             "type": "array"
           },
           "next_note": {
@@ -6775,6 +8325,185 @@
         },
         "required": ["key", "label", "kind", "value", "effective", "max"],
         "title": "PlayStat",
+        "type": "object"
+      },
+      "PrintLayout": {
+        "description": "Per-placement print controls (all optional; defaults suit a node illustration).",
+        "properties": {
+          "align": {
+            "default": "center",
+            "enum": ["left", "right", "center"],
+            "title": "Align",
+            "type": "string"
+          },
+          "aspect": {
+            "default": "original",
+            "enum": ["original", "1:1", "4:3", "3:2", "2:3", "16:9"],
+            "title": "Aspect",
+            "type": "string"
+          },
+          "bleed": {
+            "default": false,
+            "title": "Bleed",
+            "type": "boolean"
+          },
+          "focal_x": {
+            "default": 0.5,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Focal X",
+            "type": "number"
+          },
+          "focal_y": {
+            "default": 0.5,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Focal Y",
+            "type": "number"
+          },
+          "gutter_mm": {
+            "default": 4.0,
+            "maximum": 30.0,
+            "minimum": 0.0,
+            "title": "Gutter Mm",
+            "type": "number"
+          },
+          "keep_with": {
+            "default": true,
+            "title": "Keep With",
+            "type": "boolean"
+          },
+          "max_height_mm": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 900.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Height Mm"
+          },
+          "page_side": {
+            "default": "any",
+            "enum": ["any", "recto", "verso"],
+            "title": "Page Side",
+            "type": "string"
+          },
+          "paragraph": {
+            "default": 1,
+            "maximum": 999.0,
+            "minimum": 1.0,
+            "title": "Paragraph",
+            "type": "integer"
+          },
+          "position": {
+            "default": "before_text",
+            "enum": ["before_text", "after_text", "after_paragraph", "own_page", "facing_page"],
+            "title": "Position",
+            "type": "string"
+          },
+          "size": {
+            "default": "half",
+            "enum": ["full_page", "full_width", "half", "third", "vignette", "custom"],
+            "title": "Size",
+            "type": "string"
+          },
+          "width_mm": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 600.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width Mm"
+          },
+          "width_pct": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Width Pct"
+          },
+          "wrap": {
+            "default": false,
+            "title": "Wrap",
+            "type": "boolean"
+          }
+        },
+        "title": "PrintLayout",
+        "type": "object"
+      },
+      "PrintSizeOut": {
+        "properties": {
+          "box_height_mm": {
+            "title": "Box Height Mm",
+            "type": "number"
+          },
+          "box_width_mm": {
+            "title": "Box Width Mm",
+            "type": "number"
+          },
+          "dpi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dpi"
+          },
+          "height_mm": {
+            "title": "Height Mm",
+            "type": "number"
+          },
+          "needed_px": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Needed Px",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "width_mm": {
+            "title": "Width Mm",
+            "type": "number"
+          }
+        },
+        "required": [
+          "width_mm",
+          "height_mm",
+          "dpi",
+          "status",
+          "box_width_mm",
+          "box_height_mm",
+          "needed_px"
+        ],
+        "title": "PrintSizeOut",
         "type": "object"
       },
       "ProblemCounts": {
@@ -7573,6 +9302,25 @@
         "title": "RenameResult",
         "type": "object"
       },
+      "RenderedOut": {
+        "properties": {
+          "document": {
+            "title": "Document",
+            "type": "string"
+          },
+          "html": {
+            "title": "Html",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": ["title", "html", "document"],
+        "title": "RenderedOut",
+        "type": "object"
+      },
       "Reorder": {
         "additionalProperties": false,
         "properties": {
@@ -8307,6 +10055,110 @@
         },
         "required": ["id", "item_id", "price", "stock"],
         "title": "ShopItemOut",
+        "type": "object"
+      },
+      "ShotRow": {
+        "properties": {
+          "book_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Id"
+          },
+          "book_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Book Title"
+          },
+          "brief": {
+            "title": "Brief",
+            "type": "string"
+          },
+          "has_asset": {
+            "title": "Has Asset",
+            "type": "boolean"
+          },
+          "height_mm": {
+            "title": "Height Mm",
+            "type": "number"
+          },
+          "needed_px": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Needed Px",
+            "type": "array"
+          },
+          "node_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Node Id"
+          },
+          "placement_id": {
+            "title": "Placement Id",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "target_label": {
+            "title": "Target Label",
+            "type": "string"
+          },
+          "target_type": {
+            "title": "Target Type",
+            "type": "string"
+          },
+          "width_mm": {
+            "title": "Width Mm",
+            "type": "number"
+          }
+        },
+        "required": [
+          "placement_id",
+          "book_id",
+          "book_title",
+          "target_type",
+          "target_label",
+          "role",
+          "status",
+          "brief",
+          "has_asset",
+          "width_mm",
+          "height_mm",
+          "needed_px",
+          "node_id"
+        ],
+        "title": "ShotRow",
         "type": "object"
       },
       "SkillDef": {
@@ -10362,6 +12214,486 @@
         "tags": ["assist"]
       }
     },
+    "/api/appendices/{appendix_id}": {
+      "delete": {
+        "operationId": "delete_appendix",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appendix_id",
+            "required": true,
+            "schema": {
+              "title": "Appendix Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Appendix",
+        "tags": ["art"]
+      },
+      "patch": {
+        "operationId": "update_appendix",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appendix_id",
+            "required": true,
+            "schema": {
+              "title": "Appendix Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppendixUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppendixOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update Appendix",
+        "tags": ["art"]
+      }
+    },
+    "/api/appendices/{appendix_id}/render": {
+      "get": {
+        "operationId": "render_appendix",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "appendix_id",
+            "required": true,
+            "schema": {
+              "title": "Appendix Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Render Appendix",
+        "tags": ["art"]
+      }
+    },
+    "/api/assets/gc": {
+      "post": {
+        "description": "Remove image files no asset (live or in a checkpoint) refers to.",
+        "operationId": "collect_asset_garbage",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GcOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Collect Asset Garbage",
+        "tags": ["art"]
+      }
+    },
+    "/api/assets/{asset_id}": {
+      "delete": {
+        "operationId": "delete_asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "force",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Force",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Asset",
+        "tags": ["art"]
+      },
+      "get": {
+        "operationId": "get_asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Asset",
+        "tags": ["art"]
+      },
+      "patch": {
+        "operationId": "update_asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update Asset",
+        "tags": ["art"]
+      }
+    },
+    "/api/assets/{asset_id}/file": {
+      "get": {
+        "operationId": "asset_file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Asset File",
+        "tags": ["art"]
+      }
+    },
+    "/api/assets/{asset_id}/thumb": {
+      "get": {
+        "operationId": "asset_thumb",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Asset Thumb",
+        "tags": ["art"]
+      }
+    },
+    "/api/assets/{asset_id}/where-used": {
+      "get": {
+        "operationId": "asset_where_used",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AssetUse"
+                  },
+                  "title": "Response Asset Where Used",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Asset Where Used",
+        "tags": ["art"]
+      }
+    },
     "/api/assist/{item_id}": {
       "patch": {
         "description": "Dismiss a finding (or reopen it), or reject a lore draft.",
@@ -11295,6 +13627,182 @@
         "tags": ["books"]
       }
     },
+    "/api/books/{book_id}/appendices": {
+      "get": {
+        "operationId": "list_appendices",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AppendixOut"
+                  },
+                  "title": "Response List Appendices",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Appendices",
+        "tags": ["art"]
+      },
+      "post": {
+        "operationId": "create_appendix",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppendixIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppendixOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Appendix",
+        "tags": ["art"]
+      }
+    },
+    "/api/books/{book_id}/appendices/reorder": {
+      "post": {
+        "operationId": "reorder_appendices",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AppendixOut"
+                  },
+                  "title": "Response Reorder Appendices",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Reorder Appendices",
+        "tags": ["art"]
+      }
+    },
     "/api/books/{book_id}/assist": {
       "get": {
         "operationId": "list_assist_items",
@@ -11507,6 +14015,71 @@
         },
         "summary": "Create Batch",
         "tags": ["playtest"]
+      }
+    },
+    "/api/books/{book_id}/codex": {
+      "post": {
+        "description": "The player's codex: enabled appendices, with bestiary and items limited to what the\nreader has met.",
+        "operationId": "book_codex",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CodexIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CodexEntry"
+                  },
+                  "title": "Response Book Codex",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Book Codex",
+        "tags": ["art"]
       }
     },
     "/api/books/{book_id}/consistency": {
@@ -12081,6 +14654,114 @@
         },
         "summary": "Get Outline",
         "tags": ["outline"]
+      }
+    },
+    "/api/books/{book_id}/page-setup": {
+      "get": {
+        "operationId": "get_page_setup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageSetupOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Page Setup",
+        "tags": ["art"]
+      },
+      "put": {
+        "operationId": "save_page_setup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageSetup"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageSetupOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Save Page Setup",
+        "tags": ["art"]
       }
     },
     "/api/books/{book_id}/play": {
@@ -14434,6 +17115,155 @@
         "tags": ["entities"]
       }
     },
+    "/api/maps/{map_id}": {
+      "delete": {
+        "operationId": "delete_map",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "map_id",
+            "required": true,
+            "schema": {
+              "title": "Map Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Map",
+        "tags": ["art"]
+      },
+      "get": {
+        "operationId": "get_map",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "map_id",
+            "required": true,
+            "schema": {
+              "title": "Map Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Map",
+        "tags": ["art"]
+      },
+      "patch": {
+        "operationId": "update_map",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "map_id",
+            "required": true,
+            "schema": {
+              "title": "Map Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update Map",
+        "tags": ["art"]
+      }
+    },
     "/api/nodes/{node_id}": {
       "delete": {
         "operationId": "delete_node",
@@ -15231,6 +18061,316 @@
         "tags": ["writing"]
       }
     },
+    "/api/placements": {
+      "get": {
+        "operationId": "list_placements",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "series_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Series Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "book_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Book Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "target_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Target Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "target_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Target Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ArtPlacementOut"
+                  },
+                  "title": "Response List Placements",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Placements",
+        "tags": ["art"]
+      },
+      "post": {
+        "operationId": "create_placement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtPlacementIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtPlacementOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Placement",
+        "tags": ["art"]
+      }
+    },
+    "/api/placements/reorder": {
+      "post": {
+        "operationId": "reorder_placements",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Reorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ArtPlacementOut"
+                  },
+                  "title": "Response Reorder Placements",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Reorder Placements",
+        "tags": ["art"]
+      }
+    },
+    "/api/placements/{placement_id}": {
+      "delete": {
+        "operationId": "delete_placement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "placement_id",
+            "required": true,
+            "schema": {
+              "title": "Placement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Placement",
+        "tags": ["art"]
+      },
+      "patch": {
+        "operationId": "update_placement",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "placement_id",
+            "required": true,
+            "schema": {
+              "title": "Placement Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtPlacementUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArtPlacementOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Update Placement",
+        "tags": ["art"]
+      }
+    },
     "/api/playtest/bots": {
       "get": {
         "operationId": "list_bots",
@@ -15932,6 +19072,143 @@
         "tags": ["series"]
       }
     },
+    "/api/series/{series_id}/assets": {
+      "get": {
+        "operationId": "list_assets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AssetOut"
+                  },
+                  "title": "Response List Assets",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Assets",
+        "tags": ["art"]
+      },
+      "post": {
+        "description": "Upload an image as the raw request body. The same image twice returns the existing\nasset (200).",
+        "operationId": "upload_asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filename",
+            "required": false,
+            "schema": {
+              "default": "image",
+              "maxLength": 255,
+              "title": "Filename",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "image/jpeg": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "image/png": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            },
+            "image/webp": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetUploadOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Upload Asset",
+        "tags": ["art"]
+      }
+    },
     "/api/series/{series_id}/books": {
       "get": {
         "operationId": "list_books",
@@ -16479,7 +19756,7 @@
     },
     "/api/series/{series_id}/export.zip": {
       "get": {
-        "description": "Download the series as a git-friendly tree of YAML/Markdown files.",
+        "description": "Download the series as a git-friendly tree of YAML/Markdown files (plus its images).",
         "operationId": "export_series",
         "parameters": [
           {
@@ -16953,6 +20230,134 @@
         "tags": ["entities"]
       }
     },
+    "/api/series/{series_id}/maps": {
+      "get": {
+        "operationId": "list_maps",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "book_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Book Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MapOut"
+                  },
+                  "title": "Response List Maps",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Maps",
+        "tags": ["art"]
+      },
+      "post": {
+        "operationId": "create_map",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MapIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Map",
+        "tags": ["art"]
+      }
+    },
     "/api/series/{series_id}/reindex": {
       "post": {
         "description": "Rebuild the reference index from scratch (maintenance).",
@@ -17107,6 +20512,104 @@
         },
         "summary": "Create Rule System",
         "tags": ["series"]
+      }
+    },
+    "/api/series/{series_id}/shot-list": {
+      "get": {
+        "description": "Every placement with its brief, status and printed size; CSV or Markdown for\nillustrators.",
+        "operationId": "shot_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "series_id",
+            "required": true,
+            "schema": {
+              "title": "Series Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "book_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Book Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "json",
+              "enum": ["json", "csv", "md"],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ShotRow"
+                  },
+                  "title": "Response Shot List",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Shot List",
+        "tags": ["art"]
       }
     },
     "/api/series/{series_id}/tables": {

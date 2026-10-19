@@ -35,10 +35,13 @@ describe('AppShell', () => {
     for (const s of SECTIONS) {
       expect(within(nav).getByRole('link', { name: s.label })).toBeInTheDocument()
     }
-    await user.click(within(nav).getByRole('link', { name: 'Art' }))
-    expect(await screen.findByRole('heading', { name: 'Art' })).toBeInTheDocument()
-    expect(router.state.location.pathname).toBe('/art')
-    expect(within(nav).getByRole('link', { name: 'Art' })).toHaveAttribute('aria-current', 'page')
+    await user.click(within(nav).getByRole('link', { name: 'Export' }))
+    expect(await screen.findByRole('heading', { name: 'Export' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/export')
+    expect(within(nav).getByRole('link', { name: 'Export' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
   })
 
   it('shows backend connected status', async () => {

@@ -10,6 +10,7 @@ import { Rows } from '@/features/entities/EnemyEditor'
 import { Panel } from '@/features/entities/EntityHeader'
 import { ScopeSelect } from '@/features/entities/ScopeSelect'
 import { WhereUsed } from '@/features/entities/WhereUsed'
+import { EntityArt } from '@/features/art/EntityArt'
 
 import { MentionText } from './MentionText'
 import { LORE_TYPES, type LoreType } from './types'
@@ -234,6 +235,7 @@ export function CharacterEditor({
           )}
         />
       </Panel>
+      <EntityArt seriesId={seriesId} targetType="character" targetId={c.id} name={c.name} />
       <Panel title="Appearances">
         <WhereUsed
           seriesId={seriesId}
@@ -319,6 +321,7 @@ export function LoreEditor({
           onCommit={(body) => save({ body })}
         />
       </Panel>
+      <EntityArt seriesId={seriesId} targetType="lore" targetId={l.id} name={l.name} />
       {l.type === 'location' && (
         <Panel title="Scenes set here">
           <WhereUsed

@@ -180,6 +180,8 @@ def delete_entity(
     series_id, key = obj.series_id, obj.key
     if kind.source_type:
         refs.drop(session, kind.source_type, [obj.id])
+    if kind.name in ("character", "enemy", "item", "lore"):
+        refs.drop_placements(session, f"{kind.name}_id", [obj.id])
     session.delete(obj)
     session.flush()
     session.expire_all()

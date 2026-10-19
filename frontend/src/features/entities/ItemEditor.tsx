@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { Checkbox, NumberInput, Select, TextArea, TextInput } from '@/components/ui/inputs'
 import { EffectsEditor } from '@/features/story/inspector/EffectsEditor'
+import { EntityArt } from '@/features/art/EntityArt'
 
 import { type Category, CATEGORIES } from './categories'
 import { type ItemUpdate, useDeleteEntity, useSaveEntity, useWhereUsed } from './api'
@@ -253,6 +254,7 @@ export function ItemEditor({
       <Panel title="Placements">
         <WhereUsed seriesId={seriesId} targetType="item" entityKey={item.key} showTotal />
       </Panel>
+      <EntityArt seriesId={seriesId} targetType="item" targetId={item.id} name={item.name} />
     </div>
   )
 }

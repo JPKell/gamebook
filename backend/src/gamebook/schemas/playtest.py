@@ -53,6 +53,40 @@ class PlayIn(In):
     inputs: list[PlayInput] = Field(default_factory=list, max_length=5_000)
 
 
+class PlayArt(Out):
+    url: str
+    thumb_url: str
+    alt: str
+    caption: str
+    #: full_width | inline | thumbnail
+    display: str
+    zoom: bool
+
+
+class PlayMarker(Out):
+    id: str
+    x: float
+    y: float
+    label: str
+    #: The reader is at this marker's section.
+    here: bool = False
+
+
+class PlayMap(Out):
+    id: str
+    title: str
+    url: str | None
+    alt: str
+    markers: list[PlayMarker]
+
+
+class PlayCodex(Out):
+    enemies: list[str] = Field(default_factory=list)
+    items: list[str] = Field(default_factory=list)
+    #: The book has enabled appendices to show as a codex.
+    available: bool = False
+
+
 class PlayNode(Out):
     id: str
     key: str
@@ -140,6 +174,12 @@ class PlayOut(Out):
     steps: int
     #: Replays of LLM runs: the player's note for the choice made at this step.
     next_note: dict[str, Any] | None = None
+    #: Artwork for this section (digital placements for the reader's variant and tier).
+    art: list[PlayArt] = Field(default_factory=list)
+    #: Maps the book uses, with only the markers this reader can see.
+    maps: list[PlayMap] = Field(default_factory=list)
+    #: What the reader has met so far (unlocks codex entries).
+    codex: PlayCodex = Field(default_factory=lambda: PlayCodex())
 
 
 # ── batches & runs ───────────────────────────────────────────────────────

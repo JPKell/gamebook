@@ -402,6 +402,7 @@ def update_variant(session: Session, variant_id: str, data: VariantUpdate) -> Te
 def delete_variant(session: Session, variant_id: str) -> None:
     v = require(session, TextVariant, variant_id)
     refs.drop(session, "variant", [v.id])
+    refs.drop_placements(session, "variant_id", [v.id])  # its art goes with it (FK cascade)
     session.delete(v)
     session.flush()
 

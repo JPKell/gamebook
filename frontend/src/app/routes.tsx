@@ -5,6 +5,8 @@ import { SectionPlaceholder } from '@/features/placeholder/SectionPlaceholder'
 
 import { AppShell } from './AppShell'
 import {
+  ArtIndex,
+  ArtPage,
   EnemiesIndex,
   EnemiesPage,
   ItemsIndex,
@@ -26,6 +28,7 @@ import { Page } from './Page'
 import { SECTIONS } from './sections'
 
 const BUILT = new Set([
+  'art',
   'library',
   'story',
   'mechanics',
@@ -144,6 +147,22 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <LorePage />
+          </Page>
+        ),
+      },
+      {
+        path: 'art',
+        element: (
+          <Page>
+            <ArtIndex />
+          </Page>
+        ),
+      },
+      {
+        path: 'art/:seriesId',
+        element: (
+          <Page>
+            <ArtPage />
           </Page>
         ),
       },

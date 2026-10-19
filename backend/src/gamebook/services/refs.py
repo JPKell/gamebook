@@ -22,6 +22,7 @@ from gamebook.core.gbx.scope import Context, RefKind, Scope, ScopeInputs, scope_
 from gamebook.core.rules import RuleSystemDef
 from gamebook.db.models import (
     Act,
+    ArtPlacement,
     Book,
     Character,
     Choice,
@@ -29,6 +30,7 @@ from gamebook.db.models import (
     Enemy,
     Item,
     LoreEntry,
+    Map,
     Node,
     RandomTable,
     RefIndex,
@@ -38,7 +40,18 @@ from gamebook.db.models import (
 )
 
 SourceType = Literal[
-    "node", "choice", "variant", "encounter", "enemy", "item", "table", "character", "lore", "beat"
+    "node",
+    "choice",
+    "variant",
+    "encounter",
+    "enemy",
+    "item",
+    "table",
+    "character",
+    "lore",
+    "beat",
+    "placement",
+    "map",
 ]
 
 #: Wiki mentions: ``[[key]]``, ``[[character:key]]`` / ``[[lore:key]]``, optional ``|label``.
@@ -261,6 +274,27 @@ def extract(source_type: SourceType, obj: Any, ctx: RefContext) -> list[RefRow]:
         case "beat":
             bt: StoryBeat = obj
             rows += _mention_rows(bt.description, "description")
+        case "placement":
+            pl: ArtPlacement = obj
+            if pl.asset_id:  # assets have no key: the id stands in for it
+                rows.append(RefRow("asset", pl.asset_id, pl.role, "asset_id"))
+        case "map":
+            mp: Map = obj
+            if mp.asset_id:
+                rows.append(RefRow("asset", mp.asset_id, "map", "asset_id"))
+            for i, m in enumerate(mp.markers):
+                f = f"markers[{i}]"
+                if m.get("node_id"):
+                    key = ctx.node_key(m["node_id"])
+                    if key:
+                        rows.append(RefRow("node", key, "map_marker", f))
+                if m.get("lore_id"):
+                    key = ctx.entity_key("lore", m["lore_id"])
+                    if key:
+                        rows.append(RefRow("lore", key, "map_marker", f))
+                rows += _expr_rows(
+                    m.get("visible_if"), ctx.scope(Context.CONDITION), "condition", f
+                )
     return rows
 
 
@@ -270,6 +304,8 @@ def _resolve_id(ctx: RefContext, row: RefRow, book_id: str | None) -> str | None
         return ctx.session.scalar(
             select(model.id).where(model.series_id == ctx.series_id, model.key == row.target_key)
         )
+    if row.target_type == "asset":
+        return row.target_key
     if row.target_type == "node" and book_id:
         return ctx.session.scalar(
             select(Node.id).where(Node.book_id == book_id, Node.key == row.target_key)
@@ -288,6 +324,8 @@ def _location(source_type: SourceType, obj: Any, session: Session) -> tuple[str 
         case "beat":
             act = session.get(Act, obj.act_id)
             return (act.book_id if act else None), None
+        case "placement":
+            return obj.book_id, obj.node_id
         case _:
             return obj.book_id, None
 
@@ -320,7 +358,7 @@ def reindex(
 
 
 def _series_of(session: Session, source_type: SourceType, obj: Any, book_id: str | None) -> str:
-    if source_type in ("enemy", "item", "table", "character", "lore"):
+    if source_type in ("enemy", "item", "table", "character", "lore", "placement", "map"):
         return str(obj.series_id)
     book = session.get(Book, book_id)
     assert book is not None
@@ -337,6 +375,8 @@ def reindex_node_tree(session: Session, node: Node, ctx: RefContext | None = Non
         reindex(session, "variant", v, ctx)
     for e in node.encounters:
         reindex(session, "encounter", e, ctx)
+    for pl in session.scalars(select(ArtPlacement).where(ArtPlacement.node_id == node.id)):
+        reindex(session, "placement", pl, ctx)
 
 
 def drop(session: Session, source_type: str, ids: Iterable[str]) -> None:
@@ -347,7 +387,16 @@ def drop(session: Session, source_type: str, ids: Iterable[str]) -> None:
         )
 
 
+def drop_placements(session: Session, column: str, ids: Iterable[str]) -> None:
+    """Drop the index rows of placements about to go with their target (FK cascade)."""
+    ids = list(ids)
+    if ids:
+        col = getattr(ArtPlacement, column)
+        drop(session, "placement", session.scalars(select(ArtPlacement.id).where(col.in_(ids))))
+
+
 def drop_node_tree(session: Session, node: Node) -> None:
+    drop_placements(session, "node_id", [node.id])
     drop(session, "node", [node.id])
     drop(session, "choice", [c.id for c in node.choices])
     drop(session, "variant", [v.id for v in node.variants])
@@ -391,6 +440,10 @@ def rebuild_series(session: Session, series_id: str) -> None:
     )
     for beat in beats:
         reindex(session, "beat", beat, ctx)
+    for pl in session.scalars(select(ArtPlacement).where(ArtPlacement.series_id == series_id)):
+        reindex(session, "placement", pl, ctx)
+    for mp in session.scalars(select(Map).where(Map.series_id == series_id)):
+        reindex(session, "map", mp, ctx)
 
 
 # ── queries ──────────────────────────────────────────────────────────────
@@ -429,10 +482,8 @@ def source_labels(
     """Names of non-node reference sources (enemies, items, tables…), one query per type."""
     by_type: dict[str, set[str]] = {}
     for source_type, source_id in sources:
-        if source_type in _ENTITY_MODELS:
+        if source_type in _ENTITY_MODELS or source_type in ("beat", "map"):
             by_type.setdefault(source_type, set()).add(source_id)
-        elif source_type == "beat":
-            by_type.setdefault("beat", set()).add(source_id)
     out: dict[tuple[str, str], str] = {}
     for source_type, ids in by_type.items():
         if source_type == "beat":
@@ -440,6 +491,10 @@ def source_labels(
                 select(StoryBeat.id, StoryBeat.title).where(StoryBeat.id.in_(ids))
             )
             out.update({("beat", i): f"Story beat: {t}" for i, t in rows})
+            continue
+        if source_type == "map":
+            rows = session.execute(select(Map.id, Map.title).where(Map.id.in_(ids)))
+            out.update({("map", i): f"Map: {t}" for i, t in rows})
             continue
         model = _ENTITY_MODELS[source_type]
         for oid, name in session.execute(select(model.id, model.name).where(model.id.in_(ids))):
@@ -492,6 +547,8 @@ SOURCE_MODELS: dict[str, type[Any]] = {
     "character": Character,
     "lore": LoreEntry,
     "beat": StoryBeat,
+    "placement": ArtPlacement,
+    "map": Map,
 }
 
 

@@ -1,0 +1,12 @@
+<section class="appendix personae">
+  <h1>{{ title }}</h1>
+  {% if not entries %}<p class="note">No characters.</p>{% endif %}
+  {% for c in entries %}
+  <article class="entry">
+    {% if c.image %}<img class="portrait" src="{{ c.image.url }}" alt="{{ c.image.alt }}">{% endif %}
+    <h2>{{ c.name }}</h2>
+    {% if c.role %}<p class="tag">{{ c.role }}</p>{% endif %}
+    {% if c.description %}<p>{{ c.description }}</p>{% endif %}
+  </article>
+  {% endfor %}
+</section>

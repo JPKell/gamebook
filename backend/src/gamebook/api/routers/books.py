@@ -18,7 +18,7 @@ from gamebook.schemas.book import (
 from gamebook.schemas.common import Reorder
 from gamebook.schemas.node import DuplicateRequest, DuplicateResult, LayoutUpdate, NodeOut
 from gamebook.schemas.series import BookSummary
-from gamebook.services import assist, history, snapshot, writing
+from gamebook.services import art, assist, history, snapshot, writing
 from gamebook.services import books as svc
 from gamebook.services import nodes as node_svc
 from gamebook.services.common import require
@@ -57,10 +57,14 @@ def delete_book(book_id: str, session: SessionDep) -> None:
 @router.get("/books/{book_id}/graph", response_model=BookGraph)
 def get_book_graph(book_id: str, session: SessionDep) -> BookGraph:
     book = require(session, Book, book_id)
+    thumbs = art.node_thumbs(session, book_id)
     return BookGraph(
         book=BookOut.model_validate(book),
         acts=[ActOut.model_validate(a) for a in book.acts],
-        nodes=[NodeOut.model_validate(n) for n in snapshot.load_book_nodes(session, book_id)],
+        nodes=[
+            NodeOut.model_validate(n).model_copy(update={"art_thumb": thumbs.get(n.id)})
+            for n in snapshot.load_book_nodes(session, book_id)
+        ],
     )
 
 
@@ -71,6 +75,7 @@ def get_book_problems(book_id: str, session: SessionDep) -> ProblemsOut:
         validate_book(snap)
         + writing.stale_problems(session, book_id, snap)
         + assist.finding_problems(session, book_id)
+        + art.problems(session, book_id)
     )
     return ProblemsOut(
         counts=ProblemCounts(

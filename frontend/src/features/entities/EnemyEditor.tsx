@@ -13,6 +13,7 @@ import { NumberInput, Select, TextArea, TextInput } from '@/components/ui/inputs
 import { useCombatSweep } from '@/features/mechanics/api'
 import { cn } from '@/lib/utils'
 import { useUiStore } from '@/stores/ui'
+import { EntityArt } from '@/features/art/EntityArt'
 
 import {
   type EnemyUpdate,
@@ -151,6 +152,7 @@ export function EnemyEditor({
         }
       />
       <DifficultyPanel seriesId={seriesId} enemy={enemy} />
+      <EntityArt seriesId={seriesId} targetType="enemy" targetId={enemy.id} name={enemy.name} />
 
       <Panel title="Abilities">
         <Rows

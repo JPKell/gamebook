@@ -20,6 +20,7 @@ import { NumberInput, Select, TextInput } from '@/components/ui/inputs'
 import { cn } from '@/lib/utils'
 
 import { type PlayIn, type PlayInput, type PlayOut, usePlay } from './api'
+import { CodexPanel, MapPanel, SceneArt } from './PlayerExtras'
 
 type Tier = { key: string; label: string }
 
@@ -191,6 +192,8 @@ export function Player({
           </div>
           <aside className="space-y-4">
             <Sheet view={view} />
+            <MapPanel maps={view.maps} />
+            <CodexPanel bookId={bookId} view={view} />
             <DiceLog view={view} />
           </aside>
         </div>
@@ -238,6 +241,7 @@ export function Scene({ view, bookId, turn }: { view: PlayOut; bookId: string; t
           </Link>
         </header>
       )}
+      <SceneArt art={view.art} />
       {node &&
         (node.prose ? (
           <section aria-label="Prose" className="space-y-3 font-serif text-[16px] leading-relaxed">

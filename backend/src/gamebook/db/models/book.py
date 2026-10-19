@@ -24,6 +24,8 @@ class Book(IdMixin, TimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(200))
     synopsis: Mapped[str] = mapped_column(Text, default="")
     style_overrides: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    #: Trim, margins and bleed in mm (``core.art.PageSetup``); print sizes derive from it.
+    print_setup: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     start_node_id: Mapped[str | None] = mapped_column(
         ForeignKey("node.id", ondelete="SET NULL", use_alter=True)
     )

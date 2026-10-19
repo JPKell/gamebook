@@ -37,6 +37,11 @@ def _dir(db: Database) -> Path:
     return d
 
 
+def checkpoint_dir(db: Database) -> Path:
+    """Where checkpoints live (asset GC reads them so their images are kept)."""
+    return _dir(db)
+
+
 def _parse(path: Path) -> Checkpoint:
     stamp, _, slug = path.stem.partition("__")
     created = datetime.strptime(stamp, "%Y%m%dT%H%M%S%f").replace(tzinfo=UTC)
