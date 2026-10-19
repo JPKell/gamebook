@@ -54,6 +54,18 @@ class Settings(BaseSettings):
     frontend_dist: Path | None = Field(
         default=None, description="Built frontend to serve at '/'. Unset in development."
     )
+    player_dist: Path | None = Field(
+        default=None,
+        description="The built standalone web player (frontend/dist-player); defaults to "
+        "the folder next to frontend_dist, else the repository's.",
+    )
+
+    def web_player_dist(self) -> Path:
+        if self.player_dist is not None:
+            return self.player_dist
+        if self.frontend_dist is not None:
+            return self.frontend_dist.parent / "dist-player"
+        return Path(__file__).resolve().parents[3] / "frontend" / "dist-player"
 
     @model_validator(mode="after")
     def _default_database_url(self) -> "Settings":

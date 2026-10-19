@@ -52,7 +52,7 @@ export function useVerify(bookId: string) {
 
 export function useStartExport(bookId: string) {
   return useMutation({
-    mutationFn: (body: { tier: string | null; format: 'pdf' | 'epub' }) =>
+    mutationFn: (body: { tier: string | null; format: 'pdf' | 'epub' | 'web' }) =>
       unwrap(
         api.POST('/api/books/{book_id}/print/exports', {
           params: { path: { book_id: bookId } },

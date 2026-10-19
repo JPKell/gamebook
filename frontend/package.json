@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && vite build --config vite.player.config.ts",
     "typecheck": "tsc -b",
     "lint": "oxlint --deny-warnings src e2e",
     "format": "prettier --write .",
@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "gen:api": "cd ../backend && uv run gamebook openapi -o ../frontend/openapi.json && cd ../frontend && openapi-typescript openapi.json --default-non-nullable false -o src/api/schema.d.ts && prettier --write src/api/schema.d.ts openapi.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:player": "vite build --config vite.player.config.ts"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",

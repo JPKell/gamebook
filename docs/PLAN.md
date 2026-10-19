@@ -214,7 +214,7 @@ and watch downstream nodes go stale.
 - Proofing view: section-by-section preview; "verify printed book" bot that plays the
   *compiled* sections to prove compilation preserved the game.
 
-## Phase 12 — Standalone digital player
+## Phase 12 — Standalone digital player ✅ (2026-10-19, see `docs/handoffs/v2-phase-12-player.md`)
 
 - Game bundle export (versioned schema), including screen-sized artwork, maps and the codex.
 - TS port of gbx + engine; golden-trace parity suite in CI.

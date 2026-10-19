@@ -4081,7 +4081,7 @@
         "additionalProperties": false,
         "properties": {
           "format": {
-            "enum": ["pdf", "epub"],
+            "enum": ["pdf", "epub", "web"],
             "title": "Format",
             "type": "string"
           },
@@ -11981,7 +11981,7 @@
         "properties": {
           "runs": {
             "default": 200,
-            "maximum": 2000.0,
+            "maximum": 500.0,
             "minimum": 1.0,
             "title": "Runs",
             "type": "integer"

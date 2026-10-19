@@ -432,6 +432,7 @@ def _items(c: _Ctx) -> dict[str, Any]:
             mods.append(f"{label} {sign}{amount}")
         entries.append(
             {
+                "key": i.key,
                 "name": i.name,
                 "category": i.category,
                 "slot": i.slot,
@@ -445,8 +446,7 @@ def _items(c: _Ctx) -> dict[str, Any]:
             }
         )
     if c.opts.order == "first_appearance":
-        keys = {i.name: i.key for i in available}
-        entries.sort(key=lambda x: first.get(keys.get(str(x["name"]), ""), len(order)))
+        entries.sort(key=lambda x: first.get(str(x["key"]), len(order)))
     else:
         entries.sort(key=lambda x: str(x["name"]).lower())
     return {"entries": entries, "total": total}

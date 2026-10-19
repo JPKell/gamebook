@@ -73,4 +73,5 @@ class VerifyOut(Out):
 
 class ExportIn(In):
     tier: str | None = None
-    format: Literal["pdf", "epub"]
+    #: web: the standalone web player (all tiers; ``tier`` is ignored).
+    format: Literal["pdf", "epub", "web"]

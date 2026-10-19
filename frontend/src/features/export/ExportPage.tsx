@@ -4,6 +4,7 @@ import {
   CircleAlert,
   Download,
   FileText,
+  Globe,
   Info,
   Library,
   Shuffle,
@@ -141,6 +142,12 @@ function Downloads({
         {/* Keyed by edition: a finished build belongs to the tier it was built for. */}
         <ExportButton key={`pdf:${tier}`} bookId={bookId} tier={tier} format="pdf" />
         <ExportButton key={`epub:${tier}`} bookId={bookId} tier={tier} format="epub" />
+        <ExportButton key="web" bookId={bookId} tier={tier} format="web" />
+        <p className="text-xs text-muted">
+          The web player is a folder of files: unzip it and open <code>index.html</code>, or put it
+          on any web host to install it as an app that plays offline. Every edition is included;
+          saves stay on the reader's device.
+        </p>
         {seriesId && (
           <a
             href={`/api/series/${seriesId}/export.zip`}
@@ -162,7 +169,7 @@ function ExportButton({
 }: {
   bookId: string
   tier: string | null
-  format: 'pdf' | 'epub'
+  format: 'pdf' | 'epub' | 'web'
 }) {
   const start = useStartExport(bookId)
   const job = useJobStream(start.data?.id)
@@ -176,17 +183,18 @@ function ExportButton({
           warnings?: { message: string }[]
         })
       : null
-  const Icon = format === 'pdf' ? FileText : TabletSmartphone
+  const Icon = format === 'pdf' ? FileText : format === 'web' ? Globe : TabletSmartphone
+  const what = format === 'web' ? 'web player' : format.toUpperCase()
   return (
     <div className="space-y-1 rounded-lg border border-border p-2">
       <div className="flex items-center gap-2">
         <Button
           size="sm"
           variant="outline"
-          disabled={running || !tier}
+          disabled={running || (!tier && format !== 'web')}
           onClick={() => start.mutate({ tier, format })}
         >
-          <Icon className="size-4" /> {running ? 'Building…' : `Build ${format.toUpperCase()}`}
+          <Icon className="size-4" /> {running ? 'Building…' : `Build ${what}`}
         </Button>
         {result && start.data && (
           <a href={downloadUrl(start.data.id)} className="text-sm text-accent hover:underline">

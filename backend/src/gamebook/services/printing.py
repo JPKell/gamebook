@@ -728,13 +728,14 @@ def exports_dir(data_dir: Path) -> Path:
 
 
 def start_export(session: Session, book_id: str, tier: str | None, fmt: str) -> Job:
-    """A job that builds the PDF or EPUB (the file lands in ``data_dir/exports``)."""
+    """A job that builds the PDF, EPUB or web player (the file lands in ``data_dir/exports``)."""
     book = require(session, Book, book_id)
     snap = snapshot.book_snapshot(session, book_id)
     t = _tier(snap, tier)
     job = Job(
         kind=f"print_{fmt}",
-        label=f"{fmt.upper()}: {book.title} ({t})",
+        label=f"{'Web player' if fmt == 'web' else fmt.upper()}: {book.title}"
+        + ("" if fmt == "web" else f" ({t})"),
         total=1,
         payload={"book_id": book_id, "tier": t, "format": fmt},
     )
@@ -743,22 +744,36 @@ def start_export(session: Session, book_id: str, tier: str | None, fmt: str) -> 
     return job
 
 
-def export_job(book_id: str, tier: str, fmt: str, store: Store, folder: Path) -> Any:
+#: Download extension per export format.
+EXTENSIONS = {"pdf": "pdf", "epub": "epub", "web": "zip"}
+MEDIA = {"pdf": "application/pdf", "epub": "application/epub+zip", "web": "application/zip"}
+
+
+def export_job(
+    book_id: str, tier: str, fmt: str, store: Store, folder: Path, player_dist: Path | None = None
+) -> Any:
+    ext = EXTENSIONS[fmt]
+
     def run(ctx: JobContext) -> dict[str, Any]:
         with ctx.db.session() as s:
             book = require(s, Book, book_id)
-            name = f"{book.key}-{tier}.{fmt}"
-            if fmt == "pdf":
+            name = f"{book.key}-web.zip" if fmt == "web" else f"{book.key}-{tier}.{ext}"
+            extra: dict[str, Any] = {}
+            if fmt == "web":
+                from gamebook.services import web_player  # local: web_player imports printing
+
+                data = web_player.build_web(s, store, player_dist, book_id)
+            elif fmt == "pdf":
                 data, pages, warnings = pdf(s, store, book_id, tier)
-                extra: dict[str, Any] = {
+                extra = {
                     "pages": pages,
                     "warnings": [w.__dict__ for w in warnings],
                 }
             else:
-                data, extra = epub(s, store, book_id, tier), {}
+                data = epub(s, store, book_id, tier)
         ctx.check()
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / f"{ctx.job_id}.{fmt}").write_bytes(data)
+        (folder / f"{ctx.job_id}.{ext}").write_bytes(data)
         _prune(folder)
         ctx.progress(1, 1, force=True)
         return {"file": name, "format": fmt, "bytes": len(data), **extra}
@@ -772,7 +787,7 @@ KEEP_EXPORTS = 20
 
 def _prune(folder: Path) -> None:
     files = sorted(
-        (p for p in folder.iterdir() if p.suffix in (".pdf", ".epub")),
+        (p for p in folder.iterdir() if p.suffix in (".pdf", ".epub", ".zip")),
         key=lambda p: p.stat().st_mtime,
         reverse=True,
     )
@@ -784,12 +799,11 @@ def export_file(session: Session, folder: Path, job_id: str) -> tuple[Path, str,
     """(path, download name, media type) of a finished export."""
     job = require(session, Job, job_id)
     fmt = (job.payload or {}).get("format")
-    if not job.kind.startswith("print_") or fmt not in ("pdf", "epub"):
+    if not job.kind.startswith("print_") or fmt not in EXTENSIONS:
         raise InvalidError("That job isn't a print export")
     if job.status != "done" or not job.result:
         raise InvalidError("The export isn't finished")
-    path = folder / f"{job.id}.{fmt}"
+    path = folder / f"{job.id}.{EXTENSIONS[fmt]}"
     if not path.is_file():
         raise InvalidError("The export file is gone; export again")
-    media = "application/pdf" if fmt == "pdf" else "application/epub+zip"
-    return path, str(job.result.get("file", path.name)), media
+    return path, str(job.result.get("file", path.name)), MEDIA[fmt]

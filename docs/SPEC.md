@@ -890,6 +890,41 @@ Validated, self-contained JSON for one book + tier set. Versioned schema. The bu
 also carries the artwork used by digital placements, maps and the codex, resized for
 screens.
 
+As built (Phase 12, ADR 0013):
+- **Export:** Export → **Build web player** (`POST /books/{id}/print/exports {format: "web"}`)
+  produces a zip containing:
+  - the prebuilt player (`frontend/dist-player`, one classic script, so it runs from
+    `file://`)
+  - `book.js`, which sets `window.GAMEBOOK` (format `gamebook-player` v1):
+    - the game bundle (`gamebook-bundle` v1)
+    - approved prose per variant, with beat notes as a marked draft where a section has
+      no prose
+    - digital art scaled to 1600 px
+    - maps with markers and their `visible_if`
+    - for every tier, the enabled appendices except the adventure sheet, as full HTML
+      documents (bestiary and item entries carry `data-enemy` / `data-item` keys)
+  - `manifest.webmanifest`, `sw.js` (cache-first offline play over HTTPS) and an icon
+- **Engine:** the player runs the TypeScript port (`frontend/src/engine`). Parity with the
+  Python engine is enforced by:
+  - replaying the golden traces
+  - a generated corpus (`backend/tests/core/parity_corpus.py` → 48 bot games across
+    tiers and seeds, including a book with content errors), compared by final state and
+    a SHA-256 of the canonical event JSON
+  - `tests/core/test_parity_corpus.py`, which fails when the Python engine changes
+    without the corpus being regenerated
+  - shared limits: gbx tokens are ASCII-only, and integer results beyond 2^53 are an
+    error ("number too large") in both engines
+- **Player:**
+  - **Title screen:** cover, edition (tier) and class choice, and save slots (the
+    autosave plus up to 20 named saves in `localStorage`). A save is `{tier, seed,
+    class, moves}` and is restored by replaying it.
+  - **Play screen:** art (by variant and tier, with tap to zoom); prose or draft notes;
+    what happened (narrated events); combat; choices, with disabled ones and their
+    reasons; items and shop actions; Back (undo); Save; endings.
+  - **Side panels:** the adventure sheet, maps (markers shown when their condition
+    holds, "you are here") and the codex. Unmet bestiary and item entries are hidden by
+    CSS injected into a sandboxed frame.
+
 ### 6.3 Print / EPUB
 
 - **Section numbering**: seeded shuffle with pins (1 = start, etc.), stored map keeps
@@ -998,7 +1033,7 @@ As built (Phase 11, ADR 0012):
    `CharacterSnapshot`; a future book declares an import policy (what carries over, defaults
    for new readers). No work until decided.
 2. ~~**Print editions** — one per tier vs. combined.~~ Decided in Phase 11: one edition per tier (ADR 0012).
-3. **Standalone player distribution** — static web/PWA first; mobile wrapper later?
+3. **Standalone player distribution** — static web/PWA built in Phase 12 (ADR 0013); a mobile wrapper is still open.
 4. **Rule-system versioning granularity** — snapshot on every playtest batch (planned) vs.
    explicit published versions.
 5. **Cost budgets** — per-batch caps are planned; global monthly budget?

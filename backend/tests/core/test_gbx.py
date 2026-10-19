@@ -488,3 +488,19 @@ def test_dice_are_roughly_uniform() -> None:
         counts[f - 1] += 1
     chi2 = sum((c - 10_000) ** 2 / 10_000 for c in counts)
     assert chi2 < 20.5  # p ≈ 0.001 for 5 degrees of freedom
+
+
+def test_tokens_are_ascii_only_like_the_ts_player() -> None:
+    with pytest.raises(gbx.GbxSyntaxError):
+        gbx.parse("\uff11\uff12 + 1")  # fullwidth digits
+    with pytest.raises(gbx.GbxSyntaxError, match=r"Unexpected character '\\x1c' \(at 3\)"):
+        gbx.parse("1 +\x1c2")
+
+
+def test_integer_results_are_capped_at_2_53_in_both_engines() -> None:
+    from gamebook.core.gbx.compiler import compile_int
+
+    env = gbx.SimpleEnv()
+    assert compile_int(gbx.parse("9007199254740993 - 9007199254740992"))(env, None) == 1
+    with pytest.raises(gbx.GbxEvalError, match="number too large"):
+        compile_int(gbx.parse("9007199254740993 * 2"))(env, None)

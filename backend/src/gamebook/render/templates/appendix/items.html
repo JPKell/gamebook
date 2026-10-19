@@ -3,7 +3,7 @@
   {% if codex %}<p class="note">{{ entries|length }} of {{ total }} items found</p>{% endif %}
   {% if not entries %}<p class="note">{{ "Nothing found yet." if codex else "No items." }}</p>{% endif %}
   {% for i in entries %}
-  <article class="entry">
+  <article class="entry" data-item="{{ i.key }}">
     {% if i.image %}<img class="portrait" src="{{ i.image.url }}" alt="{{ i.image.alt }}">{% endif %}
     <h2>{{ i.name }}</h2>
     <p class="tag">{{ i.category }}{% if i.slot %} · {{ i.slot|replace("_", " ") }}{% endif %}{% if i.value %} · worth {{ i.value }}{% endif %}</p>

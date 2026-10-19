@@ -84,6 +84,7 @@ def start_print_export(
             data.format,
             Store(settings.data_dir / "assets"),
             printing.exports_dir(settings.data_dir),
+            settings.web_player_dist(),
         ),
     )
     return JobOut.model_validate(job)

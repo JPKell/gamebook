@@ -275,10 +275,22 @@ def compile_expr(e: Expr, bare_object: str | None = "player") -> Compiled:
     raise GbxEvalError(f"cannot compile {e!r}")
 
 
+#: Integer results beyond this are errors in both engines (the TS player stores
+#: numbers as doubles, which are exact only up to 2**53).
+MAX_INT = 2**53
+
+
 def compile_int(e: Expr, bare_object: str | None = "player") -> Callable[[Env, Rng | None], int]:
     """Compiled number, rounded down (like ``evaluate_int``)."""
     f = _number_of(e, bare_object)
-    return lambda env, rng: math.floor(f(env, rng))
+
+    def run(env: Env, rng: Rng | None) -> int:
+        value = math.floor(f(env, rng))
+        if abs(value) > MAX_INT:
+            raise GbxEvalError("number too large")
+        return value
+
+    return run
 
 
 def compile_bool(e: Expr, bare_object: str | None = "player") -> Callable[[Env, Rng | None], bool]:

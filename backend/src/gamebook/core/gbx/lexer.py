@@ -21,7 +21,8 @@ _TOKEN_RE = re.compile(
   | (?P<ident>[A-Za-z_][A-Za-z0-9_]*)
   | (?P<op>==|!=|<=|>=|[-+*/%()<>,.?:])
     """,
-    re.VERBOSE,
+    # ASCII only: Unicode digits and spaces would parse differently in the TS player.
+    re.VERBOSE | re.ASCII,
 )
 
 

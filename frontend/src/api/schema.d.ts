@@ -3764,7 +3764,7 @@ export interface components {
        * Format
        * @enum {string}
        */
-      format: 'pdf' | 'epub'
+      format: 'pdf' | 'epub' | 'web'
       /** Tier */
       tier?: string | null
     }

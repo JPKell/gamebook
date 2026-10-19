@@ -122,7 +122,8 @@ class Game:
         return value
 
     def effective_stats(self) -> dict[str, int]:
-        return {k: self.stat(k) for k in self.tier.player_stats()}
+        # Definition order (not a set's), so error events come out in a fixed order.
+        return {k: self.stat(k) for k, sd in self.tier.stats.items() if "player" in sd.applies_to}
 
     def _ref(self, func: str, key: str) -> int | bool:
         s = self.state

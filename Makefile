@@ -64,5 +64,5 @@ build: ## Build the frontend
 	cd $(FRONTEND) && npm run build
 
 clean: ## Remove build outputs and caches
-	rm -rf $(FRONTEND)/dist $(FRONTEND)/.e2e-data $(FRONTEND)/test-results $(FRONTEND)/playwright-report
+	rm -rf $(FRONTEND)/dist $(FRONTEND)/dist-player $(FRONTEND)/.e2e-data $(FRONTEND)/test-results $(FRONTEND)/playwright-report
 	find $(BACKEND) -name __pycache__ -type d -prune -exec rm -rf {} +
