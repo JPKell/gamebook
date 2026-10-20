@@ -120,6 +120,16 @@ def test_proof_explains_levels_class_bonuses_and_gear(
     assert "You start with: 2 x Rope." in text
 
 
+def test_items_to_take_print(api: Api, series: Json, playable: Json) -> None:
+    # Regression: the block's "items" key collided with dict.items in the template.
+    rope = next(i for i in api.get(f"/series/{series['id']}/items") if i["key"] == "rope")
+    api.put(f"/nodes/{playable['start']}/items", [{"item_id": rope["id"], "qty": 2}])
+    res = api.c.get(f"/api/books/{playable['book_id']}/print/preview", params={"tier": "basic"})
+    assert res.status_code == 200
+    assert "You may take:" in res.text
+    assert "Rope (&#215;2)" in res.text
+
+
 def test_verify_bot_proves_the_print_edition(
     api: Api,
     playable: Json,

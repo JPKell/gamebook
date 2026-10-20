@@ -21,8 +21,8 @@
 {% elif b.kind == "ending" %}
   <p class="ending {{ b.data.kind }}">{{ b.data.text }}</p>
 {% elif b.kind == "found" %}
-  <div class="found"><p class="lead">You may take:</p><ul>{% for i in b.data.items %}<li>{% if i.box %}<span class="tick">&#9744;</span> {% endif %}{{ i.name }}{% if i.qty > 1 %} (&#215;{{ i.qty }}){% endif %}</li>{% endfor %}</ul>
-  {% if b.data.items|selectattr("box")|list %}<p class="hint">Tick the box when you take it: you can only take it once.</p>{% endif %}</div>
+  <div class="found"><p class="lead">You may take:</p><ul>{% for i in b.data["items"] %}<li>{% if i.box %}<span class="tick">&#9744;</span> {% endif %}{{ i.name }}{% if i.qty > 1 %} (&#215;{{ i.qty }}){% endif %}</li>{% endfor %}</ul>
+  {% if b.data["items"]|selectattr("box")|list %}<p class="hint">Tick the box when you take it: you can only take it once.</p>{% endif %}</div>
 {% elif b.kind == "shop" %}
   <div class="shop"><p class="lead">For sale ({{ b.data.currency }}):</p>
   <table>{% for r in b.data.rows %}<tr><td>{{ r.name }}</td><td class="num">{{ r.price }}</td><td>{% if r.stock == 0 %}Sold out{% elif r.stock %}{% for _ in range(r.stock) %}<span class="tick">&#9744;</span>{% endfor %}{% endif %}</td></tr>{% endfor %}</table>
