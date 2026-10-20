@@ -18,7 +18,7 @@ export function PagePreview({
   const b = setup.bleed_mm
   const W = setup.trim_width_mm
   const H = setup.trim_height_mm
-  const left = setup.margin_inner_mm
+  const left = setup.margin_inner_mm + (setup.gutter_mm ?? 0)
   const top = setup.margin_top_mm
   const tw = setup.text_width
   const th = setup.text_height

@@ -4198,6 +4198,11 @@
             "title": "Format",
             "type": "string"
           },
+          "imposed": {
+            "default": true,
+            "title": "Imposed",
+            "type": "boolean"
+          },
           "tier": {
             "anyOf": [
               {
@@ -4320,6 +4325,65 @@
         },
         "required": ["flag", "set_count", "cleared_count", "tested_count"],
         "title": "FlagUsage",
+        "type": "object"
+      },
+      "FontOut": {
+        "properties": {
+          "bytes": {
+            "title": "Bytes",
+            "type": "integer"
+          },
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "file": {
+            "title": "File",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "italic": {
+            "title": "Italic",
+            "type": "boolean"
+          },
+          "weight": {
+            "title": "Weight",
+            "type": "integer"
+          }
+        },
+        "required": ["id", "file", "family", "weight", "italic", "bytes"],
+        "title": "FontOut",
+        "type": "object"
+      },
+      "FontsOut": {
+        "properties": {
+          "generic": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Generic",
+            "type": "array"
+          },
+          "system": {
+            "items": {
+              "type": "string"
+            },
+            "title": "System",
+            "type": "array"
+          },
+          "uploaded": {
+            "items": {
+              "$ref": "#/components/schemas/FontOut"
+            },
+            "title": "Uploaded",
+            "type": "array"
+          }
+        },
+        "required": ["system", "uploaded", "generic"],
+        "title": "FontsOut",
         "type": "object"
       },
       "ForceInput": {
@@ -4743,6 +4807,51 @@
         },
         "required": ["expr", "origin"],
         "title": "HookView",
+        "type": "object"
+      },
+      "Imposition": {
+        "description": "Folded sheets and signatures.",
+        "properties": {
+          "creep_mm": {
+            "default": 0.0,
+            "maximum": 5.0,
+            "minimum": 0.0,
+            "title": "Creep Mm",
+            "type": "number"
+          },
+          "fold": {
+            "default": false,
+            "title": "Fold",
+            "type": "boolean"
+          },
+          "fold_marks": {
+            "default": true,
+            "title": "Fold Marks",
+            "type": "boolean"
+          },
+          "sheet_height_mm": {
+            "default": 215.9,
+            "maximum": 1200.0,
+            "minimum": 100.0,
+            "title": "Sheet Height Mm",
+            "type": "number"
+          },
+          "sheet_width_mm": {
+            "default": 279.4,
+            "maximum": 1200.0,
+            "minimum": 100.0,
+            "title": "Sheet Width Mm",
+            "type": "number"
+          },
+          "signature_pages": {
+            "default": 0,
+            "maximum": 128.0,
+            "minimum": 0.0,
+            "title": "Signature Pages",
+            "type": "integer"
+          }
+        },
+        "title": "Imposition",
         "type": "object"
       },
       "ItemCreate": {
@@ -7592,6 +7701,22 @@
             "title": "Bleed Mm",
             "type": "number"
           },
+          "footer": {
+            "$ref": "#/components/schemas/RunningLine"
+          },
+          "gutter_mm": {
+            "default": 0.0,
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "Gutter Mm",
+            "type": "number"
+          },
+          "header": {
+            "$ref": "#/components/schemas/RunningLine"
+          },
+          "imposition": {
+            "$ref": "#/components/schemas/Imposition"
+          },
           "margin_bottom_mm": {
             "default": 22.0,
             "maximum": 100.0,
@@ -7619,6 +7744,43 @@
             "minimum": 0.0,
             "title": "Margin Top Mm",
             "type": "number"
+          },
+          "sections": {
+            "$ref": "#/components/schemas/SectionLayout"
+          },
+          "styles": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TextStyle"
+            },
+            "propertyNames": {
+              "enum": [
+                "body",
+                "title",
+                "subtitle",
+                "byline",
+                "title_note",
+                "act",
+                "section",
+                "heading",
+                "subheading",
+                "matter",
+                "direction",
+                "turn",
+                "combat",
+                "effects",
+                "table",
+                "hint",
+                "ending",
+                "caption",
+                "header",
+                "footer"
+              ]
+            },
+            "title": "Styles",
+            "type": "object"
+          },
+          "title_page": {
+            "$ref": "#/components/schemas/TitlePage"
           },
           "trim_height_mm": {
             "default": 228.6,
@@ -7647,6 +7809,22 @@
             "title": "Bleed Mm",
             "type": "number"
           },
+          "footer": {
+            "$ref": "#/components/schemas/RunningLine"
+          },
+          "gutter_mm": {
+            "default": 0.0,
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "Gutter Mm",
+            "type": "number"
+          },
+          "header": {
+            "$ref": "#/components/schemas/RunningLine"
+          },
+          "imposition": {
+            "$ref": "#/components/schemas/Imposition"
+          },
           "margin_bottom_mm": {
             "default": 22.0,
             "maximum": 100.0,
@@ -7675,6 +7853,47 @@
             "title": "Margin Top Mm",
             "type": "number"
           },
+          "roles": {
+            "items": {
+              "$ref": "#/components/schemas/RoleOut"
+            },
+            "title": "Roles",
+            "type": "array"
+          },
+          "sections": {
+            "$ref": "#/components/schemas/SectionLayout"
+          },
+          "styles": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TextStyle"
+            },
+            "propertyNames": {
+              "enum": [
+                "body",
+                "title",
+                "subtitle",
+                "byline",
+                "title_note",
+                "act",
+                "section",
+                "heading",
+                "subheading",
+                "matter",
+                "direction",
+                "turn",
+                "combat",
+                "effects",
+                "table",
+                "hint",
+                "ending",
+                "caption",
+                "header",
+                "footer"
+              ]
+            },
+            "title": "Styles",
+            "type": "object"
+          },
           "text_height": {
             "default": 0,
             "title": "Text Height",
@@ -7684,6 +7903,9 @@
             "default": 0,
             "title": "Text Width",
             "type": "number"
+          },
+          "title_page": {
+            "$ref": "#/components/schemas/TitlePage"
           },
           "trim_height_mm": {
             "default": 228.6,
@@ -9194,7 +9416,7 @@
           "api_key_env": {
             "anyOf": [
               {
-                "pattern": "^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$",
+                "maxLength": 100,
                 "type": "string"
               },
               {
@@ -9376,7 +9598,7 @@
           "api_key_env": {
             "anyOf": [
               {
-                "pattern": "^[A-Za-z_][A-Za-z0-9_]*_(KEY|TOKEN|key|token)$",
+                "maxLength": 100,
                 "type": "string"
               },
               {
@@ -9858,6 +10080,28 @@
         "title": "RoleModel",
         "type": "object"
       },
+      "RoleOut": {
+        "properties": {
+          "default": {
+            "$ref": "#/components/schemas/TextStyle"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": ["key", "label", "description", "default"],
+        "title": "RoleOut",
+        "type": "object"
+      },
       "RuleSystemCreate": {
         "additionalProperties": false,
         "properties": {
@@ -10111,6 +10355,121 @@
         },
         "required": ["total", "runs"],
         "title": "RunPage",
+        "type": "object"
+      },
+      "RunningLine": {
+        "description": "A header or footer: what each slot shows on left (verso) and right (recto) pages.",
+        "properties": {
+          "gap_mm": {
+            "default": 4.0,
+            "maximum": 40.0,
+            "minimum": 0.0,
+            "title": "Gap Mm",
+            "type": "number"
+          },
+          "recto": {
+            "$ref": "#/components/schemas/RunningSlots"
+          },
+          "text": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Text",
+            "type": "string"
+          },
+          "verso": {
+            "$ref": "#/components/schemas/RunningSlots"
+          }
+        },
+        "title": "RunningLine",
+        "type": "object"
+      },
+      "RunningSlots": {
+        "properties": {
+          "center": {
+            "default": "none",
+            "enum": [
+              "none",
+              "page",
+              "title",
+              "series",
+              "edition",
+              "act",
+              "section_first",
+              "section_last",
+              "text"
+            ],
+            "title": "Center",
+            "type": "string"
+          },
+          "left": {
+            "default": "none",
+            "enum": [
+              "none",
+              "page",
+              "title",
+              "series",
+              "edition",
+              "act",
+              "section_first",
+              "section_last",
+              "text"
+            ],
+            "title": "Left",
+            "type": "string"
+          },
+          "right": {
+            "default": "none",
+            "enum": [
+              "none",
+              "page",
+              "title",
+              "series",
+              "edition",
+              "act",
+              "section_first",
+              "section_last",
+              "text"
+            ],
+            "title": "Right",
+            "type": "string"
+          }
+        },
+        "title": "RunningSlots",
+        "type": "object"
+      },
+      "SectionLayout": {
+        "properties": {
+          "act_break": {
+            "default": "right",
+            "enum": ["right", "page", "none"],
+            "title": "Act Break",
+            "type": "string"
+          },
+          "divider": {
+            "default": "none",
+            "enum": ["none", "rule", "asterism", "fleuron"],
+            "title": "Divider",
+            "type": "string"
+          },
+          "gap_mm": {
+            "default": 5.0,
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Gap Mm",
+            "type": "number"
+          },
+          "hyphenate": {
+            "default": true,
+            "title": "Hyphenate",
+            "type": "boolean"
+          },
+          "keep_together": {
+            "default": false,
+            "title": "Keep Together",
+            "type": "boolean"
+          }
+        },
+        "title": "SectionLayout",
         "type": "object"
       },
       "SectionNumber": {
@@ -11905,6 +12264,171 @@
         "title": "TestView",
         "type": "object"
       },
+      "TextStyle": {
+        "description": "One text role's look; unset fields keep the default.",
+        "properties": {
+          "align": {
+            "anyOf": [
+              {
+                "enum": ["left", "center", "right", "justify"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Align"
+          },
+          "bold": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bold"
+          },
+          "case": {
+            "anyOf": [
+              {
+                "enum": ["none", "upper", "lower", "capitalize"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Case"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "font": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Font"
+          },
+          "indent_mm": {
+            "anyOf": [
+              {
+                "maximum": 30.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indent Mm"
+          },
+          "italic": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Italic"
+          },
+          "letter_spacing_em": {
+            "anyOf": [
+              {
+                "maximum": 0.5,
+                "minimum": -0.1,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Letter Spacing Em"
+          },
+          "line_height": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 0.8,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Height"
+          },
+          "size_pt": {
+            "anyOf": [
+              {
+                "maximum": 96.0,
+                "minimum": 4.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Pt"
+          },
+          "small_caps": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Small Caps"
+          },
+          "space_after_mm": {
+            "anyOf": [
+              {
+                "maximum": 80.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Space After Mm"
+          },
+          "space_before_mm": {
+            "anyOf": [
+              {
+                "maximum": 80.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Space Before Mm"
+          }
+        },
+        "title": "TextStyle",
+        "type": "object"
+      },
       "TierDef": {
         "additionalProperties": false,
         "properties": {
@@ -12178,6 +12702,41 @@
           "class_choice_origin"
         ],
         "title": "TierView",
+        "type": "object"
+      },
+      "TitlePage": {
+        "properties": {
+          "byline": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Byline",
+            "type": "string"
+          },
+          "show_edition": {
+            "default": true,
+            "title": "Show Edition",
+            "type": "boolean"
+          },
+          "show_series": {
+            "default": true,
+            "title": "Show Series",
+            "type": "boolean"
+          },
+          "subtitle": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Subtitle",
+            "type": "string"
+          },
+          "top_mm": {
+            "default": 30.0,
+            "maximum": 300.0,
+            "minimum": 0.0,
+            "title": "Top Mm",
+            "type": "number"
+          }
+        },
+        "title": "TitlePage",
         "type": "object"
       },
       "ValidationError": {
@@ -15784,6 +16343,76 @@
           }
         },
         "summary": "Reshuffle Sections",
+        "tags": ["print"]
+      }
+    },
+    "/api/books/{book_id}/print/sample": {
+      "get": {
+        "description": "A quick PDF of the front matter and first sections, to check a layout.",
+        "operationId": "print_sample",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "title": "Book Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tier",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tier"
+            }
+          },
+          {
+            "in": "query",
+            "name": "imposed",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Imposed",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Print Sample",
         "tags": ["print"]
       }
     },
@@ -19477,6 +20106,162 @@
           }
         },
         "summary": "Download Print Export",
+        "tags": ["print"]
+      }
+    },
+    "/api/print/fonts": {
+      "get": {
+        "description": "Families a layout can use: installed ones, uploaded files and CSS generics.",
+        "operationId": "list_fonts",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FontsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "List Fonts",
+        "tags": ["print"]
+      },
+      "post": {
+        "description": "Upload a TrueType, OpenType or WOFF font as the raw request body.",
+        "operationId": "upload_font",
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "format": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FontOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Upload Font",
+        "tags": ["print"]
+      }
+    },
+    "/api/print/fonts/{font_id}": {
+      "delete": {
+        "description": "Remove an uploaded font (layouts using it fall back to the default font).",
+        "operationId": "delete_font",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "font_id",
+            "required": true,
+            "schema": {
+              "title": "Font Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Font",
+        "tags": ["print"]
+      }
+    },
+    "/api/print/fonts/{name}": {
+      "get": {
+        "operationId": "font_file",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Font File",
         "tags": ["print"]
       }
     },

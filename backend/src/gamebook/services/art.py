@@ -95,7 +95,7 @@ def get_page_setup(session: Session, book_id: str) -> PageSetup:
 
 def save_page_setup(session: Session, book_id: str, data: PageSetup) -> PageSetup:
     book = require(session, Book, book_id)
-    if data.margin_inner_mm + data.margin_outer_mm >= data.trim_width_mm - 20:
+    if data.inner_mm + data.margin_outer_mm >= data.trim_width_mm - 20:
         raise InvalidError("The side margins leave no room for text", field="margin_inner_mm")
     if data.margin_top_mm + data.margin_bottom_mm >= data.trim_height_mm - 20:
         raise InvalidError("The top and bottom margins leave no room for text")

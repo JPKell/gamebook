@@ -18,8 +18,10 @@
     <div class="titlepage">
       {% if part.art %}{{ figure(part.art) }}{% endif %}
       <h1>{{ title }}</h1>
-      {% if series_title %}<p class="series">{{ series_title }}</p>{% endif %}
-      <p class="edition">{{ tier_label }} edition</p>
+      {% if tp.subtitle %}<p class="subtitle">{{ tp.subtitle }}</p>{% endif %}
+      {% if tp.byline %}<p class="byline">{{ tp.byline }}</p>{% endif %}
+      {% if series_title and tp.show_series %}<p class="series">{{ series_title }}</p>{% endif %}
+      {% if tp.show_edition %}<p class="edition">{{ tier_label }} edition</p>{% endif %}
     </div>
   {% elif part.kind == "html" %}
     <div class="matter {{ part.cls }}">{{ part.html }}</div>

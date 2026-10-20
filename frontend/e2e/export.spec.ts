@@ -84,3 +84,69 @@ test('pre-flight, verify, build a PDF and read the proof', async ({ page }) => {
     timeout: 60_000,
   })
 })
+
+test('lay out the page: styles, running heads and folded sheets', async ({ page }) => {
+  const bookId = await book(page)
+  const setup = async () =>
+    (await (await page.request.get(`/api/books/${bookId}/page-setup`)).json()) as {
+      styles: Record<string, { size_pt?: number | null; italic?: boolean | null }>
+      gutter_mm: number
+      header: { verso: { left: string }; recto: { right: string } }
+      imposition: { fold: boolean; signature_pages: number }
+      trim_width_mm: number
+    }
+  await page.goto(`/export/${bookId}`)
+  await page.getByRole('link', { name: 'Page layout' }).click()
+  await expect(page.getByRole('heading', { name: 'Page layout' })).toBeVisible()
+  await expect(page.locator('iframe[title="Layout sample"]')).toBeVisible()
+
+  // Page: the gutter.
+  await page.getByLabel('Gutter (mm)').fill('6')
+  await page.getByLabel('Gutter (mm)').press('Enter')
+  await expect.poll(async () => (await setup()).gutter_mm).toBe(6)
+
+  // Text: section numbers bigger and italic.
+  await page.getByRole('tab', { name: 'Text' }).click()
+  await page.getByRole('button', { name: 'Section numbers' }).click()
+  await page.getByLabel('Size (pt)').fill('22')
+  await page.getByLabel('Size (pt)').press('Enter')
+  await page.getByLabel(/^Italic/).selectOption('on')
+  await expect
+    .poll(async () => (await setup()).styles.section)
+    .toMatchObject({ size_pt: 22, italic: true })
+
+  // Headers: section numbers on the outside edges.
+  await page.getByRole('tab', { name: 'Headers & footers' }).click()
+  await page.getByLabel('Header preset').selectOption('sections_outside')
+  await expect
+    .poll(async () => {
+      const h = (await setup()).header
+      return [h.verso.left, h.recto.right]
+    })
+    .toEqual(['section_first', 'section_last'])
+
+  // Signatures: Letter folded in half, 8-page signatures.
+  await page.getByRole('tab', { name: 'Signatures' }).click()
+  // Edits reach React a tick after the click (the query cache notifies asynchronously).
+  const fold = page.getByLabel('Each sheet holds 2 pages per side (folded)')
+  await fold.click()
+  await expect(fold).toBeChecked()
+  await page.getByLabel('Pages per signature').selectOption('8')
+  await expect
+    .poll(async () => {
+      const s = await setup()
+      return [s.imposition.fold, s.imposition.signature_pages, s.trim_width_mm]
+    })
+    .toEqual([true, 8, 139.7])
+  await expect(page.getByRole('tabpanel').getByText('Pages: 139.7 × 215.9 mm')).toBeVisible()
+
+  // Export builds the sheets.
+  await page.getByRole('main').getByRole('link', { name: 'Export' }).click()
+  const downloads = page.getByRole('region', { name: 'Download' })
+  await expect(downloads.getByLabel(/PDF on folded sheets/)).toBeChecked()
+  await downloads.getByRole('button', { name: 'Build PDF' }).click()
+  await expect(downloads.getByRole('link', { name: /Download .*-sheets\.pdf/ })).toBeVisible({
+    timeout: 60_000,
+  })
+  await expect(downloads).toContainText(/sheets in \d+ signature/)
+})

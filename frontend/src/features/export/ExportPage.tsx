@@ -6,6 +6,7 @@ import {
   FileText,
   Globe,
   Info,
+  LayoutTemplate,
   Library,
   Shuffle,
   TabletSmartphone,
@@ -17,7 +18,8 @@ import { useBook } from '@/api/queries'
 import { Button } from '@/components/ui/button'
 import { buttonVariants } from '@/components/ui/button-variants'
 import { EmptyState } from '@/components/ui/empty'
-import { NumberInput, Select } from '@/components/ui/inputs'
+import { Checkbox, NumberInput, Select } from '@/components/ui/inputs'
+import { usePageSetup } from '@/features/art/api'
 import { Panel } from '@/features/entities/EntityHeader'
 import { useSeriesVocab } from '@/features/entities/useSeriesVocab'
 import { isActive, useJobStream } from '@/features/playtest/api'
@@ -70,12 +72,18 @@ export function ExportPage() {
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-semibold tracking-tight">Export</h1>
         <span className="text-muted">{book.data?.title}</span>
+        <Link
+          to={`/export/${bookId}/layout`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'ml-auto')}
+        >
+          <LayoutTemplate className="size-4" /> Page layout
+        </Link>
         <Select
           aria-label="Edition"
           value={edition}
           options={vocab.tiers.map((t) => ({ value: t.key, label: `${t.label} edition` }))}
           onValueChange={(t) => t && setTier(t)}
-          className="ml-auto w-auto"
+          className="w-auto"
         />
       </header>
       {pre.error && (
@@ -136,11 +144,33 @@ function Downloads({
   tier: string | null
   seriesId: string | undefined
 }) {
+  const setup = usePageSetup(bookId)
+  const folded = !!setup.data?.imposition?.fold
+  const padded = !!setup.data?.imposition?.signature_pages
+  const imposes = folded || padded
+  const [sheets, setSheets] = useState(true)
   return (
     <Panel title="Download">
       <div className="grid gap-2">
+        {imposes && (
+          <Checkbox
+            checked={sheets}
+            onCheckedChange={setSheets}
+            label={
+              folded
+                ? 'PDF on folded sheets (off: pages in reading order)'
+                : 'Pad to whole signatures (off: pages as they are)'
+            }
+          />
+        )}
         {/* Keyed by edition: a finished build belongs to the tier it was built for. */}
-        <ExportButton key={`pdf:${tier}`} bookId={bookId} tier={tier} format="pdf" />
+        <ExportButton
+          key={`pdf:${tier}:${imposes && sheets}`}
+          bookId={bookId}
+          tier={tier}
+          format="pdf"
+          imposed={!imposes || sheets}
+        />
         <ExportButton key={`epub:${tier}`} bookId={bookId} tier={tier} format="epub" />
         <ExportButton key="web" bookId={bookId} tier={tier} format="web" />
         <p className="text-xs text-muted">
@@ -166,10 +196,12 @@ function ExportButton({
   bookId,
   tier,
   format,
+  imposed = true,
 }: {
   bookId: string
   tier: string | null
   format: 'pdf' | 'epub' | 'web'
+  imposed?: boolean
 }) {
   const start = useStartExport(bookId)
   const job = useJobStream(start.data?.id)
@@ -179,6 +211,9 @@ function ExportButton({
       ? (job.result as {
           file: string
           pages?: number
+          blanks?: number
+          sheets?: number
+          signatures?: number
           bytes: number
           warnings?: { message: string }[]
         })
@@ -192,7 +227,7 @@ function ExportButton({
           size="sm"
           variant="outline"
           disabled={running || (!tier && format !== 'web')}
-          onClick={() => start.mutate({ tier, format })}
+          onClick={() => start.mutate({ tier, format, imposed })}
         >
           <Icon className="size-4" /> {running ? 'Building…' : `Build ${what}`}
         </Button>
@@ -205,6 +240,10 @@ function ExportButton({
       {result && (
         <p className="text-xs text-muted">
           {result.pages ? `${result.pages} pages · ` : ''}
+          {result.blanks ? `${result.blanks} blank to fill the signatures · ` : ''}
+          {result.sheets
+            ? `${result.sheets} sheets in ${result.signatures} signature${result.signatures === 1 ? '' : 's'} · `
+            : ''}
           {Math.round(result.bytes / 1024)} KB
         </p>
       )}

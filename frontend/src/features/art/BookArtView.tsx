@@ -1,27 +1,33 @@
+import { Link } from 'react-router'
+
 import { useBookGraph } from '@/api/queries'
 import { Field } from '@/components/ui/field'
 import { NumberInput } from '@/components/ui/inputs'
 import { Panel } from '@/features/entities/EntityHeader'
 import { useSeriesVocab } from '@/features/entities/useSeriesVocab'
 
-import {
-  DEFAULT_SETUP,
-  type PageSetup,
-  useBookPlacements,
-  usePageSetup,
-  useSavePageSetup,
-} from './api'
+import { DEFAULT_SETUP, setupBody, useBookPlacements, usePageSetup, useSavePageSetup } from './api'
 import { PagePreview } from './PagePreview'
 import { PlacementList } from './PlacementEditor'
 
 const BOOK_ROLES = ['cover_front', 'cover_back', 'frontispiece', 'title_page', 'endpaper']
-const SETUP_FIELDS: { key: keyof PageSetup; label: string }[] = [
+type SetupNumber =
+  | 'trim_width_mm'
+  | 'trim_height_mm'
+  | 'margin_inner_mm'
+  | 'margin_outer_mm'
+  | 'margin_top_mm'
+  | 'margin_bottom_mm'
+  | 'gutter_mm'
+  | 'bleed_mm'
+const SETUP_FIELDS: { key: SetupNumber; label: string }[] = [
   { key: 'trim_width_mm', label: 'Trim width' },
   { key: 'trim_height_mm', label: 'Trim height' },
   { key: 'margin_inner_mm', label: 'Inner margin' },
   { key: 'margin_outer_mm', label: 'Outer margin' },
   { key: 'margin_top_mm', label: 'Top margin' },
   { key: 'margin_bottom_mm', label: 'Bottom margin' },
+  { key: 'gutter_mm', label: 'Gutter' },
   { key: 'bleed_mm', label: 'Bleed' },
 ]
 
@@ -51,13 +57,13 @@ export function BookArtView({ seriesId, bookId }: { seriesId: string; bookId: st
                 {(id) => (
                   <NumberInput
                     id={id}
+                    disabled={!!page.imposition?.fold && key.startsWith('trim')}
                     min={0}
                     step={0.5}
                     value={page[key]}
                     onCommit={(v) => {
                       if (v === null) return
-                      const { text_width: _w, text_height: _h, ...rest } = page
-                      save.mutate({ ...rest, [key]: v })
+                      save.mutate({ ...setupBody(page), [key]: v })
                     }}
                   />
                 )}
@@ -67,6 +73,9 @@ export function BookArtView({ seriesId, bookId }: { seriesId: string; bookId: st
           <p className="text-xs text-muted">
             Text block {page.text_width} × {page.text_height} mm.
           </p>
+          <Link to={`/export/${bookId}/layout`} className="text-sm text-accent hover:underline">
+            Fonts, text styles, headers and signatures…
+          </Link>
           {save.error && <p className="text-xs text-danger">{save.error.message}</p>}
         </Panel>
       </div>

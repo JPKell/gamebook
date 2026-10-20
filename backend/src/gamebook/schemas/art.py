@@ -8,6 +8,7 @@ from typing import Literal
 from pydantic import Field, model_validator
 
 from gamebook.core.art import DigitalLayout, PageSetup, PrintLayout
+from gamebook.core.layout import TextStyle
 from gamebook.schemas.common import In, Key, Out, Title
 
 TargetType = Literal["node", "act", "book", "character", "enemy", "item", "lore"]
@@ -169,9 +170,18 @@ class ArtPlacementOut(Out):
 # ── page setup ────────────────────────────────────────────────────────────
 
 
+class RoleOut(Out):
+    key: str
+    label: str
+    description: str
+    default: TextStyle
+
+
 class PageSetupOut(PageSetup):
     text_width: float = 0
     text_height: float = 0
+    #: Text roles in display order, with their defaults (``styles`` holds only changes).
+    roles: list[RoleOut] = Field(default_factory=list)
 
 
 # ── maps ──────────────────────────────────────────────────────────────────

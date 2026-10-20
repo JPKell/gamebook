@@ -46,6 +46,9 @@ export const ExportIndex = lazy(() =>
 export const ExportPage = lazy(() =>
   import('@/features/export/ExportPage').then((m) => ({ default: m.ExportPage })),
 )
+export const LayoutPage = lazy(() =>
+  import('@/features/layout/LayoutPage').then((m) => ({ default: m.LayoutPage })),
+)
 export const LoreIndex = lazy(() =>
   import('@/features/lore/LorePage').then((m) => ({ default: m.LoreIndex })),
 )

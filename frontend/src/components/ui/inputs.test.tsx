@@ -91,6 +91,26 @@ describe('NumberInput', () => {
     await user.tab()
     expect(commit).toHaveBeenLastCalledWith(null)
   })
+
+  it('keeps to min and max', async () => {
+    const user = userEvent.setup()
+    const commit = vi.fn()
+    render(<NumberInput aria-label="n" value={10} min={4} max={96} onCommit={commit} />)
+    const input = screen.getByRole('spinbutton', { name: 'n' })
+    await user.clear(input)
+    await user.type(input, '500{Enter}')
+    expect(commit).toHaveBeenLastCalledWith(96)
+    await user.clear(input)
+    await user.type(input, '1{Enter}')
+    expect(commit).toHaveBeenLastCalledWith(4)
+    // Clamped back to the current value: nothing to save, and the field shows it.
+    commit.mockClear()
+    await user.clear(input)
+    await user.type(input, '10.0000001{Enter}')
+    await user.clear(input)
+    await user.type(input, '-3{Enter}')
+    expect(commit).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('TextArea', () => {

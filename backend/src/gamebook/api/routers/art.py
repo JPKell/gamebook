@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse
 from gamebook.api.deps import DatabaseDep, SessionDep, SettingsDep
 from gamebook.config import Settings
 from gamebook.core.art import PageSetup
+from gamebook.core.layout import DEFAULT_STYLES, ROLES
 from gamebook.db.models import Asset, Map, Series
 from gamebook.schemas.art import (
     AppendixIn,
@@ -27,6 +28,7 @@ from gamebook.schemas.art import (
     MapUpdate,
     PageSetupOut,
     RenderOut,
+    RoleOut,
     ShotRow,
 )
 from gamebook.schemas.common import Out, Reorder
@@ -245,6 +247,10 @@ def _setup_out(p: PageSetup) -> PageSetupOut:
         **p.model_dump(),
         text_width=round(p.text_width_mm, 1),
         text_height=round(p.text_height_mm, 1),
+        roles=[
+            RoleOut(key=k, label=label, description=d, default=DEFAULT_STYLES[k])
+            for k, (label, d) in ROLES.items()
+        ],
     )
 
 

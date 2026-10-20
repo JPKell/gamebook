@@ -228,6 +228,14 @@ and watch downstream nodes go stale.
   and level shown on adventure sheets.
 - Both engines, print phrasing, the Mechanics designer.
 
+## Phase 14 — Print layout ✅ (2026-10-19, see `docs/handoffs/v2-phase-14-layout.md`)
+
+- Text styles for every kind of printed text; uploaded and installed fonts.
+- Margins with a binding gutter; running headers and footers per page side.
+- Title page and section spacing options.
+- Signatures with blank padding; folded sheets (2 pages per side) laid out in booklet order.
+- The Page layout designer with a live sample PDF.
+
 ## Later / deferred
 
 Cross-book carry-over (CharacterSnapshot + import policy), combined vs. per-tier print

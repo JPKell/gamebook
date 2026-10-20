@@ -122,10 +122,14 @@ export function NumberInput({
       } else revert()
       return
     }
-    const n = Number(draft)
+    let n = Number(draft)
     if (!Number.isFinite(n)) return revert()
+    // Keep to the declared range (min/max otherwise only limit the spinner).
+    if (rest.min !== undefined && n < Number(rest.min)) n = Number(rest.min)
+    if (rest.max !== undefined && n > Number(rest.max)) n = Number(rest.max)
+    if (n === value) return revert() // e.g. clamped back to where it was
     done()
-    if (n !== value) onCommit(n)
+    onCommit(n)
   }
   return (
     <input

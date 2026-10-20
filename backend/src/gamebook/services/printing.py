@@ -36,10 +36,11 @@ from gamebook.jobs import JobContext
 from gamebook.render import print as render
 from gamebook.render.appendix import _env
 from gamebook.schemas.art import AppendixOptions
-from gamebook.services import appendix, art, play, snapshot
+from gamebook.services import appendix, art, imposition, play, snapshot
 from gamebook.services.assets import Store
 from gamebook.services.common import require
 from gamebook.services.errors import InvalidError
+from gamebook.services.fonts import FontStore
 
 #: Sections per EPUB file (e-readers slow down on very long documents).
 EPUB_CHUNK = 40
@@ -382,7 +383,11 @@ def build_parts(
         )
     for v in by_role("cover_back"):
         out.parts.append(
-            {"kind": "art", "art": {**v, "page_side": "verso", "anchor": f"art-{v['id']}"}}
+            {
+                "kind": "art",
+                "back_cover": True,
+                "art": {**v, "page_side": "verso", "anchor": f"art-{v['id']}"},
+            }
         )
     return out
 
@@ -424,10 +429,19 @@ def _section_view(s: pc.Section, node_art: dict[str, list[dict[str, Any]]]) -> d
 # ── outputs ─────────────────────────────────────────────────────────────
 
 
-def preview_html(session: Session, book_id: str, tier: str | None) -> str:
+def _families(setup: PageSetup) -> set[str]:
+    return {s.font for s in setup.styles.values() if s.font}
+
+
+def preview_html(
+    session: Session, book_id: str, tier: str | None, fonts: FontStore | None = None
+) -> str:
     """The proof: the whole edition as one page, for an iframe."""
     c = compile_book(session, book_id, tier)
     parts = build_parts(session, c, media="print", asset_url=lambda a: f"/api/assets/{a.id}/thumb")
+    faces = (
+        fonts.faces(_families(parts.setup), lambda f: f"/api/print/fonts/{f.file}") if fonts else ""
+    )
     return render.document(
         title=parts.title,
         series_title=parts.series_title,
@@ -435,6 +449,7 @@ def preview_html(session: Session, book_id: str, tier: str | None) -> str:
         parts=parts.parts,
         mode="screen",
         setup=parts.setup,
+        font_faces=faces,
     )
 
 
@@ -445,43 +460,142 @@ class LayoutWarning:
     number: int | None = None
 
 
+@dataclass
+class PdfOut:
+    data: bytes
+    #: Pages in reading order (before blank padding).
+    pages: int
+    warnings: list[LayoutWarning]
+    blanks: int = 0
+    #: Folded sheets (0 when not folding) and signatures.
+    sheets: int = 0
+    signatures: int = 1
+
+
+#: Sections in a sample PDF (plus the first fight, if it comes later).
+SAMPLE_SECTIONS = 10
+
+
 def pdf(
-    session: Session, store: Store, book_id: str, tier: str | None
-) -> tuple[bytes, int, list[LayoutWarning]]:
-    """(PDF bytes, page count, layout warnings). Images load from the asset store only."""
+    session: Session,
+    store: Store,
+    book_id: str,
+    tier: str | None,
+    *,
+    fonts: FontStore | None = None,
+    imposed: bool = True,
+    sample: bool = False,
+) -> PdfOut:
+    """The edition as a PDF. Images and fonts load from their stores only.
+
+    ``imposed``: pad to whole signatures and, for folded sheets, lay pages out on
+    them (otherwise pages in reading order). ``sample``: the front matter and the
+    first few sections, for previewing a layout quickly.
+    """
     from weasyprint import HTML, URLFetcher  # heavy import: only when printing
 
     c = compile_book(session, book_id, tier)
-    root = store.root.resolve()
+    roots = [store.root.resolve()] + ([fonts.root.resolve()] if fonts else [])
 
     def file_url(a: Asset) -> str:
         return store.path(a.sha256, a.ext).resolve().as_uri()
 
     parts = build_parts(session, c, media="print", asset_url=file_url)
+    shown: set[int] | None = None
+    if sample:
+        parts.parts = _sample(parts.parts)
+        shown = {p["section"]["number"] for p in parts.parts if p["kind"] == "section"}
+
+    def href(n: int) -> str:
+        # A sample leaves most sections out: no links to those.
+        return "" if shown is not None and n not in shown else f"#s{n}"
+
+    setup = parts.setup
+    folding = imposed and setup.imposition.fold
+    if folding:
+        # Home-folded sheets: no bleed and no crop marks inside the sheet.
+        setup = setup.model_copy(update={"bleed_mm": 0.0})
+    faces = (
+        fonts.faces(_families(setup), lambda f: fonts.path(f.file).resolve().as_uri())
+        if fonts
+        else ""
+    )
     html = render.document(
         title=parts.title,
         series_title=parts.series_title,
         tier_label=parts.tier_label,
         parts=parts.parts,
         mode="print",
-        setup=parts.setup,
-        marks=True,
+        setup=setup,
+        marks=not folding,
+        font_faces=faces,
+        href=href,
     )
 
     class StoreOnly(URLFetcher):  # type: ignore[misc]
-        """Only our own image files: no network, no other local files."""
+        """Only our own image and font files: no network, no other local files."""
 
         def fetch(self, url: str, headers: Any = None) -> Any:
             if url.startswith("file://"):
                 path = Path(unquote(url[len("file://") :].split("?")[0])).resolve()
-                if path.is_relative_to(root) and path.is_file():
+                if any(path.is_relative_to(r) for r in roots) and path.is_file():
                     return super().fetch(url, headers)
             raise ValueError(f"Blocked resource: {url}")
 
     fetcher = StoreOnly(allowed_protocols={"file"})
-    document = HTML(string=html, url_fetcher=fetcher, base_url=root.as_uri() + "/").render()
+    document = HTML(string=html, url_fetcher=fetcher, base_url=roots[0].as_uri() + "/").render()
     warnings = _layout_warnings(document, parts)
-    return document.write_pdf(), len(document.pages), warnings
+    data = document.write_pdf()
+    if not imposed:
+        return PdfOut(data, len(document.pages), warnings)
+    out = imposition.impose(data, setup.imposition, back_cover_at=_back_cover_page(document, parts))
+    return PdfOut(out.pdf, out.pages, warnings, out.blanks, out.sheets, out.signatures)
+
+
+def _sample(parts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Front matter, the first sections (with their act headings) and the first fight."""
+    out: list[dict[str, Any]] = []
+    sections = 0
+    for p in parts:
+        if p["kind"] == "section":
+            if sections >= SAMPLE_SECTIONS:
+                continue
+            sections += 1
+        elif (
+            # Act headings past the cut-off, back matter and the back cover.
+            (p["kind"] == "act" and sections >= SAMPLE_SECTIONS)
+            or (sections and p["kind"] == "html")
+            or p.get("back_cover")
+        ):
+            continue
+        out.append(p)
+    shown = {p["section"]["number"] for p in out if p["kind"] == "section"}
+    fight = next(
+        (
+            p
+            for p in parts
+            if p["kind"] == "section"
+            and p["section"]["number"] not in shown
+            and any(b.kind == "choice" and b.data.get("fight") for b in p["section"]["blocks"])
+        ),
+        None,
+    )
+    has_fight = any(
+        b.kind == "choice" and b.data.get("fight")
+        for p in out
+        if p["kind"] == "section"
+        for b in p["section"]["blocks"]
+    )
+    if fight and not has_fight:
+        out.append(fight)
+    return out
+
+
+def _back_cover_page(document: Any, parts: Parts) -> int | None:
+    """The first page of the back cover, when the book has one."""
+    anchors = [p["art"]["anchor"] for p in parts.parts if p.get("back_cover")]
+    pages = [i for i, page in enumerate(document.pages) for a in anchors if a in page.anchors]
+    return min(pages) if pages else None
 
 
 def _layout_warnings(document: Any, parts: Parts) -> list[LayoutWarning]:
@@ -799,7 +913,15 @@ MEDIA = {"pdf": "application/pdf", "epub": "application/epub+zip", "web": "appli
 
 
 def export_job(
-    book_id: str, tier: str, fmt: str, store: Store, folder: Path, player_dist: Path | None = None
+    book_id: str,
+    tier: str,
+    fmt: str,
+    store: Store,
+    folder: Path,
+    player_dist: Path | None = None,
+    *,
+    fonts: FontStore | None = None,
+    imposed: bool = True,
 ) -> Any:
     ext = EXTENSIONS[fmt]
 
@@ -813,10 +935,16 @@ def export_job(
 
                 data = web_player.build_web(s, store, player_dist, book_id)
             elif fmt == "pdf":
-                data, pages, warnings = pdf(s, store, book_id, tier)
+                out = pdf(s, store, book_id, tier, fonts=fonts, imposed=imposed)
+                data = out.data
+                if out.sheets:
+                    name = f"{book.key}-{tier}-sheets.pdf"
                 extra = {
-                    "pages": pages,
-                    "warnings": [w.__dict__ for w in warnings],
+                    "pages": out.pages,
+                    "blanks": out.blanks,
+                    "sheets": out.sheets,
+                    "signatures": out.signatures,
+                    "warnings": [w.__dict__ for w in out.warnings],
                 }
             else:
                 data = epub(s, store, book_id, tier)

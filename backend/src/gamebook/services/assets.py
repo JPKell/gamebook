@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageOps, UnidentifiedImageError
+from PIL import Image, ImageFile, ImageOps, UnidentifiedImageError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -135,6 +135,8 @@ def probe(data: bytes) -> Probed:
             if im.size[0] * im.size[1] > MAX_PIXELS:
                 raise InvalidError("The image has too many pixels")
             im.verify()  # structure (cheap) ...
+        # Importing WeasyPrint turns this on for the whole process; uploads must be whole.
+        ImageFile.LOAD_TRUNCATED_IMAGES = False
         with Image.open(io.BytesIO(data)) as im:
             im.load()  # ... and every pixel decodes (verify misses truncated JPEGs)
             # EXIF orientation: browsers rotate the image, so sizes must match what they show.

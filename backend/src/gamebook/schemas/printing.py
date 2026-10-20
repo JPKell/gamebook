@@ -75,3 +75,22 @@ class ExportIn(In):
     tier: str | None = None
     #: web: the standalone web player (all tiers; ``tier`` is ignored).
     format: Literal["pdf", "epub", "web"]
+    #: PDF: whole signatures and, for folded sheets, pages laid out on sheets.
+    #: False: pages in reading order.
+    imposed: bool = True
+
+
+class FontOut(Out):
+    id: str
+    file: str
+    family: str
+    weight: int
+    italic: bool
+    bytes: int
+
+
+class FontsOut(Out):
+    #: Installed on the server (what WeasyPrint can use without an upload).
+    system: list[str]
+    uploaded: list[FontOut]
+    generic: list[str]

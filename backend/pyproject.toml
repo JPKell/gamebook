@@ -17,6 +17,8 @@ dependencies = [
     "jinja2>=3.1",
     "pillow>=11",
     "weasyprint>=63",
+    "pypdf>=5",
+    "fonttools>=4.50",
 ]
 
 [dependency-groups]
@@ -71,7 +73,7 @@ module = "gamebook.core.*"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["weasyprint", "tinyhtml5"]
+module = ["weasyprint", "tinyhtml5", "pydyf", "fontTools.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

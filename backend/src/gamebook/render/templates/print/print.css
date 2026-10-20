@@ -3,22 +3,19 @@
   size: {{ s.trim_width_mm }}mm {{ s.trim_height_mm }}mm;
   bleed: {{ s.bleed_mm }}mm;
   marks: {{ "crop" if marks else "none" }};
-  margin: {{ s.margin_top_mm }}mm {{ s.margin_outer_mm }}mm {{ s.margin_bottom_mm }}mm {{ s.margin_inner_mm }}mm;
-  @bottom-center { content: counter(page); font: 9pt Georgia, serif; color: #555; }
+  margin: {{ s.margin_top_mm }}mm {{ s.margin_outer_mm }}mm {{ s.margin_bottom_mm }}mm {{ s.inner_mm }}mm;
 }
-@page :left { margin-left: {{ s.margin_outer_mm }}mm; margin-right: {{ s.margin_inner_mm }}mm; }
-@page :right { margin-left: {{ s.margin_inner_mm }}mm; margin-right: {{ s.margin_outer_mm }}mm; }
-@page full { margin: 0; @bottom-center { content: none; } }
-@page :first { @bottom-center { content: none; } }
+@page :left { margin-left: {{ s.margin_outer_mm }}mm; margin-right: {{ s.inner_mm }}mm; }
+@page :right { margin-left: {{ s.inner_mm }}mm; margin-right: {{ s.margin_outer_mm }}mm; }
+@page full { margin: 0; }
 html { font: 10.5pt/1.42 Georgia, "Iowan Old Style", "Palatino Linotype", serif; color: #111; }
 body { margin: 0; }
 h1 { font-size: 20pt; text-align: center; margin: 0 0 6mm; }
 h1.act { break-before: right; margin-top: 40mm; font-size: 24pt; }
-.titlepage { break-after: page; text-align: center; padding-top: 30mm; }
+.titlepage { break-after: page; text-align: center; }
 .titlepage .series, .titlepage .edition { color: #555; }
 .matter { break-before: page; }
 .matter .appendix { max-width: none; padding: 0; }
-.matter .appendix h1 { font-size: 18pt; }
 .matter .lines li { height: 5.5mm; }
 .matter .sheet table th, .matter .sheet table td { padding: 0.8mm 1.5mm; }
 .begin { break-before: page; break-after: page; text-align: center; padding-top: 60mm; font-style: italic; }
@@ -56,3 +53,4 @@ th, td { border: 0.2mm solid #999; padding: 0.6mm 1.5mm; }
 td.num, th.num { text-align: center; }
 table.fight, .shop table { width: auto; break-inside: avoid; }
 {% include "appendix.css" %}
+{{ styles }}

@@ -832,6 +832,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/books/{book_id}/print/sample': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Print Sample
+     * @description A quick PDF of the front matter and first sections, to check a layout.
+     */
+    get: operations['print_sample']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/books/{book_id}/print/verify': {
     parameters: {
       query?: never
@@ -1706,6 +1726,67 @@ export interface paths {
     }
     /** Download Print Export */
     get: operations['download_print_export']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/print/fonts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List Fonts
+     * @description Families a layout can use: installed ones, uploaded files and CSS generics.
+     */
+    get: operations['list_fonts']
+    put?: never
+    /**
+     * Upload Font
+     * @description Upload a TrueType, OpenType or WOFF font as the raw request body.
+     */
+    post: operations['upload_font']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/print/fonts/{font_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Delete Font
+     * @description Remove an uploaded font (layouts using it fall back to the default font).
+     */
+    delete: operations['delete_font']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/print/fonts/{name}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Font File */
+    get: operations['font_file']
     put?: never
     post?: never
     delete?: never
@@ -3812,6 +3893,11 @@ export interface components {
        * @enum {string}
        */
       format: 'pdf' | 'epub' | 'web'
+      /**
+       * Imposed
+       * @default true
+       */
+      imposed?: boolean
       /** Tier */
       tier?: string | null
     }
@@ -3855,6 +3941,30 @@ export interface components {
       set_count: number
       /** Tested Count */
       tested_count: number
+    }
+    /** FontOut */
+    FontOut: {
+      /** Bytes */
+      bytes: number
+      /** Family */
+      family: string
+      /** File */
+      file: string
+      /** Id */
+      id: string
+      /** Italic */
+      italic: boolean
+      /** Weight */
+      weight: number
+    }
+    /** FontsOut */
+    FontsOut: {
+      /** Generic */
+      generic: string[]
+      /** System */
+      system: string[]
+      /** Uploaded */
+      uploaded: components['schemas']['FontOut'][]
     }
     /**
      * ForceInput
@@ -4018,6 +4128,42 @@ export interface components {
       expr: string
       /** Origin */
       origin: string
+    }
+    /**
+     * Imposition
+     * @description Folded sheets and signatures.
+     */
+    Imposition: {
+      /**
+       * Creep Mm
+       * @default 0
+       */
+      creep_mm?: number
+      /**
+       * Fold
+       * @default false
+       */
+      fold?: boolean
+      /**
+       * Fold Marks
+       * @default true
+       */
+      fold_marks?: boolean
+      /**
+       * Sheet Height Mm
+       * @default 215.9
+       */
+      sheet_height_mm?: number
+      /**
+       * Sheet Width Mm
+       * @default 279.4
+       */
+      sheet_width_mm?: number
+      /**
+       * Signature Pages
+       * @default 0
+       */
+      signature_pages?: number
     }
     /** ItemCreate */
     ItemCreate: {
@@ -4916,6 +5062,14 @@ export interface components {
        * @default 3.175
        */
       bleed_mm?: number
+      footer?: components['schemas']['RunningLine']
+      /**
+       * Gutter Mm
+       * @default 0
+       */
+      gutter_mm?: number
+      header?: components['schemas']['RunningLine']
+      imposition?: components['schemas']['Imposition']
       /**
        * Margin Bottom Mm
        * @default 22
@@ -4936,6 +5090,12 @@ export interface components {
        * @default 18
        */
       margin_top_mm?: number
+      sections?: components['schemas']['SectionLayout']
+      /** Styles */
+      styles?: {
+        [key: string]: components['schemas']['TextStyle']
+      }
+      title_page?: components['schemas']['TitlePage']
       /**
        * Trim Height Mm
        * @default 228.6
@@ -4954,6 +5114,14 @@ export interface components {
        * @default 3.175
        */
       bleed_mm?: number
+      footer?: components['schemas']['RunningLine']
+      /**
+       * Gutter Mm
+       * @default 0
+       */
+      gutter_mm?: number
+      header?: components['schemas']['RunningLine']
+      imposition?: components['schemas']['Imposition']
       /**
        * Margin Bottom Mm
        * @default 22
@@ -4974,6 +5142,13 @@ export interface components {
        * @default 18
        */
       margin_top_mm?: number
+      /** Roles */
+      roles?: components['schemas']['RoleOut'][]
+      sections?: components['schemas']['SectionLayout']
+      /** Styles */
+      styles?: {
+        [key: string]: components['schemas']['TextStyle']
+      }
       /**
        * Text Height
        * @default 0
@@ -4984,6 +5159,7 @@ export interface components {
        * @default 0
        */
       text_width?: number
+      title_page?: components['schemas']['TitlePage']
       /**
        * Trim Height Mm
        * @default 228.6
@@ -5773,6 +5949,16 @@ export interface components {
        */
       temperature?: number
     }
+    /** RoleOut */
+    RoleOut: {
+      default: components['schemas']['TextStyle']
+      /** Description */
+      description: string
+      /** Key */
+      key: string
+      /** Label */
+      label: string
+    }
     /** RuleSystemCreate */
     RuleSystemCreate: {
       /** @description Omit to start from the default template */
@@ -5858,6 +6044,102 @@ export interface components {
       runs: components['schemas']['RunOut'][]
       /** Total */
       total: number
+    }
+    /**
+     * RunningLine
+     * @description A header or footer: what each slot shows on left (verso) and right (recto) pages.
+     */
+    RunningLine: {
+      /**
+       * Gap Mm
+       * @default 4
+       */
+      gap_mm?: number
+      recto?: components['schemas']['RunningSlots']
+      /**
+       * Text
+       * @default
+       */
+      text?: string
+      verso?: components['schemas']['RunningSlots']
+    }
+    /** RunningSlots */
+    RunningSlots: {
+      /**
+       * Center
+       * @default none
+       * @enum {string}
+       */
+      center?:
+        | 'none'
+        | 'page'
+        | 'title'
+        | 'series'
+        | 'edition'
+        | 'act'
+        | 'section_first'
+        | 'section_last'
+        | 'text'
+      /**
+       * Left
+       * @default none
+       * @enum {string}
+       */
+      left?:
+        | 'none'
+        | 'page'
+        | 'title'
+        | 'series'
+        | 'edition'
+        | 'act'
+        | 'section_first'
+        | 'section_last'
+        | 'text'
+      /**
+       * Right
+       * @default none
+       * @enum {string}
+       */
+      right?:
+        | 'none'
+        | 'page'
+        | 'title'
+        | 'series'
+        | 'edition'
+        | 'act'
+        | 'section_first'
+        | 'section_last'
+        | 'text'
+    }
+    /** SectionLayout */
+    SectionLayout: {
+      /**
+       * Act Break
+       * @default right
+       * @enum {string}
+       */
+      act_break?: 'right' | 'page' | 'none'
+      /**
+       * Divider
+       * @default none
+       * @enum {string}
+       */
+      divider?: 'none' | 'rule' | 'asterism' | 'fleuron'
+      /**
+       * Gap Mm
+       * @default 5
+       */
+      gap_mm?: number
+      /**
+       * Hyphenate
+       * @default true
+       */
+      hyphenate?: boolean
+      /**
+       * Keep Together
+       * @default false
+       */
+      keep_together?: boolean
     }
     /** SectionNumber */
     SectionNumber: {
@@ -6605,6 +6887,38 @@ export interface components {
       /** Success */
       success: string
     }
+    /**
+     * TextStyle
+     * @description One text role's look; unset fields keep the default.
+     */
+    TextStyle: {
+      /** Align */
+      align?: ('left' | 'center' | 'right' | 'justify') | null
+      /** Bold */
+      bold?: boolean | null
+      /** Case */
+      case?: ('none' | 'upper' | 'lower' | 'capitalize') | null
+      /** Color */
+      color?: string | null
+      /** Font */
+      font?: string | null
+      /** Indent Mm */
+      indent_mm?: number | null
+      /** Italic */
+      italic?: boolean | null
+      /** Letter Spacing Em */
+      letter_spacing_em?: number | null
+      /** Line Height */
+      line_height?: number | null
+      /** Size Pt */
+      size_pt?: number | null
+      /** Small Caps */
+      small_caps?: boolean | null
+      /** Space After Mm */
+      space_after_mm?: number | null
+      /** Space Before Mm */
+      space_before_mm?: number | null
+    }
     /** TierDef */
     TierDef: {
       /** Class Choice */
@@ -6696,6 +7010,34 @@ export interface components {
       stats: components['schemas']['StatView'][]
       /** Tests */
       tests: components['schemas']['TestView'][]
+    }
+    /** TitlePage */
+    TitlePage: {
+      /**
+       * Byline
+       * @default
+       */
+      byline?: string
+      /**
+       * Show Edition
+       * @default true
+       */
+      show_edition?: boolean
+      /**
+       * Show Series
+       * @default true
+       */
+      show_series?: boolean
+      /**
+       * Subtitle
+       * @default
+       */
+      subtitle?: string
+      /**
+       * Top Mm
+       * @default 30
+       */
+      top_mm?: number
     }
     /** ValidationError */
     ValidationError: {
@@ -9172,6 +9514,47 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ReshuffleOut']
         }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  print_sample: {
+    parameters: {
+      query?: {
+        tier?: string | null
+        imposed?: boolean
+      }
+      header?: never
+      path: {
+        book_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Validation Error */
       422: {
@@ -11929,6 +12312,144 @@ export interface operations {
       header?: never
       path: {
         job_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  list_fonts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FontsOut']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  upload_font: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/octet-stream': string
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FontOut']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_font: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        font_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  font_file: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        name: string
       }
       cookie?: never
     }

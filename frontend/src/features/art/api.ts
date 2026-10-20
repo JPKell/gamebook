@@ -387,6 +387,20 @@ export const DEFAULT_SETUP: PageSetup = {
   margin_top_mm: 18,
   margin_bottom_mm: 22,
   bleed_mm: 3.175,
+  gutter_mm: 0,
+  styles: {},
+  header: {},
+  footer: {},
+  title_page: {},
+  sections: {},
+  imposition: {},
   text_width: 117.4,
   text_height: 188.6,
+  roles: [],
+}
+
+/** The page setup as the save endpoint takes it (without the computed fields). */
+export function setupBody(page: PageSetup): S['PageSetup'] {
+  const { text_width: _w, text_height: _h, roles: _r, ...rest } = page
+  return rest
 }

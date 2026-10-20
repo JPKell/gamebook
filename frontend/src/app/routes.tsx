@@ -13,6 +13,7 @@ import {
   ExportPage,
   ItemsIndex,
   ItemsPage,
+  LayoutPage,
   LibraryPage,
   LoreIndex,
   LorePage,
@@ -182,6 +183,14 @@ export const routes: RouteObject[] = [
         element: (
           <Page>
             <ExportPage />
+          </Page>
+        ),
+      },
+      {
+        path: 'export/:bookId/layout',
+        element: (
+          <Page>
+            <LayoutPage />
           </Page>
         ),
       },

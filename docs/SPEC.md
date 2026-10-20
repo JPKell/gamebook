@@ -1056,6 +1056,74 @@ As built (Phase 11, ADR 0012):
   - `POST /books/{id}/print/exports {tier, format}` runs a job; `GET /print/exports/{job}`
     downloads the result. The 20 newest exports are kept.
 
+### 6.3a Print layout
+
+As built (ADR 0015). The book's page setup (`book.print_setup`, `core.art.PageSetup`)
+also carries the layout (`core/layout.py`). Every part has a default, so older setups
+print as before.
+- **Page:**
+  - trim size, with presets in the designer
+  - top, bottom, inner and outer margins, and bleed
+  - a **gutter**: extra inner margin against the spine, counted in the text block (so
+    it also changes art sizes)
+- **Text styles:** 20 roles, each with font, size, line height, bold, italic, small caps,
+  case, alignment, colour, letter spacing, space before and after, and indent.
+  - **Roles:** body text, book title, subtitle, author line, series and edition, act
+    headings, section numbers, matter headings, subheadings and text, page directions,
+    section references, combat, effects, tables, notes and hints, endings, captions, and
+    the running header and footer.
+  - Styles store only the overrides. `DEFAULT_STYLES` holds the Phase 11 look, and the
+    roles and their defaults come back with the page setup.
+  - Font names and colours are validated, so they can't escape the stylesheet. The
+    body's font is the book's base font.
+  - The body indent applies to paragraphs after the first.
+- **Running heads:**
+  - The header and footer each have left, centre and right slots, set separately for
+    left (verso) and right (recto) pages, plus a distance from the text.
+  - **A slot can show:** the page number, book title, series, edition, act title, the
+    first or last section on the page (CSS `string-set`), or the author's own text.
+  - None appear on the first page, the title, "begin" and art pages, or blank pages.
+- **Title page:** subtitle, author line, whether to show the series and edition, and the
+  space above the title.
+- **Sections:**
+  - space between sections, and a divider (rule, `* * *`, or ❧)
+  - keep each section on one page
+  - hyphenation
+  - whether an act starts on a right-hand page, on a new page, or in the flow
+- **Signatures and folding** (`services/imposition.py`, pypdf):
+  - `signature_pages` (a multiple of 4) pads the PDF with blank pages to whole
+    signatures. The blanks go before the back cover.
+  - **`fold`:** each sheet holds two pages per side.
+    - The page becomes half the sheet, folded across its long side. The server sets the
+      trim size from the sheet.
+    - The PDF is laid out as sheets in booklet order: nested within each signature, front
+      then back.
+    - Folded sheets drop the bleed and crop marks, and get optional fold marks.
+    - Creep compensation shifts inner sheets' pages toward the fold.
+  - A signature of 0 means one signature for the whole book (saddle stitch). Without
+    folding, 0 means no padding.
+- **Fonts** (`services/fonts.py`):
+  - The installed families (from fontconfig) are listed. Uploaded TTF, OTF and WOFF files
+    are stored at `<data_dir>/fonts/<sha256>.<ext>` and shared by every book.
+  - fontTools reads each file's family, weight and italic. The stylesheet gets
+    `@font-face` rules for the families in use, and WeasyPrint embeds them.
+  - The proof loads fonts over HTTP with CORS, because the proof frame is sandboxed. The
+    PDF fetcher allows only the asset and font stores.
+- **EPUB** keeps its reader-friendly stylesheet: e-readers apply their own fonts.
+- **API:**
+  - `GET/PUT /books/{id}/page-setup` (includes the layout, with `roles`)
+  - `GET /books/{id}/print/sample?tier&imposed`: a quick PDF of the front matter, the
+    first 10 sections and the first fight
+  - `GET/POST /print/fonts`, `DELETE /print/fonts/{id}`, `GET /print/fonts/{file}`
+  - `POST /print/exports` takes `imposed` (default true; false gives reading-order
+    pages). The job result adds `blanks`, `sheets` and `signatures`.
+- **UI:** Export → **Page layout** (`/export/{book}/layout`).
+  - **Tabs:** Page, Text (role list, style editor, font manager), Headers & footers
+    (presets, mirroring), Title & sections, Signatures.
+  - **Preview:** a live sample PDF (refreshed after saves, optionally as folded sheets)
+    and a spread diagram of the margins, gutter and running heads.
+  - The Export page asks whether to build folded sheets or reading-order pages.
+
 ---
 
 ## 7. Validation Rules (initial set)

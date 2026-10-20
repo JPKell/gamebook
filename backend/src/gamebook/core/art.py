@@ -11,7 +11,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from gamebook.core.layout import (
+    ROLES,
+    Imposition,
+    RunningLine,
+    SectionLayout,
+    TextRole,
+    TextStyle,
+    TitlePage,
+    page_numbers,
+)
 
 MM_PER_INCH = 25.4
 #: Below this, print artwork looks soft (warning); below ``DPI_MIN`` it fails (error).
@@ -40,10 +51,39 @@ class PageSetup(_Model):
     margin_top_mm: float = Field(default=18.0, ge=0, le=100)
     margin_bottom_mm: float = Field(default=22.0, ge=0, le=100)
     bleed_mm: float = Field(default=3.175, ge=0, le=20)
+    #: Extra inner margin against the spine (binding), on top of ``margin_inner_mm``.
+    gutter_mm: float = Field(default=0.0, ge=0, le=50)
+    # Layout (core.layout): text styles, running heads, title page, sections, signatures.
+    styles: dict[TextRole, TextStyle] = Field(default_factory=dict)
+    header: RunningLine = Field(default_factory=RunningLine)
+    footer: RunningLine = Field(default_factory=page_numbers)
+    title_page: TitlePage = Field(default_factory=TitlePage)
+    sections: SectionLayout = Field(default_factory=SectionLayout)
+    imposition: Imposition = Field(default_factory=Imposition)
+
+    @field_validator("styles", mode="before")
+    @classmethod
+    def _known_roles(cls, v: object) -> object:
+        # A role this version doesn't know (an import from a newer one) is dropped.
+        if isinstance(v, dict):
+            return {k: s for k, s in v.items() if k in ROLES}
+        return v
+
+    @model_validator(mode="after")
+    def _folded_page(self) -> PageSetup:
+        # Folded sheets fix the page size: half the sheet.
+        if self.imposition.fold:
+            self.trim_width_mm, self.trim_height_mm = self.imposition.folded_page()
+        return self
+
+    @property
+    def inner_mm(self) -> float:
+        """The whole inner margin: margin plus gutter."""
+        return self.margin_inner_mm + self.gutter_mm
 
     @property
     def text_width_mm(self) -> float:
-        return max(10.0, self.trim_width_mm - self.margin_inner_mm - self.margin_outer_mm)
+        return max(10.0, self.trim_width_mm - self.inner_mm - self.margin_outer_mm)
 
     @property
     def text_height_mm(self) -> float:
