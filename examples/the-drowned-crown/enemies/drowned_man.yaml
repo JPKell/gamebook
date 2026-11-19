@@ -1,0 +1,11 @@
+id: 8ff52456-ea34-5c74-9f50-a096a07fd67c
+key: drowned_man
+name: Drowned Man
+description: A bloated figure in a fisherman's smock.
+tags:
+- undead
+- water
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 6 + level
+  STAMINA: 6 + 2 * level

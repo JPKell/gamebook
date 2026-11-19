@@ -1,0 +1,11 @@
+id: e202a59b-f566-592f-b1c7-604ebe11e548
+key: leather_jerkin
+name: Leather Jerkin
+description: Boiled leather that smells of tallow.
+category: equipment
+slot: body
+value: 8
+modifiers:
+- stat: ARMOR
+  amount: '1'
+  min_tier: medium

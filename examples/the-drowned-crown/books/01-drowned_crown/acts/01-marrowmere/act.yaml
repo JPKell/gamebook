@@ -1,0 +1,63 @@
+id: 24ea89c6-2c76-5a0a-90bf-5eacc077997d
+key: marrowmere
+title: Marrowmere and the Greywood
+color: '#7a8fa6'
+summary: The reader arrives in a flooded fishing town, is hired by the reeve and leaves by the Greywood
+  road or Old Wick's ferry. Shops, rumours and small choices set up what the reader will need in the fen.
+beats:
+- id: 69cf1757-80d8-56f3-960c-c3eeeb691a55
+  title: Arrival
+  description: Reach Marrowmere and meet the town.
+  nodes:
+  - a1_start
+  - a1_shrine
+  - a1_shrine_blessed
+  - a1_shrine_cold
+  - a1_gate
+  - a1_guard
+- id: 70ad0ca9-e5b2-5b4f-a45f-ba5093cb5193
+  title: The town
+  description: Shops, gossip and trouble in the alleys.
+  nodes:
+  - a1_square
+  - a1_inn
+  - a1_inn_room
+  - a1_smith
+  - a1_chandler
+  - a1_beggar
+  - a1_beggar_gift
+  - a1_beggar_whistle
+  - a1_alley
+  - a1_death_alley
+  - a1_chapel
+- id: 9d2882d9-4a71-5493-91e9-46fec09708f1
+  title: The commission
+  description: Reeve Hale hires the reader.
+  nodes:
+  - a1_reeve
+  - a1_reeve_hired
+  - a1_reeve_rich
+  - a1_reeve_refuse
+- id: 6da7cb77-aaff-5256-96e8-cde79a0243b7
+  title: The Greywood road
+  description: Wolves and bandits on the way to the fen.
+  nodes:
+  - a1_wood_edge
+  - a1_wolf
+  - a1_death_wolf
+  - a1_oak
+  - a1_bandit_camp
+  - a1_bandit_loot
+  - a1_bandit_deal
+  - a1_bandit_pay
+  - a1_death_bandit
+  - a1_woods_exit
+- id: ed5db47f-e9d2-548c-b98a-af5a5fff1768
+  title: The ferry
+  description: A crossing with a very patient ferryman.
+  nodes:
+  - a1_ferry
+  - a1_river
+  - a1_river_leeches
+  - a1_death_river
+  - a1_river_end

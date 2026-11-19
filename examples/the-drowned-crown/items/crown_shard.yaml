@@ -1,0 +1,7 @@
+id: bcf139bd-0492-5ffe-8bc5-3490d458cb36
+key: crown_shard
+name: Crown Shard
+description: A fragment of black iron, cold as a well. One of three.
+category: key
+stackable: true
+max_stack: 3

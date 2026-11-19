@@ -1,0 +1,256 @@
+id: bb99a49f-a12c-5d62-8627-e0cb81329480
+key: standard
+name: Standard Rules
+is_active: true
+definition:
+  tiers:
+  - key: basic
+    label: Basic
+    parent: null
+    description: Three stats, two dice, simple combat.
+    stats:
+    - key: SKILL
+      label: Skill
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      - enemy
+      initial: 1d6 + 6
+      min: 0
+      max: null
+      max_is_initial: true
+      defeat_at: null
+    - key: STAMINA
+      label: Stamina
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      - enemy
+      initial: 2d6 + 12
+      min: 0
+      max: null
+      max_is_initial: true
+      defeat_at: 0
+    - key: LUCK
+      label: Luck
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      initial: 1d6 + 6
+      min: 0
+      max: null
+      max_is_initial: true
+      defeat_at: null
+    - key: GOLD
+      label: Gold
+      description: ''
+      kind: resource
+      applies_to:
+      - player
+      initial: '10'
+      min: 0
+      max: null
+      max_is_initial: false
+      defeat_at: null
+    tests:
+    - key: luck
+      label: Test your Luck
+      description: ''
+      roll: 2d6
+      success: roll <= player.LUCK
+      after:
+      - once: null
+        min_tier: null
+        print_text: null
+        op: modify
+        stat: LUCK
+        amount: '-1'
+    - key: skill
+      label: Test your Skill
+      description: ''
+      roll: 2d6
+      success: roll <= player.SKILL
+      after: []
+    skills: []
+    classes: []
+    slots: []
+    combat:
+      player_attack: 2d6 + player.SKILL
+      enemy_attack: 2d6 + enemy.SKILL
+      damage: '2'
+      damage_stat: STAMINA
+      damage_hooks: []
+      multi_enemy: sequential
+      flee_allowed: true
+      flee_cost:
+      - once: null
+        min_tier: null
+        print_text: null
+        op: modify
+        stat: STAMINA
+        amount: '-2'
+    progression:
+      xp_stat: null
+      level_stat: null
+      xp_award: null
+      xp_to_next: null
+      max_level: null
+      level_up: null
+    class_choice: null
+    starting_items: []
+    rules_text: |-
+      Roll one die and add 6 for your SKILL, two dice and add 12 for your STAMINA, and one die plus 6 for your LUCK. You start with 10 Gold.
+
+      **Fighting.** Each round, roll two dice and add your SKILL; then roll two dice and add your opponent's SKILL. Whoever scores higher wounds the other for 2 STAMINA. A tie means you both miss. Anyone reduced to 0 STAMINA is defeated.
+
+      **Testing your Luck.** Roll two dice. If the total is equal to or less than your LUCK you are lucky. Either way, subtract 1 from your LUCK.
+  - key: medium
+    label: Medium
+    parent: basic
+    description: Adds armour, equipment slots, experience and levels.
+    stats:
+    - key: ARMOR
+      label: Armour
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      - enemy
+      initial: '0'
+      min: 0
+      max: null
+      max_is_initial: false
+      defeat_at: null
+    - key: XP
+      label: Experience
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      initial: '0'
+      min: 0
+      max: null
+      max_is_initial: false
+      defeat_at: null
+    - key: LEVEL
+      label: Level
+      description: ''
+      kind: stat
+      applies_to:
+      - player
+      initial: '1'
+      min: 1
+      max: null
+      max_is_initial: false
+      defeat_at: null
+    tests: []
+    skills: []
+    classes: []
+    slots:
+    - weapon
+    - body
+    - shield
+    combat:
+      player_attack: null
+      enemy_attack: null
+      damage: null
+      damage_stat: null
+      damage_hooks:
+      - max(1, damage - target.ARMOR)
+      multi_enemy: null
+      flee_allowed: null
+      flee_cost: null
+    progression:
+      xp_stat: XP
+      level_stat: LEVEL
+      xp_award: max(1, 10 + 5 * (enemy_level - level))
+      xp_to_next: 100 * level
+      max_level: 10
+      level_up:
+      - stat: STAMINA
+        amount: '2'
+      - stat: SKILL
+        amount: 'level % 3 == 0 ? 1 : 0'
+    class_choice: null
+    starting_items: []
+    rules_text: |-
+      **Armour.** Every wound is reduced by the target's ARMOUR, but always does at least 1 damage. You may wear one weapon, one suit of body armour and one shield; their bonuses count only while equipped.
+
+      **Experience.** You begin at LEVEL 1 with 0 XP. Each enemy you defeat in a fight you win earns 10 XP, plus 5 for every level it is above yours (or minus 5 for every level below; always at least 1). When your XP reaches 100 times your LEVEL, subtract that much XP and go up a level: add 2 to your STAMINA and its starting value, and at every third level add 1 to your SKILL and its starting value. The highest level is 10.
+  - key: advanced
+    label: Advanced
+    parent: medium
+    description: Adds classes, skills and critical hits.
+    stats: []
+    tests: []
+    skills:
+    - key: TRACKING
+      label: Tracking
+      description: ''
+    - key: ARCHERY
+      label: Archery
+      description: ''
+    - key: STEALTH
+      label: Stealth
+      description: ''
+    - key: LORE
+      label: Lore
+      description: ''
+    classes:
+    - key: ranger
+      label: Ranger
+      description: ''
+      skills:
+      - TRACKING
+      - ARCHERY
+      modifiers:
+      - stat: SKILL
+        amount: '1'
+      starting_items: []
+    - key: rogue
+      label: Rogue
+      description: ''
+      skills:
+      - STEALTH
+      modifiers:
+      - stat: LUCK
+        amount: '2'
+      starting_items: []
+    - key: scholar
+      label: Scholar
+      description: ''
+      skills:
+      - LORE
+      modifiers:
+      - stat: LUCK
+        amount: '1'
+      - stat: STAMINA
+        amount: '2'
+      starting_items: []
+    slots: []
+    combat:
+      player_attack: null
+      enemy_attack: null
+      damage: null
+      damage_stat: null
+      damage_hooks:
+      - 'natural == 12 ? damage * 2 : damage'
+      multi_enemy: null
+      flee_allowed: null
+      flee_cost: null
+    progression:
+      xp_stat: null
+      level_stat: null
+      xp_award: null
+      xp_to_next: null
+      max_level: null
+      level_up: null
+    class_choice: null
+    starting_items: []
+    rules_text: |-
+      **Your calling.** Choose a class: it grants your starting skills, which open choices other adventurers cannot take, and a bonus to your stats: a Ranger adds 1 to SKILL, a Rogue adds 2 to LUCK and a Scholar adds 1 to LUCK and 2 to STAMINA.
+
+      **Critical hits.** When an attack roll shows double six (a natural 12), its damage is doubled.

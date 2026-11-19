@@ -1,0 +1,10 @@
+id: 4489564f-9bd4-5360-9d7d-16d5e9b398bb
+key: bog_wolf
+name: Bog Wolf
+description: A rangy, mud-caked wolf, ribs showing.
+tags:
+- beast
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 6 + level
+  STAMINA: 5 + 2 * level

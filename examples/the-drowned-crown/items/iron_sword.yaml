@@ -1,0 +1,11 @@
+id: 30427bd7-4700-5fc3-a813-245e9f55097d
+key: iron_sword
+name: Iron Sword
+description: A plain, well-balanced blade from Hobb's forge.
+category: equipment
+slot: weapon
+value: 12
+modifiers:
+- stat: SKILL
+  amount: '1'
+  min_tier: medium

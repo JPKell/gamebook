@@ -1,0 +1,14 @@
+id: 93021f1d-7254-5b44-a022-750aa42f5bf9
+key: brandt
+name: Captain Brandt
+description: The bandit captain, saber drawn.
+tags:
+- human
+- boss
+stat_formulas:
+  ARMOR: '1'
+  SKILL: 7 + level
+  STAMINA: 8 + 2 * level
+abilities:
+- name: Dirty fighter
+  description: He throws sand when losing.

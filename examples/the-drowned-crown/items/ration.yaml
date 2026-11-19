@@ -1,0 +1,12 @@
+id: d7ba5c60-5be7-5796-986c-78f7e30f7746
+key: ration
+name: Travel Ration
+description: Hard bread and smoked eel.
+category: consumable
+stackable: true
+max_stack: 5
+value: 1
+use_effects:
+- op: modify
+  stat: STAMINA
+  amount: '2'

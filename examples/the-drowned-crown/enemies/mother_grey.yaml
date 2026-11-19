@@ -1,0 +1,14 @@
+id: 4085c15f-1d76-53dc-9fa9-05b45011c34a
+key: mother_grey
+name: Mother Grey
+description: The hag, her cooking spoon sharp as a blade.
+tags:
+- fey
+- boss
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 7 + level
+  STAMINA: 7 + 2 * level
+loot:
+- item: healing_draught
+  qty: 2

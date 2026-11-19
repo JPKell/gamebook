@@ -1,0 +1,10 @@
+id: 8dbcfa98-e7aa-500c-909a-5aa7e110c816
+key: crypt_ghoul
+name: Crypt Ghoul
+description: A grey, long-armed thing that smells of old church.
+tags:
+- undead
+stat_formulas:
+  ARMOR: '1'
+  SKILL: 7 + level
+  STAMINA: 6 + 2 * level

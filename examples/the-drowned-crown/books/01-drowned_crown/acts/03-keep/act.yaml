@@ -1,0 +1,57 @@
+id: 83968879-a43a-5e5e-8123-507118e245f2
+key: keep
+title: The Hollow Keep
+color: '#a0524a'
+summary: The king's keep, dry and perfect and dead. The reader explores, gathers the last shard and decides
+  what becomes of the crown.
+beats:
+- id: cc277a26-11d0-56f0-8660-b6df66206cc5
+  title: Entering the keep
+  description: Two ways in, and a courtyard full of the dead.
+  nodes:
+  - a3_keepgate
+  - a3_watergate
+  - a3_courtyard
+  - a3_armoury
+  - a3_kitchens
+  - a3_chapel_keep
+- id: f122eec3-6722-54e7-a883-dffa3dfac155
+  title: The gaol
+  description: A prisoner who knows how to pass the guard.
+  nodes:
+  - a3_dungeon
+  - a3_death_dungeon
+  - a3_prisoner
+- id: 00e62a85-ed1e-585f-9124-aa81a3aca2af
+  title: The great hall
+  description: Sir Aldous, the banquet, the gallery and the vault.
+  nodes:
+  - a3_hall
+  - a3_death_knight
+  - a3_aldous_down
+  - a3_banquet
+  - a3_banquet_curse
+  - a3_gallery
+  - a3_riddle_door
+  - a3_trap
+  - a3_vault
+- id: bd984dc4-ce2d-516d-a31c-4a13b2c1056b
+  title: The throne room
+  description: The Hollow King, and the crown's fate.
+  nodes:
+  - a3_throne_stair
+  - a3_throne
+  - a3_parley
+  - a3_king_fallen
+  - a3_death_king
+  - a3_final
+- id: e62fb01a-92cf-572f-8e6e-009b233337f0
+  title: Endings
+  description: Six ways it can end.
+  nodes:
+  - a3_end_restore
+  - a3_end_destroy
+  - a3_end_crowned
+  - a3_end_secret
+  - a3_end_hollow
+  - a3_end_flee

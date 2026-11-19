@@ -1,0 +1,11 @@
+id: cc6edc48-092b-506a-b4a2-1324692d79f9
+key: giant_leech
+name: Giant Leech
+description: A black leech as long as your arm.
+tags:
+- beast
+- water
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 4 + level
+  STAMINA: 5 + 2 * level

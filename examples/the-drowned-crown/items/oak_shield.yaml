@@ -1,0 +1,11 @@
+id: 63113cf9-d055-5564-ad3a-6987460fa73f
+key: oak_shield
+name: Oak Shield
+description: A round shield bound in iron.
+category: equipment
+slot: shield
+value: 6
+modifiers:
+- stat: ARMOR
+  amount: '1'
+  min_tier: medium

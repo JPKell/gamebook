@@ -1,0 +1,31 @@
+id: 1931b7e0-c26d-5716-b20a-4e1185648c05
+key: fen_wanderers
+name: Fen Wanderers
+description: Who or what finds you on the causeway.
+dice: 1d6
+entries:
+- lo: 1
+  hi: 2
+  kind: enemies
+  enemies:
+  - enemy: drowned_man
+    level: 1
+    count: 1
+  note: A drowned fisherman wades toward you.
+- lo: 3
+  hi: 3
+  kind: enemies
+  enemies:
+  - enemy: giant_leech
+    level: 1
+    count: 2
+  note: Leeches drop from the reeds.
+- lo: 4
+  hi: 5
+  kind: nothing
+  note: Only the mist.
+- lo: 6
+  hi: 6
+  kind: gold
+  amount: '5'
+  note: A purse in the mud.

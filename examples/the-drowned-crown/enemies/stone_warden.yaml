@@ -1,0 +1,10 @@
+id: b5987637-02bf-5c3e-bfd4-a06f31578991
+key: stone_warden
+name: Stone Warden
+description: A statue of a monk, animated and furious.
+tags:
+- construct
+stat_formulas:
+  ARMOR: '2'
+  SKILL: 8 + level
+  STAMINA: 9 + 2 * level

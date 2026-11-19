@@ -1,0 +1,11 @@
+id: 8691e897-9785-5eed-a6fe-1886295041e3
+key: sir_aldous
+name: Sir Aldous
+description: The wraith knight, black plate and no one inside.
+tags:
+- undead
+- boss
+stat_formulas:
+  ARMOR: '2'
+  SKILL: 9 + level
+  STAMINA: 8 + 2 * level

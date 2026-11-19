@@ -1,0 +1,8 @@
+id: b4d1c621-948a-5891-aa96-1614d187f072
+key: holy_water
+name: Vial of Holy Water
+description: Blessed at the chapel of the bell. It burns the dead.
+category: consumable
+stackable: true
+max_stack: 3
+value: 4

@@ -1,0 +1,12 @@
+id: 8de83a53-f451-5826-a0a3-d836f45c42c0
+key: healing_draught
+name: Healing Draught
+description: A bitter green tonic. Drink it to restore 4 STAMINA.
+category: consumable
+stackable: true
+max_stack: 5
+value: 6
+use_effects:
+- op: modify
+  stat: STAMINA
+  amount: '4'

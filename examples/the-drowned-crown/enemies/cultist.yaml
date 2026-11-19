@@ -1,0 +1,13 @@
+id: d69ef367-aedd-5f07-a924-3ecfe2f38a61
+key: cultist
+name: Bell Cultist
+description: A robed zealot who wants the crown reforged.
+tags:
+- human
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 6 + level
+  STAMINA: 5 + 2 * level
+loot:
+- item: healing_draught
+  qty: 1

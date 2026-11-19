@@ -1,0 +1,11 @@
+id: 5475a582-9602-53b6-8966-a8d1c2c14771
+key: silver_dagger
+name: Silver Dagger
+description: Its hilt is wrapped in a bell-maker's mark. The dead hate it.
+category: equipment
+slot: weapon
+value: 20
+modifiers:
+- stat: SKILL
+  amount: '1'
+  min_tier: medium

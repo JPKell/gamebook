@@ -1,0 +1,8 @@
+id: 03126fbb-6046-5742-8dd1-c1ae48b95935
+key: old_coin
+name: Old Marrowmere Crown
+description: A coin from the drowned kingdom, with a king's face worn smooth.
+category: treasure
+stackable: true
+max_stack: 10
+value: 3

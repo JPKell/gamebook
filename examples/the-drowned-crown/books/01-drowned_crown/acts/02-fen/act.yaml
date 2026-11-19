@@ -1,0 +1,57 @@
+id: 2a0e6437-7f07-58bf-add6-77231868ad4f
+key: fen
+title: The Drowned Fen
+color: '#4f7f6b'
+summary: A ruined kingdom under black water. The reader crosses the causeway, deals with a hag, and enters
+  the Sunken Abbey, where the crown's history and its first two shards wait.
+beats:
+- id: af7a068d-71d8-51d8-9483-d61bd260b447
+  title: The causeway
+  description: Crossing the fen is itself a danger.
+  nodes:
+  - a2_fenwalk
+  - a2_reedmouth
+  - a2_causeway
+  - a2_death_fen
+  - a2_wisps
+  - a2_mire
+  - a2_death_mire
+  - a2_island
+- id: 973a4a25-c2f6-5ed8-83cf-cccbba62d7e8
+  title: Mother Grey
+  description: The hag's hut and her bargains.
+  nodes:
+  - a2_hut
+  - a2_hag_deal
+  - a2_hag_riddle
+  - a2_hag_prize
+  - a2_death_hag
+  - a2_tower
+- id: 6fa2083f-ac28-51ea-989c-105924c5f49a
+  title: The abbey above
+  description: Library, bell, and the abbot who holds the seal.
+  nodes:
+  - a2_abbey_gate
+  - a2_nave
+  - a2_cloister
+  - a2_library
+  - a2_kitchen
+  - a2_alder
+  - a2_seal
+  - a2_alder_refuse
+  - a2_belltower
+  - a2_bell_rung
+  - a2_ambush
+  - a2_ghost
+- id: f0686912-e574-5480-badb-50615641d99f
+  title: The catacombs
+  description: Two shards and a way down.
+  nodes:
+  - a2_crypt_door
+  - a2_catacombs
+  - a2_ossuary
+  - a2_flooded_crypt
+  - a2_shard_one
+  - a2_guardian
+  - a2_death_crypts
+  - a2_stair

@@ -1,0 +1,13 @@
+id: 71241f2f-52df-5995-ad8c-4e44bf8bd0cd
+key: bandit
+name: Bandit
+description: A ragged outlaw with a hatchet.
+tags:
+- human
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 5 + level
+  STAMINA: 5 + 2 * level
+loot:
+- item: old_coin
+  qty: 1

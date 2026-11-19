@@ -25,6 +25,15 @@ settings, or use `GAMEBOOK_*` environment variables.
 
 `make serve` builds the UI and serves everything from the API on http://localhost:8788.
 
+### Demo book
+
+[`examples/the-drowned-crown/`](examples/the-drowned-crown) is a complete 100-node gamebook
+(three acts, six endings, shops, fights, tests, rolls, codewords and text variants). Load it with:
+
+```bash
+cd backend && uv run gamebook import ../examples/the-drowned-crown
+```
+
 ### Running as a service
 
 `deploy/gamebook.service` is a systemd user unit serving the built app on

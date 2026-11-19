@@ -1,0 +1,9 @@
+id: c0b41ec5-71cf-5194-b0c6-d21e8c00a0fd
+key: luck_charm
+name: Fisherman's Charm
+description: A knot of green glass on a cord. Carried, it improves your LUCK.
+category: treasure
+value: 10
+modifiers:
+- stat: LUCK
+  amount: '1'

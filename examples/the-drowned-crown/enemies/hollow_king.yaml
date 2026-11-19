@@ -1,0 +1,14 @@
+id: 08eed60d-da25-5c10-ab98-950ad63c1772
+key: hollow_king
+name: The Hollow King
+description: King Oswin, crowned and untouched by a century.
+tags:
+- undead
+- boss
+stat_formulas:
+  ARMOR: '2'
+  SKILL: 10 + level
+  STAMINA: 12 + 3 * level
+abilities:
+- name: Endurance
+  description: He does not tire.

@@ -1,0 +1,13 @@
+id: 02192dff-0ea4-59df-9df7-0ce95b828038
+key: cutpurse
+name: Cutpurse
+description: A quick, scared thief with a long knife.
+tags:
+- human
+stat_formulas:
+  ARMOR: '0'
+  SKILL: 5 + level
+  STAMINA: 4 + 2 * level
+loot:
+- item: old_coin
+  qty: 1
