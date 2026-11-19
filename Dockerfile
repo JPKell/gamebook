@@ -47,3 +47,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s \
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["gamebook", "serve", "--host", "0.0.0.0", "--port", "8888"]
+ 

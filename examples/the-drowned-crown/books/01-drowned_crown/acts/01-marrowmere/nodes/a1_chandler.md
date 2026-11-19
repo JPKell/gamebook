@@ -7,7 +7,7 @@ summary: 'Rope, lamp oil, candles, hooks, tallow, bandages: the shop sells every
 location: marrowmere
 shop:
   enabled: true
-  sell_rate: 0.5
+  sell_rate: 50
   items:
   - item: rope
     price: 3

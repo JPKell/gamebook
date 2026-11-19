@@ -6,7 +6,7 @@ summary: Hobb is as wide as his anvil and just as talkative.
 location: marrowmere
 shop:
   enabled: true
-  sell_rate: 0.5
+  sell_rate: 50
   items:
   - item: iron_sword
     price: 12
